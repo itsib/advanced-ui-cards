@@ -1,0 +1,17 @@
+:host {
+  --mdc-icon-button-size: 40px;
+  --mdc-icon-size: 28px;
+
+  font-family: var(--paper-font-body1_-_font-family);
+  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
+  font-size: var(--paper-font-body1_-_font-size);
+  font-weight: var(--paper-font-body1_-_font-weight);
+  line-height: var(--paper-font-body1_-_line-height);
+  color: var(--primary-text-color);
+}
+
+.area-card {
+  position: relative;
+  overflow: hidden;
+
+}

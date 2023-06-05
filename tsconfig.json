@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": [
+      "es2017",
+      "dom",
+      "dom.iterable"
+    ],
+    "noEmit": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "useUnknownInCatchVariables": false,
+    "paths": {
+      "lit": [
+        "types/lit.ts"
+      ],
+      "types": [
+        "types/index.ts"
+      ],
+      "i18n": [
+        "i18n/i18n.ts"
+      ]
+    }
+  }
+}

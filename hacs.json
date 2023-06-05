@@ -1,0 +1,6 @@
+{
+    "name": "Lovelace Dashboard Card",
+    "country": ["RU", "EN"],
+    "render_readme": true,
+    "homeassistant": "2022.11.5"
+}

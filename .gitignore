@@ -1,0 +1,13 @@
+.idea/
+
+node_modules/
+**/__pycache__
+.vscode/
+.venv/
+.config/
+.database/
+.mqtt/
+custom_components/coinbase/
+custom_components/hacs/
+custom_components/sun/
+/dist/
