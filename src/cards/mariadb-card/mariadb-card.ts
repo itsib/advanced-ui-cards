@@ -179,6 +179,15 @@ class MariadbCard extends LitElement implements LovelaceCard {
         this._dark = isDark;
       }
     }
+
+    if (changedProps.has('_works')) {
+      if (this._works) {
+        this._refreshStats();
+      } else if (this._nextRefreshTimeout) {
+        clearTimeout(this._nextRefreshTimeout);
+        this._nextRefreshTimeout = undefined;
+      }
+    }
   }
 
   async connectedCallback() {
@@ -189,7 +198,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
       return undefined;
     });
 
-    this._refreshStats();
+    if (this._works) {
+      this._refreshStats();
+    }
   }
 
   async disconnectedCallback() {
@@ -199,6 +210,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
 
     if (this._nextRefreshTimeout) {
       clearTimeout(this._nextRefreshTimeout);
+      this._nextRefreshTimeout = undefined;
     }
   }
 
@@ -413,6 +425,11 @@ class MariadbCard extends LitElement implements LovelaceCard {
   }
 
   private _refreshStats() {
+    if (this._nextRefreshTimeout !== undefined) {
+      clearTimeout(this._nextRefreshTimeout);
+      this._nextRefreshTimeout = undefined;
+    }
+
     const payload = {
       endpoint: `/addons/core_mariadb/stats`,
       method: 'get',
