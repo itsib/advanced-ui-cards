@@ -24,6 +24,13 @@ interface AddonInfo {
   state: AddonState;
 }
 
+interface AddonStats {
+  cpu_percent: number;
+  memory_percent: number;
+  memory_usage: number;
+  memory_limit: number;
+}
+
 interface ConfirmationDialogSettings {
   title: string;
   message: string;
@@ -69,6 +76,14 @@ class MariadbCard extends LitElement implements LovelaceCard {
    * @private
    */
   private _version?: string;
+
+  private _cpuPercent?: number;
+
+  private _ramPercent?: number;
+
+  private _ramUsage?: number;
+
+  private _ramLimit = 4000;
   /**
    * Is enabled dark theme
    * @private
@@ -79,6 +94,11 @@ class MariadbCard extends LitElement implements LovelaceCard {
    * @private
    */
   private _works = false;
+  /**
+   * Card is initialized
+   * @private
+   */
+  private _initialized = false;
   /**
    * What task is being in progress
    * @private
@@ -95,6 +115,8 @@ class MariadbCard extends LitElement implements LovelaceCard {
    */
   private _addonStateUnsubscribe?: () => {};
 
+  private _nextRefreshTimeout?: NodeJS.Timeout;
+
   static styles = styles;
 
   static properties = {
@@ -102,7 +124,12 @@ class MariadbCard extends LitElement implements LovelaceCard {
     config: { attribute: false },
     _name: { state: true, type: String },
     _version: { state: true, type: String },
+    _cpuPercent: { state: true, type: Number },
+    _ramPercent: { state: true, type: Number },
+    _ramUsage: { state: true, type: Number },
+    _ramLimit: { state: true, type: Number },
     _dark: { state: true, type: Boolean },
+    _initialized: { state: true, type: Boolean },
     _works: { state: true, type: Boolean },
     _progress: { state: true, type: String },
     _dialog: { state: true },
@@ -111,6 +138,8 @@ class MariadbCard extends LitElement implements LovelaceCard {
   static dbSizeSensor = 'sensor.mariadb_database_size';
 
   static dbAddonSlug = 'core_mariadb';
+
+  static updateStatsInterval = 2000;
 
   setConfig(config = {}) {
     this.config = config;
@@ -159,12 +188,18 @@ class MariadbCard extends LitElement implements LovelaceCard {
       console.error(error);
       return undefined;
     });
+
+    this._refreshStats();
   }
 
   async disconnectedCallback() {
     await super.disconnectedCallback();
 
     this._addonStateUnsubscribe?.();
+
+    if (this._nextRefreshTimeout) {
+      clearTimeout(this._nextRefreshTimeout);
+    }
   }
 
   render() {
@@ -198,9 +233,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
                 { level: 2, stroke: 'var(--warning-color)' },
                 { level: 7, stroke: 'var(--error-color)' },
               ]}"
-              .value="${0.4}"
+              .value="${this._cpuPercent}"
               .loading="${false}"
-              .disabled="${!this._works}"
+              .disabled="${!this._works || !this._initialized}"
             ></dc-gauge>
           </div>
 
@@ -212,9 +247,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .min="${0}"
               .max="${100}"
               .levels="${[{ level: 0, stroke: 'var(--info-color)' }]}"
-              .value="${3}"
+              .value="${this._ramPercent}"
               .loading="${false}"
-              .disabled="${!this._works}"
+              .disabled="${!this._works || !this._initialized}"
             ></dc-gauge>
           </div>
 
@@ -224,11 +259,11 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .label="${'RAM'}"
               .unit="${'Mb'}"
               .min="${0}"
-              .max="${4000}"
+              .max="${this._ramLimit}"
               .levels="${[{ level: 0, stroke: 'var(--warning-color)' }]}"
-              .value="${245}"
+              .value="${this._ramUsage}"
               .loading="${false}"
-              .disabled="${!this._works}"
+              .disabled="${!this._works || !this._initialized}"
             ></dc-gauge>
           </div>
         </div>
@@ -375,6 +410,35 @@ class MariadbCard extends LitElement implements LovelaceCard {
       message: t('mariadb.start.dialog'),
       action: Action.START,
     };
+  }
+
+  private _refreshStats() {
+    const payload = {
+      endpoint: `/addons/core_mariadb/stats`,
+      method: 'get',
+      type: 'supervisor/api',
+    };
+
+    this.hass
+      .callWS<AddonStats>(payload)
+      .then(stats => {
+        const oneMb = 1024 ** 2;
+
+        this._cpuPercent = stats.cpu_percent;
+        this._ramPercent = stats.memory_percent;
+        this._ramUsage = Math.round((stats.memory_usage / oneMb) * 10) / 10; // RAM usege in MB
+
+        if (this._ramUsage > this._ramLimit) {
+          this._ramLimit = Math.round((stats.memory_limit / oneMb) * 10) / 10; // RAM limit in MB
+        }
+
+        if (!this._initialized) {
+          this._initialized = true;
+        }
+
+        this._nextRefreshTimeout = setTimeout(() => this._refreshStats(), MariadbCard.updateStatsInterval);
+      })
+      .catch(console.error);
   }
 }
 
