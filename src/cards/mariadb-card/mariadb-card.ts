@@ -193,7 +193,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
   async connectedCallback() {
     await super.connectedCallback();
 
-    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => (this._works = state === AddonState.STARTED)).catch(error => {
+    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => {
+      console.log('Addon State', state);
+      this._works = state === AddonState.STARTED;
+    }).catch(error => {
       console.error(error);
       return undefined;
     });
@@ -349,13 +352,17 @@ class MariadbCard extends LitElement implements LovelaceCard {
 
     switch (this._progress) {
       case Action.PURGE:
-        return this._callService('recorder', 'purge', { keep_days: 10, apply_filter: true, repack: true });
+        this._callService('recorder', 'purge', { keep_days: 10, apply_filter: true, repack: true });
+        break;
       case Action.START:
-        return this._callSupervisorWs('start');
+        this._callSupervisorWs('start').then(() => this._refreshStats());
+        break;
       case Action.STOP:
-        return this._callSupervisorWs('stop');
+        this._callSupervisorWs('stop');
+        break;
       case Action.RELOAD:
-        return this._callSupervisorWs('restart');
+        this._callSupervisorWs('restart');
+        break;
     }
   }
 
@@ -371,7 +378,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
       });
   }
 
-  private _callSupervisorWs(endpoint: string): void {
+  private _callSupervisorWs<T = unknown>(endpoint: string): Promise<T | undefined> {
     const payload = {
       endpoint: `/addons/${MariadbCard.dbAddonSlug}/${endpoint}`,
       method: 'post',
@@ -379,14 +386,16 @@ class MariadbCard extends LitElement implements LovelaceCard {
       type: 'supervisor/api',
     };
 
-    this.hass
-      .callWS(payload)
-      .then(() => {
+    return this.hass
+      .callWS<T>(payload)
+      .then((result: T) => {
         this._progress = undefined;
+        return result;
       })
       .catch(err => {
         this._progress = undefined;
         console.error(err);
+        return undefined;
       });
   }
 
