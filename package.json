@@ -1,5 +1,5 @@
 {
-  "name": "dashboard-cards",
+  "name": "lovelace-cards",
   "version": "1.0.0",
   "description": "Custom lovelace cards for Home Assistant",
   "author": "Sergey <itsib.su@gmail.com>",
@@ -15,17 +15,19 @@
     "admin",
     "admin-dashboard"
   ],
-  "repository": "git@github.com:itsib/dashboard-cards-hacs.git",
-  "homepage": "https://github.com/itsib/dashboard-cards-hacs#readme",
+  "repository": "git@github.com:itsib/lovelace-cards.git",
+  "homepage": "https://github.com/itsib/lovelace-cards#readme",
   "bugs": {
-    "url": "https://github.com/itsib/dashboard-cards-hacs/issues"
+    "url": "https://github.com/itsib/lovelace-cards/issues"
   },
-  "module": "custom_components/dashboard_cards/lovelace/dashboard-cards.js",
+  "module": "custom_components/lovelace_cards/lovelace/lovelace-cards.js",
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "npm run lint && rollup -c --environment BUILD:production",
     "lint": "eslint src/*.ts",
-    "publish": "bump package.json package-lock.json custom_components/dashboard_cards/manifest.json --tag --push --all"
+    "add": "git add custom_components/lovelace_cards/lovelace/*",
+    "bump": "bump package.json package-lock.json custom_components/lovelace_cards/manifest.json -t -p -a",
+    "publish": "npm run lint && npm run build && npm run add && npm run bump"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

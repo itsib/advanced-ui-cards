@@ -10,11 +10,11 @@ import clean from 'rollup-plugin-delete';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
 
 const plugins = [
-  clean({ targets: 'custom_components/dashboard_cards/lovelace/*' }),
+  clean({ targets: 'custom_components/lovelace_cards/lovelace/*' }),
   minifyHTML(),
   litScss({
     minify: true,
-    options: { loadPaths: ['node_modules'] },
+    options: { loadPaths: ['src/scss'] },
   }),
   resolve({ browser: true }),
   commonjs(),
@@ -26,15 +26,15 @@ const plugins = [
   }),
   terser(),
   copy({
-    targets: [{ src: 'src/images/**/*', dest: 'custom_components/dashboard_cards/lovelace' }],
+    targets: [{ src: 'src/images/**/*', dest: 'custom_components/lovelace_cards/lovelace' }],
   }),
 ];
 
 export default [
   {
-    input: 'src/dashboard-cards.ts',
+    input: 'src/lovelace-cards.ts',
     output: {
-      dir: 'custom_components/dashboard_cards/lovelace',
+      dir: 'custom_components/lovelace_cards/lovelace',
       format: 'es',
     },
     plugins: [...plugins],

@@ -155,7 +155,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
   async connectedCallback() {
     await super.connectedCallback();
 
-    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => (this._works = state === AddonState.STARTED));
+    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => (this._works = state === AddonState.STARTED)).catch(error => {
+      console.error(error);
+      return undefined;
+    });
   }
 
   async disconnectedCallback() {
@@ -169,7 +172,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
-    const logoUrl = `/dashboard-cards/mariadb-logo-${this._dark ? 'white' : 'dark'}.svg`;
+    const logoUrl = `/lovelace-cards/mariadb-logo-${this._dark ? 'white' : 'dark'}.svg`;
 
     const dbSize = this._bdSize();
 
@@ -233,7 +236,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <div class="database-size">
             ${dbSize
               ? html`
-                  <img class="icon" src="/dashboard-cards/database-size-2.svg" alt="DB Icon" />
+                  <img class="icon" src="/lovelace-cards/database-size-2.svg" alt="DB Icon" />
                   <div class="value">${this._bdSize()}</div>
                 `
               : null}

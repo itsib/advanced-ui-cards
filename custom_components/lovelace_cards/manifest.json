@@ -2,13 +2,13 @@
   "codeowners": [
     "@itsib"
   ],
-  "documentation": "https://github.com/itsib/dashboard-cards-hacs",
-  "domain": "dashboard_cards",
+  "documentation": "https://github.com/itsib/lovelace-cards",
+  "domain": "lovelace_cards",
   "iot_class": "local_polling",
   "loggers": [
-    "dashboard_cards"
+    "lovelace_cards"
   ],
-  "name": "Dashboard UI Cards",
+  "name": "Lovelace UI Cards",
   "requirements": [],
   "dependencies": [
     "lovelace"
