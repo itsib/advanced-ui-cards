@@ -283,8 +283,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <div class="database-size">
             ${dbSize
               ? html`
-                  <img class="icon" src="/lovelace-cards/database-size-2.svg" alt="DB Icon" />
-                  <div class="value">${this._bdSize()}</div>
+                  <div data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}">
+                    <img class="icon" src="/lovelace-cards/database-size-2.svg" alt="DB Icon" />
+                    <div class="value">${this._bdSize()}</div>
+                  </div>
                 `
               : null}
           </div>
@@ -455,7 +457,12 @@ class MariadbCard extends LitElement implements LovelaceCard {
 
         this._nextRefreshTimeout = setTimeout(() => this._refreshStats(), MariadbCard.updateStatsInterval);
       })
-      .catch(console.error);
+      .catch(error => {
+        if (error.message?.contains('ot running')) {
+          return;
+        }
+        console.error(error);
+      });
   }
 }
 
