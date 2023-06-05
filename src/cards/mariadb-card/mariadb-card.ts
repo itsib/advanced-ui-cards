@@ -179,23 +179,20 @@ class MariadbCard extends LitElement implements LovelaceCard {
         this._dark = isDark;
       }
     }
-
-    if (changedProps.has('_works')) {
-      if (this._works) {
-        this._refreshStats();
-      } else if (this._nextRefreshTimeout) {
-        clearTimeout(this._nextRefreshTimeout);
-        this._nextRefreshTimeout = undefined;
-      }
-    }
   }
 
   async connectedCallback() {
     await super.connectedCallback();
 
     this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => {
-      console.log('Addon State', state);
-      this._works = state === AddonState.STARTED;
+      const works = state === AddonState.STARTED;
+      if (works && !this._works) {
+        this._refreshStats();
+      } else if (!works && this._nextRefreshTimeout !== undefined) {
+        clearTimeout(this._nextRefreshTimeout);
+        this._nextRefreshTimeout = undefined;
+      }
+      this._works = works;
     }).catch(error => {
       console.error(error);
       return undefined;
@@ -355,7 +352,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
         this._callService('recorder', 'purge', { keep_days: 10, apply_filter: true, repack: true });
         break;
       case Action.START:
-        this._callSupervisorWs('start').then(() => this._refreshStats());
+        this._callSupervisorWs('start');
         break;
       case Action.STOP:
         this._callSupervisorWs('stop');
