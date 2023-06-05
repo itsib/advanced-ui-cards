@@ -1,4 +1,4 @@
-"""The Air Quality Sensors integration."""
+"""The Lovelace UI Cards integration."""
 from __future__ import annotations
 
 import logging
@@ -39,7 +39,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
     await async_process_integration_platform_for_component(hass, DOMAIN)
 
-    hass.data[DOMAIN] = {'name': 'Dashboard UI Cards'}
+    hass.data[DOMAIN] = {'name': NAME}
     await hass.config_entries.async_forward_entry_setups(entry, [])
     return True
 

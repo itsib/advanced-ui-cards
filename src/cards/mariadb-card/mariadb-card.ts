@@ -386,6 +386,6 @@ customElements.define('dc-mariadb-card', MariadbCard);
   type: 'dc-mariadb-card',
   name: t('mariadb.name'),
   description: t('mariadb.description'),
-  preview: true,
+  preview: false,
   configurable: false,
 });

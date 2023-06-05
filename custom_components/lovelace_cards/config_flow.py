@@ -1,4 +1,4 @@
-"""Config flow to configure the Yandex Media PLayer."""
+"""Config flow to configure the Lovelace UI Cards integration."""
 from __future__ import annotations
 
 from homeassistant import config_entries
@@ -8,7 +8,7 @@ from .const import NAME, DOMAIN
 
 
 @config_entries.HANDLERS.register(DOMAIN)
-class YandexMediaPlayerConfigFlow(ConfigFlow):
+class LovelaceUICardsConfigFlow(ConfigFlow):
     async def async_step_user(self, user_input=None):
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
