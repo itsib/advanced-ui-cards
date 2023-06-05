@@ -13,6 +13,7 @@
   &[data-tooltip-pos] {
     @include tooltip;
     @include tooltip-top;
+    @include tooltip-left;
   }
 }
 

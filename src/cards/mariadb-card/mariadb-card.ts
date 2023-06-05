@@ -291,18 +291,18 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <div class="actions">
             ${this._works
               ? html`
-                  <div class="btn-wrap purge" data-tooltip-pos="top" aria-label="${t('mariadb.purge.tooltip')}">
+                  <div class="btn-wrap purge" data-tooltip-pos="left" aria-label="${t('mariadb.purge.tooltip')}">
                     <dc-circle-button icon="mdi:database-cog" @click="${this._progress ? undefined : this._purge}" .loading="${this._progress === Action.PURGE}"></dc-circle-button>
                   </div>
-                  <div class="btn-wrap reload" data-tooltip-pos="top" aria-label="${t('mariadb.reload.tooltip')}">
+                  <div class="btn-wrap reload" data-tooltip-pos="left" aria-label="${t('mariadb.reload.tooltip')}">
                     <dc-circle-button icon="mdi:restart" @click="${this._progress ? undefined : this._reload}" .loading="${this._progress === Action.RELOAD}"></dc-circle-button>
                   </div>
-                  <div class="btn-wrap stop" data-tooltip-pos="top" aria-label="${t('mariadb.stop.tooltip')}">
+                  <div class="btn-wrap stop" data-tooltip-pos="left" aria-label="${t('mariadb.stop.tooltip')}">
                     <dc-circle-button icon="mdi:stop" @click="${this._progress ? undefined : this._stop}" .loading="${this._progress === Action.STOP}"></dc-circle-button>
                   </div>
                 `
               : html`
-                  <div class="btn-wrap start" data-tooltip-pos="top" aria-label="${t('mariadb.start.tooltip')}">
+                  <div class="btn-wrap start" data-tooltip-pos="left" aria-label="${t('mariadb.start.tooltip')}">
                     <dc-circle-button icon="mdi:play" @click="${this._progress ? undefined : this._start}" .loading="${this._progress === Action.START}"></dc-circle-button>
                   </div>
                 `}
