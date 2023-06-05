@@ -458,7 +458,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
         this._nextRefreshTimeout = setTimeout(() => this._refreshStats(), MariadbCard.updateStatsInterval);
       })
       .catch(error => {
-        if (error.message?.contains('ot running')) {
+        if (error.message && (error.message.includes('not running') || error.message.includes("Can't read stats"))) {
           return;
         }
         console.error(error);
