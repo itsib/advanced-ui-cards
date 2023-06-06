@@ -73,20 +73,23 @@
     justify-content: space-between;
 
     .database-size {
+      display: flex;
+      align-items: center;
 
-      > div {
-        display: flex;
-        align-items: center;
+      .icon {
+        width: 40px;
+        height: auto;
+        opacity: .7;
+        transition: opacity .2s ease-in-out 0s;
 
-        .icon {
-          width: 40px;
-          height: auto;
+        &:hover {
+          opacity: .9;
         }
+      }
 
-        .value {
-          margin-left: 14px;
-          font-size: 16px;
-        }
+      .value {
+        margin-left: 14px;
+        font-size: 16px;
       }
     }
 
