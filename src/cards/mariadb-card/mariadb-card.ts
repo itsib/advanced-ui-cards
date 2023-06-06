@@ -160,10 +160,12 @@ class MariadbCard extends LitElement implements LovelaceCard {
 
     this.hass
       .callWS<AddonInfo>(payload)
-      .then(addonInfo => {
+      .then((addonInfo: AddonInfo) => {
         this._name = addonInfo.name;
         this._version = addonInfo.version;
         this._works = addonInfo.state === AddonState.STARTED;
+
+        this._refreshStats();
       })
       .catch(console.error);
   }
@@ -199,10 +201,6 @@ class MariadbCard extends LitElement implements LovelaceCard {
       console.error(error);
       return undefined;
     });
-
-    if (this._works) {
-      this._refreshStats();
-    }
   }
 
   async disconnectedCallback() {
