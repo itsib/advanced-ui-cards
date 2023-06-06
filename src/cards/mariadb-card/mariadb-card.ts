@@ -149,7 +149,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
     return 3;
   }
 
-  firstUpdated() {
+  firstUpdated(changedProps: PropertyValues) {
+    super.firstUpdated(changedProps);
+
     const payload = {
       endpoint: `/addons/${MariadbCard.dbAddonSlug}/info`,
       method: 'get',
@@ -246,7 +248,6 @@ class MariadbCard extends LitElement implements LovelaceCard {
                 { level: 7, stroke: 'var(--error-color)' },
               ]}"
               .value="${this._cpuPercent}"
-              .loading="${false}"
               .disabled="${!this._works || !this._initialized}"
             ></dc-gauge>
           </div>
