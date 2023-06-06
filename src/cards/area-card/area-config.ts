@@ -91,4 +91,4 @@ export class AreaConfig extends LitElement implements LovelaceCardEditor {
   }
 }
 
-customElements.define('dc-area-config', AreaConfig);
+customElements.define('lc-area-config', AreaConfig);

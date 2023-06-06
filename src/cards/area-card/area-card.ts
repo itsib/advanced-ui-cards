@@ -5,7 +5,7 @@ import { t } from 'i18n';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'dc-area-card': AreaCard;
+    'lc-area-card': AreaCard;
   }
 }
 
@@ -27,13 +27,13 @@ export class AreaCard extends LitElement implements LovelaceCard {
 
   static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./area-config');
-    return document.createElement('dc-area-config') as LovelaceCardEditor;
+    return document.createElement('lc-area-config') as LovelaceCardEditor;
   }
 
   static async getStubConfig(hass: HomeAssistant): Promise<AreaCardConfig> {
     const area = Object.values(hass.areas)[0];
     return {
-      type: 'custom:dc-area-card',
+      type: 'custom:lc-area-card',
       name: '',
       area: area?.area_id ?? '',
     };
@@ -65,11 +65,11 @@ export class AreaCard extends LitElement implements LovelaceCard {
   }
 }
 
-(window as any).customElements.define('dc-area-card', AreaCard);
+(window as any).customElements.define('lc-area-card', AreaCard);
 
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'dc-area-card',
+  type: 'lc-area-card',
   name: t('area.name'),
   preview: false,
   description: t('area.description'),

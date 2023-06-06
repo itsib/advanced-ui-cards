@@ -1,14 +1,14 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import styles from './dc-circle-button.scss';
+import styles from './lc-circle-button.scss';
 import { HomeAssistant } from 'types';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'dc-circle-button': DcCircleButton;
+    'lc-circle-button': LcCircleButton;
   }
 }
 
-export class DcCircleButton extends LitElement {
+export class LcCircleButton extends LitElement {
   hass?: HomeAssistant;
   icon?: string;
   label?: string;
@@ -36,4 +36,4 @@ export class DcCircleButton extends LitElement {
   }
 }
 
-(window as any).customElements.define('dc-circle-button', DcCircleButton);
+(window as any).customElements.define('lc-circle-button', LcCircleButton);

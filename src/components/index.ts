@@ -1,2 +1,2 @@
-export * from './dc-gauge';
-export * from './dc-circle-button';
+export * from './lc-gauge';
+export * from './lc-circle-button';

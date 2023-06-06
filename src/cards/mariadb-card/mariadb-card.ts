@@ -39,7 +39,7 @@ interface ConfirmationDialogSettings {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'dc-mariadb-card': MariadbCard;
+    'lc-mariadb-card': MariadbCard;
   }
 }
 
@@ -234,7 +234,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
         </div>
         <div class="card-content">
           <div class="gauge-wrap">
-            <dc-gauge
+            <lc-gauge
               .hass="${this.hass}"
               .label="${'CPU'}"
               .unit="${'%'}"
@@ -247,11 +247,11 @@ class MariadbCard extends LitElement implements LovelaceCard {
               ]}"
               .value="${this._cpuPercent}"
               .disabled="${!this._works || !this._initialized}"
-            ></dc-gauge>
+            ></lc-gauge>
           </div>
 
           <div class="gauge-wrap">
-            <dc-gauge
+            <lc-gauge
               .hass="${this.hass}"
               .label="${'RAM'}"
               .unit="${'%'}"
@@ -261,11 +261,11 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .value="${this._ramPercent}"
               .loading="${false}"
               .disabled="${!this._works || !this._initialized}"
-            ></dc-gauge>
+            ></lc-gauge>
           </div>
 
           <div class="gauge-wrap">
-            <dc-gauge
+            <lc-gauge
               .hass="${this.hass}"
               .label="${'RAM'}"
               .unit="${'Mb'}"
@@ -275,7 +275,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .value="${this._ramUsage}"
               .loading="${false}"
               .disabled="${!this._works || !this._initialized}"
-            ></dc-gauge>
+            ></lc-gauge>
           </div>
         </div>
         <div class="card-footer">
@@ -283,7 +283,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
             ${dbSize
               ? html`
                   <div data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}">
-                    <img class="icon" src="/lovelace-cards/database-size-2.svg" alt="DB Icon" />
+                    <img class="icon" src="/lovelace-cards/database-size-3.svg" alt="DB Icon" />
                     <div class="value">${this._bdSize()}</div>
                   </div>
                 `
@@ -293,18 +293,18 @@ class MariadbCard extends LitElement implements LovelaceCard {
             ${this._works
               ? html`
                   <div class="btn-wrap purge" data-tooltip-pos="left" aria-label="${t('mariadb.purge.tooltip')}">
-                    <dc-circle-button icon="mdi:database-cog" @click="${this._progress ? undefined : this._purge}" .loading="${this._progress === Action.PURGE}"></dc-circle-button>
+                    <lc-circle-button icon="mdi:database-cog" @click="${this._progress ? undefined : this._purge}" .loading="${this._progress === Action.PURGE}"></lc-circle-button>
                   </div>
                   <div class="btn-wrap reload" data-tooltip-pos="left" aria-label="${t('mariadb.reload.tooltip')}">
-                    <dc-circle-button icon="mdi:restart" @click="${this._progress ? undefined : this._reload}" .loading="${this._progress === Action.RELOAD}"></dc-circle-button>
+                    <lc-circle-button icon="mdi:restart" @click="${this._progress ? undefined : this._reload}" .loading="${this._progress === Action.RELOAD}"></lc-circle-button>
                   </div>
                   <div class="btn-wrap stop" data-tooltip-pos="left" aria-label="${t('mariadb.stop.tooltip')}">
-                    <dc-circle-button icon="mdi:stop" @click="${this._progress ? undefined : this._stop}" .loading="${this._progress === Action.STOP}"></dc-circle-button>
+                    <lc-circle-button icon="mdi:stop" @click="${this._progress ? undefined : this._stop}" .loading="${this._progress === Action.STOP}"></lc-circle-button>
                   </div>
                 `
               : html`
                   <div class="btn-wrap start" data-tooltip-pos="left" aria-label="${t('mariadb.start.tooltip')}">
-                    <dc-circle-button icon="mdi:play" @click="${this._progress ? undefined : this._start}" .loading="${this._progress === Action.START}"></dc-circle-button>
+                    <lc-circle-button icon="mdi:play" @click="${this._progress ? undefined : this._start}" .loading="${this._progress === Action.START}"></lc-circle-button>
                   </div>
                 `}
           </div>
@@ -471,12 +471,12 @@ class MariadbCard extends LitElement implements LovelaceCard {
   }
 }
 
-customElements.define('dc-mariadb-card', MariadbCard);
+customElements.define('lc-mariadb-card', MariadbCard);
 
 // Puts card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'dc-mariadb-card',
+  type: 'lc-mariadb-card',
   name: t('mariadb.name'),
   description: t('mariadb.description'),
   preview: false,

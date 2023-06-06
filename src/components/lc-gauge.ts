@@ -1,12 +1,12 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import styles from './dc-gauge.scss';
+import styles from './lc-gauge.scss';
 import { HomeAssistant } from 'types';
 import { waitElement } from '../utils/wait-element';
 import { formatNumberValue } from '../utils/format-number-value';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'dc-gauge': DcGauge;
+    'lc-gauge': LcGauge;
   }
 }
 
@@ -22,7 +22,7 @@ async function waitGauge(hass: HomeAssistant): Promise<void> {
   return GAUGE_PROMISE;
 }
 
-export class DcGauge extends LitElement {
+export class LcGauge extends LitElement {
   /**
    * Home assistant instance
    */
@@ -144,7 +144,7 @@ export class DcGauge extends LitElement {
     const disabled = this.disabled || this.value === undefined;
 
     return html`
-      <div class="${`dc-gauge ${disabled ? 'disabled' : ''}`}">
+      <div class="${`lc-gauge ${disabled ? 'disabled' : ''}`}">
         <div class="${`gauge ${this._animated ? 'animated' : ''}`}">
           <ha-gauge .min="${this.min}" .max="${this.max}" .value="${this._value}" .needle="${true}" .levels="${this.levels}" .locale="${this.hass.locale}"></ha-gauge>
         </div>
@@ -162,4 +162,4 @@ export class DcGauge extends LitElement {
   }
 }
 
-(window as any).customElements.define('dc-gauge', DcGauge);
+(window as any).customElements.define('lc-gauge', LcGauge);
