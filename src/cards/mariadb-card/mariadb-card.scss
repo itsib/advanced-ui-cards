@@ -77,13 +77,19 @@
       align-items: center;
 
       .icon {
-        width: 40px;
-        height: auto;
-        opacity: .7;
-        transition: opacity .2s ease-in-out 0s;
+
+        img {
+          width: auto;
+          height: 40px;
+          opacity: .7;
+          transition: opacity .2s ease-in-out 0s;
+        }
 
         &:hover {
-          opacity: .9;
+
+          img {
+            opacity: .9;
+          }
         }
       }
 

@@ -282,7 +282,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <div class="database-size">
             ${dbSize
               ? html`
-                  <img class="icon" data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}" src="/lovelace-cards/database-size-3.svg" alt="DB Icon" />
+                  <div class="icon" data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}">
+                    <img src="/lovelace-cards/database-size.svg" alt="DB Size Icon" />
+                  </div>
                   <div class="value">${this._bdSize()}</div>
                 `
               : null}
