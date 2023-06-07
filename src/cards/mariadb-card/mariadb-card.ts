@@ -77,29 +77,36 @@ class MariadbCard extends LitElement implements LovelaceCard {
    * @private
    */
   private _version?: string;
-
+  /**
+   * Using CPU time by an addon (in %)
+   * @private
+   */
   private _cpuPercent?: number;
-
+  /**
+   * The amount of RAM used by the addon (in %)
+   * @private
+   */
   private _ramPercent?: number;
-
+  /**
+   * The amount of RAM used by the addon (in MB)
+   * @private
+   */
   private _ramUsage?: number;
-
-  private _ramLimit = 4000;
+  /**
+   * Limiting the maximum amount of RAM consumed
+   * @private
+   */
+  private _ramLimit?: number;
   /**
    * Is enabled dark theme
    * @private
    */
-  private _dark?: boolean;
+  private _isDark?: boolean;
   /**
    * Addon is stopped
    * @private
    */
-  private _works = false;
-  /**
-   * Card is initialized
-   * @private
-   */
-  private _initialized = false;
+  private _isWorks = false;
   /**
    * What task is being in progress
    * @private
@@ -115,8 +122,16 @@ class MariadbCard extends LitElement implements LovelaceCard {
    * @private
    */
   private _addonStateUnsubscribe?: () => {};
-
+  /**
+   * Stored refresh timer, for the cansel
+   * @private
+   */
   private _nextRefreshTimeout?: NodeJS.Timeout;
+  /**
+   * True if the element is connected in the DOM
+   * @private
+   */
+  private _isConnected = false;
 
   static styles = styles;
 
@@ -129,15 +144,16 @@ class MariadbCard extends LitElement implements LovelaceCard {
     _ramPercent: { state: true, type: Number },
     _ramUsage: { state: true, type: Number },
     _ramLimit: { state: true, type: Number },
-    _dark: { state: true, type: Boolean },
-    _initialized: { state: true, type: Boolean },
-    _works: { state: true, type: Boolean },
+    _isDark: { state: true, type: Boolean },
+    _isWorks: { state: true, type: Boolean },
     _progress: { state: true, type: String },
     _dialog: { state: true },
   };
 
   static dbSizeSensor = 'sensor.mariadb_database_size';
+
   static ramPercentSensor = 'sensor.mariadb_memory_percent';
+
   static cpuPercentSensor = 'sensor.mariadb_cpu_percent';
 
   static dbAddonSlug = 'core_mariadb';
@@ -152,25 +168,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
     return 3;
   }
 
-  firstUpdated(changedProps: PropertyValues) {
+  firstUpdated(changedProps: PropertyValues): void {
     super.firstUpdated(changedProps);
 
-    const payload = {
-      endpoint: `/addons/${MariadbCard.dbAddonSlug}/info`,
-      method: 'get',
-      type: 'supervisor/api',
-    };
-
-    this.hass
-      .callWS<AddonInfo>(payload)
-      .then((addonInfo: AddonInfo) => {
-        this._name = addonInfo.name;
-        this._version = addonInfo.version;
-        this._works = addonInfo.state === AddonState.STARTED;
-
-        this._refreshStats();
-      })
-      .catch(console.error);
+    this._refreshInfo();
   }
 
   willUpdate(changedProps: PropertyValues): void {
@@ -180,41 +181,30 @@ class MariadbCard extends LitElement implements LovelaceCard {
       return;
     }
 
-    if (changedProps.has('hass')) {
-      const isDark = !!this.hass.themes?.darkMode;
-      if (isDark !== this._dark) {
-        this._dark = isDark;
-      }
+    if (changedProps.has('hass') && this.hass.themes?.darkMode !== this._isDark) {
+      this._isDark = this.hass.themes.darkMode;
     }
   }
 
   async connectedCallback() {
     await super.connectedCallback();
+    this._isConnected = true;
 
-    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => {
-      const works = state === AddonState.STARTED;
-      if (works && !this._works) {
-        this._refreshStats();
-      } else if (!works && this._nextRefreshTimeout !== undefined) {
-        clearTimeout(this._nextRefreshTimeout);
-        this._nextRefreshTimeout = undefined;
-      }
-      this._works = works;
-    }).catch(error => {
+    this._addonStateUnsubscribe = await subscribeToAddonStateChange(state => (this._isWorks = state === AddonState.STARTED)).catch(error => {
       console.error(error);
       return undefined;
     });
+
+    this._startRefreshStats();
   }
 
   async disconnectedCallback() {
     await super.disconnectedCallback();
+    this._isConnected = false;
 
     this._addonStateUnsubscribe?.();
 
-    if (this._nextRefreshTimeout) {
-      clearTimeout(this._nextRefreshTimeout);
-      this._nextRefreshTimeout = undefined;
-    }
+    this._stopRefreshStats();
   }
 
   render() {
@@ -222,7 +212,9 @@ class MariadbCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
-    const logoUrl = `/lovelace-cards/mariadb-logo-${this._dark ? 'white' : 'dark'}.svg`;
+    const logoUrl = `/lovelace-cards/mariadb-logo-${this._isDark ? 'white' : 'dark'}.svg`;
+
+    const isInitialized = this._cpuPercent !== undefined && this._ramPercent !== undefined && this._ramUsage !== undefined && this._ramLimit !== undefined;
 
     const dbSize = this._bdSize();
 
@@ -232,7 +224,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <img .src="${logoUrl}" class="logo" alt="MariaDB" />
           <div class="info">
             <div class="name">${this._name}</div>
-            ${this._version ? html`<div class="version">${t('common.version')}&nbsp;${this._version}</div>` : null}
+            ${this._version ? html` <div class="version">${t('common.version')}&nbsp;${this._version}</div>` : null}
           </div>
         </div>
         <div class="card-content">
@@ -249,7 +241,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
                 { level: 7, stroke: 'var(--error-color)' },
               ]}"
               .value="${this._cpuPercent}"
-              .disabled="${!this._works || !this._initialized}"
+              .disabled="${!this._isWorks || !isInitialized}"
             ></lc-gauge>
           </div>
 
@@ -263,7 +255,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .levels="${[{ level: 0, stroke: 'var(--info-color)' }]}"
               .value="${this._ramPercent}"
               .loading="${false}"
-              .disabled="${!this._works || !this._initialized}"
+              .disabled="${!this._isWorks || !isInitialized}"
             ></lc-gauge>
           </div>
 
@@ -277,7 +269,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
               .levels="${[{ level: 0, stroke: 'var(--warning-color)' }]}"
               .value="${this._ramUsage}"
               .loading="${false}"
-              .disabled="${!this._works || !this._initialized}"
+              .disabled="${!this._isWorks || !isInitialized}"
             ></lc-gauge>
           </div>
         </div>
@@ -293,7 +285,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
               : null}
           </div>
           <div class="actions">
-            ${this._works
+            ${this._isWorks
               ? html`
                   <div class="btn-wrap purge" data-tooltip-pos="left" aria-label="${t('mariadb.purge.tooltip')}">
                     <lc-circle-button icon="mdi:database-cog" @click="${this._progress ? undefined : this._purge}" .loading="${this._progress === Action.PURGE}"></lc-circle-button>
@@ -438,12 +430,21 @@ class MariadbCard extends LitElement implements LovelaceCard {
     fireEvent(this, 'hass-more-info', { entityId });
   }
 
-  private _refreshStats() {
-    if (this._nextRefreshTimeout !== undefined) {
-      clearTimeout(this._nextRefreshTimeout);
-      this._nextRefreshTimeout = undefined;
-    }
+  private _startRefreshStats(): void {
+    this._stopRefreshStats();
 
+    this._refreshStats();
+  }
+
+  private _stopRefreshStats(): void {
+    if (this._nextRefreshTimeout === undefined) {
+      return;
+    }
+    clearTimeout(this._nextRefreshTimeout);
+    this._nextRefreshTimeout = undefined;
+  }
+
+  private _refreshStats() {
     const payload = {
       endpoint: `/addons/core_mariadb/stats`,
       method: 'get',
@@ -457,17 +458,12 @@ class MariadbCard extends LitElement implements LovelaceCard {
 
         this._cpuPercent = stats.cpu_percent;
         this._ramPercent = stats.memory_percent;
-        this._ramUsage = Math.round((stats.memory_usage / oneMb) * 10) / 10; // RAM usege in MB
+        this._ramUsage = Math.round((stats.memory_usage / oneMb) * 10) / 10; // RAM usage in MB
+        this._ramLimit = Math.round((stats.memory_limit / oneMb) * 10) / 10; // RAM limit in MB
 
-        if (this._ramUsage > this._ramLimit) {
-          this._ramLimit = Math.round((stats.memory_limit / oneMb) * 10) / 10; // RAM limit in MB
+        if (this._isConnected) {
+          this._nextRefreshTimeout = setTimeout(() => this._refreshStats(), MariadbCard.updateStatsInterval);
         }
-
-        if (!this._initialized) {
-          this._initialized = true;
-        }
-
-        this._nextRefreshTimeout = setTimeout(() => this._refreshStats(), MariadbCard.updateStatsInterval);
       })
       .catch(error => {
         if (error.message && (error.message.includes('not running') || error.message.includes("Can't read stats"))) {
@@ -475,6 +471,23 @@ class MariadbCard extends LitElement implements LovelaceCard {
         }
         console.error(error);
       });
+  }
+
+  private _refreshInfo() {
+    const payload = {
+      endpoint: `/addons/${MariadbCard.dbAddonSlug}/info`,
+      method: 'get',
+      type: 'supervisor/api',
+    };
+
+    this.hass
+      .callWS<AddonInfo>(payload)
+      .then((addonInfo: AddonInfo) => {
+        this._name = addonInfo.name;
+        this._version = addonInfo.version;
+        this._isWorks = addonInfo.state === AddonState.STARTED;
+      })
+      .catch(console.error);
   }
 }
 
