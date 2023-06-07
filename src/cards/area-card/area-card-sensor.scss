@@ -1,0 +1,15 @@
+:host {
+  --mdc-icon-size: 16px;
+
+  margin: 0 4px;
+  font-size: 13px;
+  line-height: 14px;
+  color: var(--secondary-text-color);
+  cursor: pointer;
+  display: block;
+
+  .icon {
+    top: -1px;
+    position: relative;
+  }
+}

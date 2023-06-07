@@ -236,6 +236,11 @@ export interface HASSDomEvent<T> extends Event {
 
 export type ValidHassDomEvent = keyof HASSDomEvents;
 
+export interface IconMeta {
+  start: string;
+  file: string;
+}
+
 export interface CustomIcon {
   path: string;
   viewBox?: string;

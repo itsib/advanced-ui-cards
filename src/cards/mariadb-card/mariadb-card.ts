@@ -499,6 +499,6 @@ customElements.define('lc-mariadb-card', MariadbCard);
   type: 'lc-mariadb-card',
   name: t('mariadb.name'),
   description: t('mariadb.description'),
-  preview: false,
+  preview: true,
   configurable: false,
 });

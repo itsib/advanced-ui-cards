@@ -1,1 +1,0 @@
-function e(e,o,b,l){l=l||{},b=null==b?{}:b;const n=new Event(o,{bubbles:void 0===l.bubbles||l.bubbles,cancelable:Boolean(l.cancelable),composed:void 0===l.composed||l.composed});return n.detail=b,e.dispatchEvent(n),n}export{e as f};
