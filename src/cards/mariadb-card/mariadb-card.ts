@@ -96,7 +96,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
    * Limiting the maximum amount of RAM consumed
    * @private
    */
-  private _ramLimit?: number;
+  private _ramLimit = 400;
   /**
    * Is enabled dark theme
    * @private
