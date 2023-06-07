@@ -15,7 +15,7 @@ let GAUGE_PROMISE: Promise<void>;
 async function waitGauge(hass: HomeAssistant): Promise<void> {
   if (!GAUGE_PROMISE) {
     GAUGE_PROMISE = window.loadCardHelpers().then(helpers => {
-      const entity = Object.keys(hass.entities).find(id => id.startsWith('sensor.'));
+      const entity = Object.keys(hass.entities).find(id => id.startsWith('sensor.') && !isNaN(Number(hass.states[id].state)));
       helpers.createCardElement({ type: 'gauge', entity });
     });
   }
