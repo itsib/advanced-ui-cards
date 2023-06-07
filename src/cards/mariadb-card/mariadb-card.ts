@@ -137,6 +137,8 @@ class MariadbCard extends LitElement implements LovelaceCard {
   };
 
   static dbSizeSensor = 'sensor.mariadb_database_size';
+  static ramPercentSensor = 'sensor.mariadb_memory_percent';
+  static cpuPercentSensor = 'sensor.mariadb_cpu_percent';
 
   static dbAddonSlug = 'core_mariadb';
 
@@ -234,7 +236,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
           </div>
         </div>
         <div class="card-content">
-          <div class="gauge-wrap">
+          <div class="gauge-wrap" @click="${() => this._showMoreInfo(MariadbCard.cpuPercentSensor)}">
             <lc-gauge
               .hass="${this.hass}"
               .label="${'CPU'}"
@@ -251,7 +253,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
             ></lc-gauge>
           </div>
 
-          <div class="gauge-wrap">
+          <div class="gauge-wrap" @click="${() => this._showMoreInfo(MariadbCard.ramPercentSensor)}">
             <lc-gauge
               .hass="${this.hass}"
               .label="${'RAM'}"
@@ -265,7 +267,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
             ></lc-gauge>
           </div>
 
-          <div class="gauge-wrap">
+          <div class="gauge-wrap" @click="${() => this._showMoreInfo(MariadbCard.ramPercentSensor)}">
             <lc-gauge
               .hass="${this.hass}"
               .label="${'RAM'}"
