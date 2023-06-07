@@ -77,10 +77,11 @@
       align-items: center;
 
       .icon {
+        cursor: pointer;
 
         img {
           width: auto;
-          height: 40px;
+          height: 36px;
           opacity: .7;
           transition: opacity .2s ease-in-out 0s;
         }
@@ -96,6 +97,7 @@
       .value {
         margin-left: 14px;
         font-size: 16px;
+        cursor: pointer;
       }
     }
 

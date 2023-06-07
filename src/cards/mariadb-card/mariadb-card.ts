@@ -3,6 +3,7 @@ import { HomeAssistant, LovelaceCard } from 'types';
 import { t } from 'i18n';
 import styles from './mariadb-card.scss';
 import { formatNumberValue } from '../../utils/format-number-value';
+import { fireEvent } from '../../utils/fire-event';
 
 enum Action {
   PURGE = 'purge',
@@ -282,10 +283,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
           <div class="database-size">
             ${dbSize
               ? html`
-                  <div class="icon" data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}">
+                  <div class="icon" data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}" @click="${() => this._showMoreInfo(MariadbCard.dbSizeSensor)}">
                     <img src="/lovelace-cards/database-size.svg" alt="DB Size Icon" />
                   </div>
-                  <div class="value">${this._bdSize()}</div>
+                  <div class="value" @click="${() => this._showMoreInfo(MariadbCard.dbSizeSensor)}">${this._bdSize()}</div>
                 `
               : null}
           </div>
@@ -429,6 +430,10 @@ class MariadbCard extends LitElement implements LovelaceCard {
       message: t('mariadb.start.dialog'),
       action: Action.START,
     };
+  }
+
+  private _showMoreInfo(entityId: string): void {
+    fireEvent(this, 'hass-more-info', { entityId });
   }
 
   private _refreshStats() {
