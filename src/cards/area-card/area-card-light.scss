@@ -12,11 +12,8 @@
 
 
   mwc-icon-button {
-    --mdc-icon-button-size: 50px;
-    --mdc-icon-size: 40px;
-
-    filter: brightness(54.2%);
-    color: rgb(255, 254, 250);
+    --mdc-icon-button-size: 50%;
+    --mdc-icon-size: 100%;
   }
 
   ha-slider {

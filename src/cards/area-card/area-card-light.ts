@@ -1,7 +1,8 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './area-card-light.scss';
-import { HassLightColorMode, HassLightEntityStateAttributes, HomeAssistant } from 'types';
+import { HassEntityState, HassLightColorMode, HassLightEntityStateAttributes, HomeAssistant } from 'types';
 import { waitElement } from '../../utils/wait-element';
+import { ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -9,14 +10,11 @@ declare global {
   }
 }
 
+type LightEntityState = Omit<HassEntityState, 'attributes'> & { attributes: HassLightEntityStateAttributes };
+
 const COLOR_SUPPORTING: HassLightColorMode[] = [HassLightColorMode.HS, HassLightColorMode.XY, HassLightColorMode.RGB, HassLightColorMode.RGBW, HassLightColorMode.RGBWW];
 
 const BRIGHTNESS_SUPPORTING: HassLightColorMode[] = [...COLOR_SUPPORTING, HassLightColorMode.COLOR_TEMP, HassLightColorMode.BRIGHTNESS, HassLightColorMode.WHITE];
-
-interface SliderState {
-  value: number;
-  percent: number;
-}
 
 export class AreaCardLight extends LitElement {
   /**
@@ -53,26 +51,20 @@ export class AreaCardLight extends LitElement {
 
   static styles = styles;
 
-  firstUpdated(changed: PropertyValues) {
-    super.firstUpdated(changed);
-  }
-
   willUpdate(changed: PropertyValues) {
     super.willUpdate(changed);
 
     if (changed.has('entity') || changed.has('hass')) {
-      const states = { ...this.hass.states /*, 'light.room_light': ENTITY_LIGHT_STATE*/ };
-      const state = this.hass && this.entity && this.entity in states ? states[this.entity] : undefined;
-      const attributes = state ? (state.attributes as HassLightEntityStateAttributes) : undefined;
+      const state = this._getLightState();
 
-      if (state && attributes) {
+      if (state) {
         const lightIsOn = state.state === 'on';
         if (lightIsOn !== this._lightIsOn) {
           this._lightIsOn = lightIsOn;
         }
 
-        if (attributes.supported_color_modes?.some(mode => BRIGHTNESS_SUPPORTING.includes(mode))) {
-          let brightness = attributes.brightness || 0;
+        if (state.attributes.supported_color_modes?.some(mode => BRIGHTNESS_SUPPORTING.includes(mode))) {
+          let brightness = state.attributes.brightness || 0;
           brightness = brightness > 255 ? 255 : brightness;
           const percent = Math.floor((brightness / 255) * 100);
 
@@ -81,10 +73,13 @@ export class AreaCardLight extends LitElement {
           }
         }
 
-        if ((attributes.color_mode && attributes.color_mode === HassLightColorMode.COLOR_TEMP) || attributes.supported_color_modes?.includes(HassLightColorMode.COLOR_TEMP)) {
-          const min = attributes.min_color_temp_kelvin || 2000;
-          const max = attributes.max_color_temp_kelvin || 6500;
-          const value = attributes.color_temp_kelvin || 2000;
+        if (
+          (state.attributes.color_mode && state.attributes.color_mode === HassLightColorMode.COLOR_TEMP) ||
+          state.attributes.supported_color_modes?.includes(HassLightColorMode.COLOR_TEMP)
+        ) {
+          const min = state.attributes.min_color_temp_kelvin || 2000;
+          const max = state.attributes.max_color_temp_kelvin || 6500;
+          const value = state.attributes.color_temp_kelvin || 2000;
           const percent = Math.floor((value / (max - min)) * 100);
 
           if (this._colorTempPercent !== percent) {
@@ -110,12 +105,23 @@ export class AreaCardLight extends LitElement {
   render(): TemplateResult {
     return html`
       <div class="area-card-light">
-        <mwc-icon-button @click="${this._onoffChange}">
-          <ha-icon icon=${this._lightIsOn ? 'mdi:lightbulb-multiple' : 'mdi:lightbulb-multiple-off'} class="icon"></ha-icon>
+        <mwc-icon-button @click="${this._onoffChange}" .style="${this._getLightButtonStyles()}">
+          <ha-icon icon="${this._lightIsOn ? 'mdi:lightbulb-multiple' : 'mdi:lightbulb-multiple-off'}" class="icon"></ha-icon>
         </mwc-icon-button>
 
         ${this._brightnessPercent !== undefined
-          ? html` <ha-slider step="1" .min="${0}" .max="${100}" .value="${this._brightnessPercent}" .expand="${true}" pin @change=${this._brightnessChange}></ha-slider> `
+          ? html`
+              <ha-slider
+                style="width: var(--paper-slider-width)"
+                step="1"
+                .min="${0}"
+                .max="${100}"
+                .value="${this._brightnessPercent}"
+                .expand="${true}"
+                pin
+                @change="${this._brightnessChange}"
+              ></ha-slider>
+            `
           : ''}
       </div>
     `;
@@ -127,21 +133,42 @@ export class AreaCardLight extends LitElement {
    */
   private _updateSliderStyles(): void {
     waitElement(this, 'ha-slider', true)
-      .then(haSlider => {
-        if (haSlider) {
-          haSlider.style.width = 'var(--paper-slider-width)';
-        }
-        return waitElement(haSlider, 'paper-progress', true);
-      })
-      .then(paperProgress => waitElement(paperProgress, '#progressContainer', true))
-      .then(container => {
-        if (!container) {
+      .then(element => waitElement(element, 'paper-progress', true))
+      .then(element => waitElement(element, '#progressContainer', true))
+      .then(element => {
+        if (!element) {
           return;
         }
-        container.style.borderRadius = '2px';
-        container.style.overflow = 'hidden';
+        element.style.borderRadius = '2px';
+        element.style.overflow = 'hidden';
       })
       .catch(console.error);
+  }
+
+  /**
+   * Returns entity light state.
+   * @private
+   */
+  private _getLightState(): LightEntityState | undefined {
+    const states = { ...this.hass.states, 'light.room_light': ENTITY_LIGHT_STATE };
+    return this.hass && this.entity && this.entity in states ? (states[this.entity] as LightEntityState) : undefined;
+  }
+
+  /**
+   * Light button color depend from light state.
+   * @private
+   */
+  private _getLightButtonStyles(): string {
+    const state = this._getLightState();
+    if (!state || state.state === 'off' || !state.attributes.brightness) {
+      return '';
+    }
+
+    let styles = `filter: brightness(${(state.attributes.brightness + 245) / 5}%);`;
+    if (state.attributes.rgb_color) {
+      styles += `color: rgb(${state.attributes.rgb_color.join(',')});`;
+    }
+    return styles;
   }
 
   /**
@@ -162,7 +189,6 @@ export class AreaCardLight extends LitElement {
    */
   private _onoffChange(): void {
     const service = this._lightIsOn ? 'turn_off' : 'turn_on';
-    // this._lightIsOn = !this._lightIsOn;
 
     this.hass.callService('light', service, {}, { entity_id: this.entity }).catch(console.error);
   }
