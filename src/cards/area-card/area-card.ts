@@ -1,46 +1,46 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './area-card.scss';
-import { HassEntity, HassEntityState, HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } from 'types';
+import { HomeAssistant, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } from 'types';
 import { t } from 'i18n';
 import './area-card-sensor';
 import './area-card-light';
 import './area-card-conditioner';
 import { fireEvent } from '../../utils/fire-event';
 
-const roomLightEntity: HassEntity = {
-  area_id: 'gostinaia',
-  entity_id: 'light.room_light',
-  device_id: '8321c25913f9190c5f6f9bc87485263b',
-  platform: 'mqtt',
-};
-
-const roomLightState: HassEntityState = {
-  entity_id: 'light.room_light',
-  state: 'on',
-  attributes: {
-    min_color_temp_kelvin: 2702,
-    max_color_temp_kelvin: 6535,
-    min_mireds: 153,
-    max_mireds: 370,
-    supported_color_modes: ['color_temp'],
-    color_mode: 'color_temp',
-    brightness: 255,
-    color_temp_kelvin: 6535,
-    color_temp: 153,
-    hs_color: [54.768, 1.6],
-    rgb_color: [255, 254, 250],
-    xy_color: [0.326, 0.333],
-    friendly_name: 'Room Light',
-    supported_features: 40,
-  },
-  context: {
-    id: '01H2AZVF421ZN12KSMAWJQ3CY8',
-    parent_id: null,
-    user_id: '59a8c2221cae43adb33c28cf6b0c2622',
-  },
-  last_changed: '2023-06-07T12:17:17.074Z',
-  last_updated: '2023-06-07T13:13:34.170Z',
-};
+// const roomLightEntity: HassEntity = {
+//   area_id: 'gostinaia',
+//   entity_id: 'light.room_light',
+//   device_id: '8321c25913f9190c5f6f9bc87485263b',
+//   platform: 'mqtt',
+// };
+//
+// const roomLightState: HassEntityState = {
+//   entity_id: 'light.room_light',
+//   state: 'on',
+//   attributes: {
+//     min_color_temp_kelvin: 2702,
+//     max_color_temp_kelvin: 6535,
+//     min_mireds: 153,
+//     max_mireds: 370,
+//     supported_color_modes: ['color_temp'],
+//     color_mode: 'color_temp',
+//     brightness: 255,
+//     color_temp_kelvin: 6535,
+//     color_temp: 153,
+//     hs_color: [54.768, 1.6],
+//     rgb_color: [255, 254, 250],
+//     xy_color: [0.326, 0.333],
+//     friendly_name: 'Room Light',
+//     supported_features: 40,
+//   },
+//   context: {
+//     id: '01H2AZVF421ZN12KSMAWJQ3CY8',
+//     parent_id: null,
+//     user_id: '59a8c2221cae43adb33c28cf6b0c2622',
+//   },
+//   last_changed: '2023-06-07T12:17:17.074Z',
+//   last_updated: '2023-06-07T13:13:34.170Z',
+// };
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -178,8 +178,8 @@ export class AreaCard extends LitElement implements LovelaceCard {
     this._remoteEntities = new Array<string | undefined>(1);
     this._remoteEntities.fill(undefined);
 
-    const entities = { ...this.hass.entities, ['light.room_light']: roomLightEntity };
-    const states = { ...this.hass.states, ['light.room_light']: roomLightState };
+    const entities = { ...this.hass.entities };
+    const states = { ...this.hass.states };
 
     for (const entityId in entities) {
       const entity = entities[entityId];
