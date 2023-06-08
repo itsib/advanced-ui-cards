@@ -162,7 +162,7 @@ export class AreaCardLight extends LitElement {
    */
   private _onoffChange(): void {
     const service = this._lightIsOn ? 'turn_off' : 'turn_on';
-    this._lightIsOn = !this._lightIsOn;
+    // this._lightIsOn = !this._lightIsOn;
 
     this.hass.callService('light', service, {}, { entity_id: this.entity }).catch(console.error);
   }
