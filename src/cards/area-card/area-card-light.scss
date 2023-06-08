@@ -1,3 +1,36 @@
 :host {
 
 }
+
+.area-card-light {
+  height: 100%;
+  width: 100%;
+  max-width: 200px;
+  min-width: 100px;
+  text-align: center;
+  position: relative;
+
+
+  mwc-icon-button {
+    --mdc-icon-button-size: 50px;
+    --mdc-icon-size: 40px;
+
+    filter: brightness(54.2%);
+    color: rgb(255, 254, 250);
+  }
+
+  ha-slider {
+    --paper-slider-height: 4px;
+    --paper-slider-width: calc(100% + 30px);
+    --paper-slider-knob-color: var(--primary-color);
+    --paper-slider-active-color: var(--primary-color);
+    --paper-slider-pin-color: var(--primary-color);
+    --paper-slider-secondary-color: var(--primary-text-color);
+    --paper-slider-disabled-knob-color: var(--primary-text-color);
+    --paper-progress-container-color: rgba(194, 194, 194, .3);
+    --paper-slider-container-color: rgba(194, 194, 194, .3);
+
+    margin: 0 -15px;
+  }
+}
+

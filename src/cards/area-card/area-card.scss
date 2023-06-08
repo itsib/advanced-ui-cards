@@ -47,7 +47,16 @@
   }
 
   .card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 
+    .item {
+      width: calc(50% - 20px);
+      margin: 0 -20px;
+      padding: 20px;
+    }
   }
 
   .card-footer {
