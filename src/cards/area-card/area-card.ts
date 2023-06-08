@@ -6,7 +6,6 @@ import './area-card-sensor';
 import './area-card-light';
 import './area-card-conditioner';
 import { fireEvent } from '../../utils/fire-event';
-import { ENTITY_LIGHT, ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -150,8 +149,8 @@ export class AreaCard extends LitElement implements LovelaceCard {
     this._remoteEntities = new Array<string | undefined>(1);
     this._remoteEntities.fill(undefined);
 
-    const entities = { ...this.hass.entities, 'light.room_light': ENTITY_LIGHT };
-    const states = { ...this.hass.states, 'light.room_light': ENTITY_LIGHT_STATE };
+    const entities = { ...this.hass.entities /*, 'light.room_light': ENTITY_LIGHT*/ };
+    const states = { ...this.hass.states /*, 'light.room_light': ENTITY_LIGHT_STATE*/ };
 
     for (const entityId in entities) {
       const entity = entities[entityId];

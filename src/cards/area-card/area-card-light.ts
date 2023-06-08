@@ -2,7 +2,6 @@ import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './area-card-light.scss';
 import { HassEntityState, HassLightColorMode, HassLightEntityStateAttributes, HomeAssistant } from 'types';
 import { waitElement } from '../../utils/wait-element';
-import { ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -150,7 +149,7 @@ export class AreaCardLight extends LitElement {
    * @private
    */
   private _getLightState(): LightEntityState | undefined {
-    const states = { ...this.hass.states, 'light.room_light': ENTITY_LIGHT_STATE };
+    const states = { ...this.hass.states /*, 'light.room_light': ENTITY_LIGHT_STATE*/ };
     return this.hass && this.entity && this.entity in states ? (states[this.entity] as LightEntityState) : undefined;
   }
 
