@@ -2,6 +2,7 @@ import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './area-card-light.scss';
 import { HassEntityState, HassLightColorMode, HassLightEntityStateAttributes, HomeAssistant } from 'types';
 import { waitElement } from '../../utils/wait-element';
+// import { ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -38,14 +39,18 @@ export class AreaCardLight extends LitElement {
    * Color temperature recalculated as a percentage
    * @private
    */
-  private _colorTempPercent?: number;
+  private _colorTempKelvin?: {
+    value: number;
+    min: number;
+    max: number;
+  };
 
   static properties = {
     hass: { attribute: true },
     entity: { attribute: true, type: String },
     _lightIsOn: { state: true },
     _brightnessPercent: { state: true },
-    _colorTempPercent: { state: true },
+    _colorTempKelvin: { state: true },
   };
 
   static styles = styles;
@@ -76,19 +81,18 @@ export class AreaCardLight extends LitElement {
           (state.attributes.color_mode && state.attributes.color_mode === HassLightColorMode.COLOR_TEMP) ||
           state.attributes.supported_color_modes?.includes(HassLightColorMode.COLOR_TEMP)
         ) {
+          const value = state.attributes.min_color_temp_kelvin || 2000;
           const min = state.attributes.min_color_temp_kelvin || 2000;
-          const max = state.attributes.max_color_temp_kelvin || 6500;
-          const value = state.attributes.color_temp_kelvin || 2000;
-          const percent = Math.floor((value / (max - min)) * 100);
+          const max = state.attributes.max_color_temp_kelvin || 2000;
 
-          if (this._colorTempPercent !== percent) {
-            this._colorTempPercent = percent;
+          if (!this._colorTempKelvin || this._colorTempKelvin.value !== value || this._colorTempKelvin.min !== min || this._colorTempKelvin.max !== max) {
+            this._colorTempKelvin = { value, min, max };
           }
         }
       } else {
         this._lightIsOn = undefined;
         this._brightnessPercent = undefined;
-        this._colorTempPercent = undefined;
+        this._colorTempKelvin = undefined;
       }
     }
   }
@@ -97,7 +101,11 @@ export class AreaCardLight extends LitElement {
     super.updated(changed);
 
     if (changed.has('_brightnessPercent') && changed.get('_brightnessPercent') === undefined && this._brightnessPercent !== undefined) {
-      this._updateSliderStyles();
+      this._makeSliderPretty('.brightness-slider');
+    }
+
+    if (changed.has('_colorTempKelvin') && changed.get('_colorTempKelvin') === undefined && this._colorTempKelvin !== undefined) {
+      this._makeSliderPretty('.color-temp-slider');
     }
   }
 
@@ -111,6 +119,7 @@ export class AreaCardLight extends LitElement {
         ${this._brightnessPercent !== undefined
           ? html`
               <ha-slider
+                class="brightness-slider"
                 style="width: var(--paper-slider-width)"
                 step="1"
                 .min="${0}"
@@ -122,6 +131,21 @@ export class AreaCardLight extends LitElement {
               ></ha-slider>
             `
           : ''}
+        ${this._colorTempKelvin
+          ? html`
+              <ha-slider
+                class="color-temp-slider"
+                style="width: var(--paper-slider-width)"
+                step="1"
+                .min="${this._colorTempKelvin.min}"
+                .max="${this._colorTempKelvin.max}"
+                .value="${this._colorTempKelvin.value}"
+                .expand="${true}"
+                pin
+                @change="${this._colorTempChange}"
+              ></ha-slider>
+            `
+          : ''}
       </div>
     `;
   }
@@ -130,8 +154,8 @@ export class AreaCardLight extends LitElement {
    * Access slider and update styles
    * @private
    */
-  private _updateSliderStyles(): void {
-    waitElement(this, 'ha-slider', true)
+  private _makeSliderPretty(selector: string): void {
+    waitElement(this, selector, true)
       .then(element => waitElement(element, 'paper-progress', true))
       .then(element => waitElement(element, '#progressContainer', true))
       .then(element => {
@@ -149,7 +173,7 @@ export class AreaCardLight extends LitElement {
    * @private
    */
   private _getLightState(): LightEntityState | undefined {
-    const states = { ...this.hass.states /*, 'light.room_light': ENTITY_LIGHT_STATE*/ };
+    const states = { ...this.hass.states };
     return this.hass && this.entity && this.entity in states ? (states[this.entity] as LightEntityState) : undefined;
   }
 
@@ -180,6 +204,16 @@ export class AreaCardLight extends LitElement {
     const brightness = Math.round((255 / 100) * brightnessPercent);
 
     this.hass.callService('light', 'turn_on', { brightness }, { entity_id: this.entity }).catch(console.error);
+  }
+
+  /**
+   * Change color temperature handler
+   * @param event
+   * @private
+   */
+  private _colorTempChange(event: CustomEvent): void {
+    const colorTempKelvin = Math.floor(Number(event.target?.['value']) || 0);
+    this.hass.callService('light', 'turn_on', { color_temp_kelvin: colorTempKelvin }, { entity_id: this.entity }).catch(console.error);
   }
 
   /**
