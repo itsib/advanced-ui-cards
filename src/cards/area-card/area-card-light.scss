@@ -14,19 +14,38 @@
     --mdc-icon-button-size: 50%;
     --mdc-icon-size: 100%;
 
-    color: var(--paper-item-icon-color,#44739e);
+    color: var(--paper-item-icon-color, #44739e);
   }
 
   ha-slider {
     --paper-slider-height: 4px;
     --paper-slider-width: calc(100% + 30px);
-    --paper-slider-knob-color: var(--primary-color);
-    --paper-slider-active-color: var(--primary-color);
-    --paper-slider-pin-color: var(--primary-color);
-    --paper-slider-secondary-color: var(--primary-text-color);
-    --paper-slider-disabled-knob-color: var(--primary-text-color);
-    --paper-progress-container-color: rgba(194, 194, 194, .3);
-    --paper-slider-container-color: rgba(194, 194, 194, .3);
+
+    &.brightness-slider {
+      --paper-slider-knob-color: var(--primary-color);
+      --paper-slider-active-color: var(--primary-color);
+      --paper-slider-pin-color: var(--primary-color);
+      --paper-slider-secondary-color: var(--primary-text-color);
+      --paper-slider-disabled-knob-color: var(--primary-text-color);
+      --paper-progress-container-color: rgba(194, 194, 194, .3);
+      --paper-slider-container-color: rgba(194, 194, 194, .3);
+    }
+
+    &.color-temp-slider {
+      --paper-slider-knob-color: var(--accent-color);
+      --paper-slider-knob-start-color: var(--accent-color);
+      --paper-slider-pin-color: var(--accent-color);
+      --paper-slider-pin-start-color: var(--accent-color);
+
+      --paper-slider-active-color: transparent;
+      --paper-slider-secondary-color: var(--accent-color);
+
+      --paper-slider-container-color: linear-gradient(to right, #d18847, #d1d0cd);
+
+      --paper-progress-container-color: red;
+
+      --paper-slider-disabled-knob-color: var(--primary-text-color);
+    }
 
     margin: 0 -15px;
   }
