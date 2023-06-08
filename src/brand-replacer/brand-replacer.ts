@@ -1,42 +1,3 @@
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Retries the function that returns the promise until the promise successfully resolves up to n retries
- * @param fn function to retry
- * @param attempt how many times to retry
- * @param wait Wait between retries in ms
- */
-function retry<T>(fn: () => T, attempt = 3, wait = 50): Promise<T> {
-  let completed = false;
-
-  return new Promise<T>(async (resolve, reject) => {
-    while (true) {
-      let result: T;
-      try {
-        result = await fn();
-        if (!completed) {
-          resolve(result);
-          completed = true;
-        }
-        break;
-      } catch (error) {
-        if (completed) {
-          break;
-        }
-        if (attempt <= 0) {
-          reject(error);
-          completed = true;
-          break;
-        }
-        attempt--;
-      }
-      await sleep(wait);
-    }
-  });
-}
-
 export class BrandReplacer {
   /**
    * Replacer has been initialized
@@ -80,34 +41,77 @@ export class BrandReplacer {
     instance._watch(domain, image);
   }
 
-  private static getShadowRoot(element: HTMLElement): Promise<ShadowRoot> {
+  private static async waitShadowRoot(element: HTMLElement, timeout = 2000): Promise<ShadowRoot> {
     if (element.shadowRoot) {
-      return Promise.resolve(element.shadowRoot);
+      return element.shadowRoot;
     }
-    return retry<ShadowRoot>(
-      () => {
-        if (element.shadowRoot) {
-          return element.shadowRoot;
+
+    return new Promise<ShadowRoot>((resolve, reject) => {
+      const attachShadow = element.attachShadow;
+      let isRejected = false;
+
+      const rejectTimer = setTimeout(() => {
+        isRejected = true;
+        reject(new DOMException('Timeout', 'TimeoutError'));
+      }, timeout);
+
+      element.attachShadow = (init: ShadowRootInit): ShadowRoot => {
+        clearTimeout(rejectTimer);
+
+        if (!isRejected) {
+          setTimeout(() => resolve(element.shadowRoot as ShadowRoot));
         }
-        throw new Error(`No shadow root found`);
-      },
-      10,
-      50,
-    );
+
+        return attachShadow.call(element, init);
+      };
+    });
   }
 
-  private static getElement(rootElement: HTMLElement | ShadowRoot, selector: string): Promise<HTMLElement> {
-    return retry<HTMLElement>(
-      () => {
-        const element = rootElement.querySelector(selector) as null | HTMLElement;
-        if (element) {
-          return element;
+  private static async waitElement<T extends HTMLElement = HTMLElement>(element: HTMLElement, selector: string, inShadowRoot = false, timeout = 2000): Promise<T> {
+    if (!element) {
+      throw new Error('Target element not provided');
+    }
+
+    if (!selector) {
+      throw new Error('No selector provided');
+    }
+
+    let target: HTMLElement | ShadowRoot;
+    if (inShadowRoot) {
+      target = await BrandReplacer.waitShadowRoot(element);
+    } else {
+      target = element;
+    }
+
+    const found = target.querySelector(selector) as T | null | undefined;
+    if (found) {
+      return found;
+    }
+
+    return new Promise<T>((resolve, reject) => {
+      let timer: NodeJS.Timeout | undefined = undefined;
+
+      const observer = new MutationObserver(() => {
+        const found = target.querySelector(selector) as T | null | undefined;
+        if (found) {
+          if (timer) {
+            clearTimeout(timer);
+          }
+          observer.disconnect();
+          return resolve(found);
         }
-        throw new Error(`No "${selector}" element found`);
-      },
-      5,
-      50,
-    );
+
+        reject;
+        // observer.disconnect()
+      });
+
+      observer.observe(target, { subtree: true, childList: true });
+
+      timer = setTimeout(() => {
+        observer.disconnect();
+        reject(new Error('No element found'));
+      }, timeout);
+    });
   }
 
   private static findNode(nodes: NodeList, nodeName: string): HTMLElement | undefined {
@@ -140,37 +144,31 @@ export class BrandReplacer {
     }
     this._initialized = true;
 
-    const haElement = document.body.querySelector('home-assistant');
-    if (!haElement || !haElement.shadowRoot) {
-      throw new Error('No <home-assistant /> element found');
-    }
+    BrandReplacer.waitElement(document.body, 'home-assistant')
+      .then(element => {
+        // Watch the add integration dialog open.
+        BrandReplacer.waitShadowRoot(element).then(shadowRoot => {
+          const observer = new MutationObserver(this._watchAddIntegrationDialogOpen.bind(this));
+          observer.observe(shadowRoot, { subtree: true, childList: true });
+        });
 
-    const observer = new MutationObserver(this._homeAssistantMutationCallback.bind(this));
-    observer.observe(haElement.shadowRoot, { subtree: true, childList: true });
-
-    BrandReplacer.getElement(haElement.shadowRoot, 'home-assistant-main')
-      .then(main => {
-        if (!main.shadowRoot) {
-          throw new Error('No shadow root in <home-assistant-main />');
-        }
-        return BrandReplacer.getElement(main.shadowRoot, 'ha-drawer');
+        return BrandReplacer.waitElement(element, 'home-assistant-main', true);
       })
-      .then(drawer => {
-        const configElement = drawer.querySelector('ha-config-integrations');
+      .then(element => BrandReplacer.waitElement(element, 'ha-drawer', true))
+      .then(element => {
+        const configElement = element.querySelector('ha-config-integrations');
         if (configElement) {
           this._configIntegrations = configElement as HTMLElement;
           this._handleIntegrationsSettingsPage();
         }
 
-        const observer = new MutationObserver(this._drawerMutationCallback.bind(this));
-        observer.observe(drawer, { subtree: true, childList: true });
+        const observer = new MutationObserver(this._watchConfigIntegrationsPage.bind(this));
+        observer.observe(element, { subtree: true, childList: true });
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(console.error);
   }
 
-  private _drawerMutationCallback(mutations: MutationRecord[]): void {
+  private _watchConfigIntegrationsPage(mutations: MutationRecord[]): void {
     for (let i = mutations.length - 1; i >= 0; i--) {
       const mutation = mutations[i];
       const configIntegrations = BrandReplacer.findNode(mutation.addedNodes, 'HA-CONFIG-INTEGRATIONS');
@@ -187,7 +185,7 @@ export class BrandReplacer {
     }
   }
 
-  private _homeAssistantMutationCallback(mutations: MutationRecord[]): void {
+  private _watchAddIntegrationDialogOpen(mutations: MutationRecord[]): void {
     for (let i = mutations.length - 1; i >= 0; i--) {
       const mutation = mutations[i];
       const dialog = BrandReplacer.findNode(mutation.addedNodes, 'DIALOG-ADD-INTEGRATION');
@@ -223,25 +221,22 @@ export class BrandReplacer {
       return;
     }
 
-    BrandReplacer.getShadowRoot(this._configIntegrations)
-      .then(shadowRoot => BrandReplacer.getElement(shadowRoot, 'hass-tabs-subpage'))
-      .then(tabsSubpage => BrandReplacer.getElement(tabsSubpage, '.container'))
-      .then(container => {
-        if (!container || !container.children.length) {
-          console.warn('Container is empty');
-          return;
-        }
-        for (let i = 0; i < container.children.length; i++) {
-          const card = container.children.item(i) as HTMLElement;
-          const cardDomain = card['domain'];
-          if (cardDomain in this._watchedImages) {
-            this._replaceImageIntegrationCard(card, cardDomain);
+    BrandReplacer.waitElement(this._configIntegrations, 'ha-config-integrations-dashboard')
+      .then(element => BrandReplacer.waitElement(element, 'hass-tabs-subpage', true))
+      .then(element => BrandReplacer.waitElement(element, '.container'))
+      .then(element => {
+        for (let i = 0; i < element.children.length; i++) {
+          const card = element.children.item(i) as HTMLElement;
+          const domain = card.dataset.domain;
+          if (!domain) {
+            continue;
+          }
+          if (domain in this._watchedImages) {
+            this._replaceImageIntegrationCard(card, domain);
           }
         }
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(console.error);
   }
 
   private _handleDialogAddIntegration(): void {
@@ -249,9 +244,8 @@ export class BrandReplacer {
       return;
     }
 
-    BrandReplacer.getShadowRoot(this._dialogAddIntegration)
-      .then(shadowRoot => BrandReplacer.getElement(shadowRoot, 'ha-dialog'))
-      .then(haDialog => BrandReplacer.getElement(haDialog, 'mwc-list'))
+    BrandReplacer.waitElement(this._dialogAddIntegration, 'ha-dialog', true)
+      .then(element => BrandReplacer.waitElement(element, 'mwc-list'))
       .then(list => {
         this._dialogIntegrationListObserver = new MutationObserver(this._dialogIntegrationListMutationCallback.bind(this));
         this._dialogIntegrationListObserver.observe(list, { subtree: true, childList: true });
@@ -260,22 +254,23 @@ export class BrandReplacer {
   }
 
   private _replaceImageIntegrationCard(card: HTMLElement, domain: string): void {
-    const imageSrc = this._watchedImages[domain];
-    const haCard = card.shadowRoot?.querySelector('ha-card');
-    const haCardHeader = haCard?.querySelector('ha-integration-header');
-    const image = haCardHeader?.shadowRoot?.querySelector('.header')?.querySelector('img') as HTMLImageElement | null;
-    if (image && imageSrc) {
-      image.src = imageSrc;
-    }
+    BrandReplacer.waitElement(card, 'ha-integration-header', true)
+      .then(element => BrandReplacer.waitElement(element, '.header', true))
+      .then(element => BrandReplacer.waitElement<HTMLImageElement>(element, 'img'))
+      .then(image => {
+        image.src = this._watchedImages[domain];
+        image.style.visibility = 'visible';
+      })
+      .catch(console.error);
   }
 
   private _replaceImageDialogAddIntegration(item: HTMLElement, domain: string): void {
     const imageSrc = this._watchedImages[domain];
 
-    BrandReplacer.getShadowRoot(item)
-      .then(root => BrandReplacer.getElement(root, 'span > img'))
+    BrandReplacer.waitElement<HTMLImageElement>(item, 'span > img', true)
       .then(image => {
-        (image as HTMLImageElement).src = imageSrc;
+        image.src = imageSrc;
+        image.style.visibility = 'visible';
       })
       .catch(console.error);
   }
