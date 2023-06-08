@@ -97,18 +97,11 @@ export class AreaCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card class="area-card">
         <div class="card-header">
-          <div class="place-logo">
-            <img src="/lovelace-cards/home.svg" alt="Place Icon" />
-          </div>
-          <div class="place-info">
-            <div class="name">${areaName}</div>
-            <div class="climate">
-              ${this._headerEntities.map(entity => {
-                return entity
-                  ? html` <lc-area-card-sensor .hass="${this.hass}" .entity="${entity}" @click="${() => this._showMoreInfo(entity)}"></lc-area-card-sensor>`
-                  : undefined;
-              })}
-            </div>
+          <div class="name">${areaName}</div>
+          <div class="climate">
+            ${this._headerEntities.map(entity => {
+              return entity ? html` <lc-area-card-sensor .hass="${this.hass}" .entity="${entity}" @click="${() => this._showMoreInfo(entity)}"></lc-area-card-sensor>` : undefined;
+            })}
           </div>
         </div>
         <div class="card-content">

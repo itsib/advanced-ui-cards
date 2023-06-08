@@ -1,15 +1,15 @@
 :host {
-  --mdc-icon-size: 16px;
+  --mdc-icon-size: 20px;
 
   margin: 0 4px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 14px;
   color: var(--secondary-text-color);
   cursor: pointer;
   display: block;
 
   .icon {
-    top: -1px;
+    top: -2px;
     position: relative;
   }
 }
