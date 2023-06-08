@@ -14,6 +14,8 @@
   mwc-icon-button {
     --mdc-icon-button-size: 50%;
     --mdc-icon-size: 100%;
+
+    color: var(--paper-item-icon-color,#44739e);
   }
 
   ha-slider {

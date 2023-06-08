@@ -149,8 +149,8 @@ export class AreaCard extends LitElement implements LovelaceCard {
     this._remoteEntities = new Array<string | undefined>(1);
     this._remoteEntities.fill(undefined);
 
-    const entities = { ...this.hass.entities /*, 'light.room_light': ENTITY_LIGHT*/ };
-    const states = { ...this.hass.states /*, 'light.room_light': ENTITY_LIGHT_STATE*/ };
+    const entities = { ...this.hass.entities };
+    const states = { ...this.hass.states };
 
     for (const entityId in entities) {
       const entity = entities[entityId];
