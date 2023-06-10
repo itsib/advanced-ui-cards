@@ -62,7 +62,7 @@ export class AreaCard extends LitElement implements LovelaceCard {
   /**
    * Sensors displayed in card header
    */
-  static headerEntitiesDeviceClasses = ['temperature', 'humidity', 'pressure'];
+  static headerEntitiesDeviceClasses = ['temperature', 'humidity' /*, 'pressure'*/];
 
   static styles = styles;
 

@@ -12,6 +12,7 @@
   overflow: hidden;
 
   .card-header {
+    padding: 12px 16px 16px;
 
     .name {
       margin-bottom: 4px;
@@ -31,15 +32,17 @@
   }
 
   .card-content {
+    margin: 0 -10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
 
     .item {
-      width: calc(50% - 20px);
+      //width: 50%;
       margin: 0;
       padding: 10px;
+      box-sizing: border-box;
     }
   }
 

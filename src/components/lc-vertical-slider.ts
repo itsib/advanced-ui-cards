@@ -1,13 +1,13 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import styles from './lc-slider.scss';
+import { LitElement, PropertyValues } from 'lit';
+import styles from './lc-vertical-slider.scss';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-slider': LcSlider;
+    'lc-vertical-slider': LcVerticalSlider;
   }
 }
 
-export class LcSlider extends LitElement {
+export class LcVerticalSlider extends LitElement {
   /**
    * Slider input value
    */
@@ -21,8 +21,6 @@ export class LcSlider extends LitElement {
 
   disabled = false;
 
-  orient?: 'vertical';
-
   private _input!: HTMLInputElement;
 
   static properties = {
@@ -31,7 +29,6 @@ export class LcSlider extends LitElement {
     max: { attribute: true, type: Number },
     step: { attribute: true, type: Number },
     disabled: { attribute: 'disabled', reflect: true, type: Boolean },
-    orient: { attribute: 'orient', reflect: true, type: String },
   };
 
   static styles = styles;
@@ -86,20 +83,6 @@ export class LcSlider extends LitElement {
       this._input.style.setProperty('--value', this.value.toString());
     }
 
-    if (changed.has('orient')) {
-      if (this.orient === 'vertical') {
-        this.style.width = 'var(--ls-slider-longitude)';
-        this.style.height = 'var(--ls-slider-latitude)';
-
-        this._input.style.setProperty('--ls-slider-transform', 'rotate(270deg) translate(calc(-100% + 10px), 12px)');
-      } else {
-        this.style.width = 'var(--ls-slider-latitude)';
-        this.style.height = 'var(--ls-slider-longitude)';
-
-        this._input.style.setProperty('--ls-slider-transform', 'none');
-      }
-    }
-
     return false;
   }
 
@@ -125,4 +108,4 @@ export class LcSlider extends LitElement {
   }
 }
 
-(window as any).customElements.define('lc-slider', LcSlider);
+(window as any).customElements.define('lc-vertical-slider', LcVerticalSlider);

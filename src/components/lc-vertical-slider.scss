@@ -1,0 +1,74 @@
+:host {
+  --slider-height: var(--ls-slider-height, 120px);
+  --slider-width: var(--ls-slider-width, 4px);
+  --slider-thumb-size: var(--ls-slider-thumb-size, 14px);
+  --slider-track-color: var(--ls-slider-track-color, var(--accent-color, #2196f3)); // #2196f3
+  --slider-bg-color: var(--ls-slider-bg-color, rgba(194, 194, 194, .2));
+
+  width: calc(var(--slider-width) + 16px);
+  height: var(--slider-height);
+  text-align: center;
+  display: block;
+}
+
+input[type=range] {
+  --range: calc(var(--max) - var(--min));
+  --ratio: calc((var(--value) - var(--min)) / var(--range));
+  --sx: calc(0.5 * var(--slider-thumb-size) + var(--ratio) * (100% - var(--slider-thumb-size)));
+  --track-gradient: linear-gradient(var(--slider-track-color), var(--slider-track-color)) 0/var(--sx) 100% no-repeat, var(--slider-bg-color);
+
+  -webkit-appearance: none;
+  width: var(--slider-height);
+  height: var(--slider-width);
+  margin: 2px 0;
+  transform-origin: left top;
+  transform: rotate(270deg) translate(calc(var(--slider-height) * -1 + 16px - var(--slider-width)), 8px);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  width: var(--slider-height);
+  height: var(--slider-width);
+  border-radius: var(--slider-width);
+  background: var(--slider-track-color);
+  background: var(--ls-slider-full-color, var(--track-gradient));
+}
+
+input[type=range]::-moz-range-track {
+  width: var(--slider-height);
+  height: var(--slider-width);
+  border-radius: var(--slider-width);
+  background: var(--slider-track-color);
+  background: var(--ls-slider-full-color, var(--track-gradient));
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  margin-top: calc(var(--slider-width) * 0.5 - var(--slider-thumb-size) * 0.5);
+  background: var(--slider-track-color);
+  border-radius: 1em;
+  transition: all .1s ease-in-out;
+
+  &:active {
+    transform: scale(1.5);
+  }
+}
+
+input[type=range]::-moz-range-thumb {
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  margin-top: calc(var(--slider-width) * 0.5 - var(--slider-thumb-size) * 0.5);
+  background: var(--slider-track-color);
+  border-radius: 1em;
+  transition: all .1s ease-in-out;
+
+  &:active {
+    transform: scale(1.5);
+  }
+}

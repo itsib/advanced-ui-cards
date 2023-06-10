@@ -1,7 +1,6 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './area-card-light.scss';
 import { HassEntityState, HassLightColorMode, HassLightEntityStateAttributes, HomeAssistant } from 'types';
-import { waitElement } from '../../utils/wait-element';
 // import { ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
@@ -11,6 +10,12 @@ declare global {
 }
 
 type LightEntityState = Omit<HassEntityState, 'attributes'> & { attributes: HassLightEntityStateAttributes };
+
+interface SliderState {
+  value: number;
+  min: number;
+  max: number;
+}
 
 const COLOR_SUPPORTING: HassLightColorMode[] = [HassLightColorMode.HS, HassLightColorMode.XY, HassLightColorMode.RGB, HassLightColorMode.RGBW, HassLightColorMode.RGBWW];
 
@@ -34,28 +39,24 @@ export class AreaCardLight extends LitElement {
    * Brightness in percentage
    * @private
    */
-  private _brightnessPercent?: number;
+  private _brightness?: SliderState;
   /**
    * Color temperature recalculated as a percentage
    * @private
    */
-  private _colorTempKelvin?: {
-    value: number;
-    min: number;
-    max: number;
-  };
+  private _colorTemp?: SliderState;
 
   static properties = {
     hass: { attribute: true },
     entity: { attribute: true, type: String },
     _lightIsOn: { state: true },
-    _brightnessPercent: { state: true },
-    _colorTempKelvin: { state: true },
+    _brightness: { state: true },
+    _colorTemp: { state: true },
   };
 
   static styles = styles;
 
-  willUpdate(changed: PropertyValues) {
+  willUpdate(changed: PropertyValues): void {
     super.willUpdate(changed);
 
     if (changed.has('entity') || changed.has('hass')) {
@@ -68,12 +69,12 @@ export class AreaCardLight extends LitElement {
         }
 
         if (state.attributes.supported_color_modes?.some(mode => BRIGHTNESS_SUPPORTING.includes(mode))) {
-          let brightness = state.attributes.brightness || 0;
-          brightness = brightness > 255 ? 255 : brightness;
-          const percent = Math.floor((brightness / 255) * 100);
+          const min = 0;
+          const max = 255;
+          const value = state.attributes.brightness || min;
 
-          if (this._brightnessPercent !== percent) {
-            this._brightnessPercent = percent;
+          if (!this._brightness || this._brightness.value !== value || this._brightness.min !== min || this._brightness.max !== max) {
+            this._brightness = { value, min, max };
           }
         }
 
@@ -83,103 +84,62 @@ export class AreaCardLight extends LitElement {
         ) {
           const value = state.attributes.color_temp_kelvin || 2000;
           const min = state.attributes.min_color_temp_kelvin || 2000;
-          const max = state.attributes.max_color_temp_kelvin || 2000;
+          const max = state.attributes.max_color_temp_kelvin || 6500;
 
-          if (!this._colorTempKelvin || this._colorTempKelvin.value !== value || this._colorTempKelvin.min !== min || this._colorTempKelvin.max !== max) {
-            this._colorTempKelvin = { value, min, max };
+          if (!this._colorTemp || this._colorTemp.value !== value || this._colorTemp.min !== min || this._colorTemp.max !== max) {
+            this._colorTemp = { value, min, max };
           }
         }
       } else {
         this._lightIsOn = undefined;
-        this._brightnessPercent = undefined;
-        this._colorTempKelvin = undefined;
+        this._brightness = undefined;
+        this._colorTemp = undefined;
       }
     }
   }
 
-  updated(changed: PropertyValues) {
-    super.updated(changed);
-  }
-
   render(): TemplateResult {
+    const state = this._getLightState();
+    if (!state) {
+      return html``;
+    }
+
     return html`
       <div class="area-card-light">
-        <div class="slider-block">
-          <lc-slider .value="${this._brightnessPercent}" min="0" max="100" @change="${this._brightnessChange}" orient="vertical"></lc-slider>
-          <ha-icon icon="mdi:lightbulb" class="icon"></ha-icon>
-        </div>
-        ${this._colorTempKelvin
+        ${this._brightness
           ? html`
               <div class="slider-block">
-                <lc-slider
-                  .min="${this._colorTempKelvin.min}"
-                  .max="${this._colorTempKelvin.max}"
-                  .value="${this._colorTempKelvin.value}"
+                <lc-vertical-slider
+                  class="slider brightness"
+                  .value="${this._brightness.value}"
+                  .min="${this._brightness.min}"
+                  .max="${this._brightness.max}"
+                  @change="${this._brightnessChange}"
+                ></lc-vertical-slider>
+                <ha-icon
+                  class="icon"
+                  .icon=${this._brightness?.value ? 'mdi:lightbulb' : 'mdi:lightbulb-off'}
+                  .style="${`filter: brightness(${(this._brightness.value + 245) / 5}%);`}"
+                ></ha-icon>
+              </div>
+            `
+          : null}
+        ${this._colorTemp
+          ? html`
+              <div class="slider-block">
+                <lc-vertical-slider
+                  class="slider color-temp"
+                  .min="${this._colorTemp.min}"
+                  .max="${this._colorTemp.max}"
+                  .value="${this._colorTemp.value}"
                   @change="${this._colorTempChange}"
-                  orient="vertical"
-                ></lc-slider>
-                <ha-icon icon="mdi:temperature-kelvin" class="icon"></ha-icon>
+                ></lc-vertical-slider>
+                <ha-icon class="icon" icon="mdi:temperature-kelvin" .style="${state.attributes.rgb_color ? `color: rgb(${state.attributes.rgb_color.join(',')});` : ''}"></ha-icon>
               </div>
             `
           : null}
       </div>
     `;
-    // return html`
-    //   <div class="area-card-light">
-    //     <mwc-icon-button @click="${this._onoffChange}" .style="${this._getLightButtonStyles()}">
-    //       <ha-icon icon="${this._lightIsOn ? 'mdi:lightbulb-multiple' : 'mdi:lightbulb-multiple-off'}" class="icon"></ha-icon>
-    //     </mwc-icon-button>
-    //
-    //     ${this._brightnessPercent !== undefined
-    //       ? html`
-    //           <ha-slider
-    //             class="brightness-slider"
-    //             style="width: var(--paper-slider-width)"
-    //             step="1"
-    //             .min="${0}"
-    //             .max="${100}"
-    //             .value="${this._brightnessPercent}"
-    //             .expand="${true}"
-    //             pin
-    //             @change="${this._brightnessChange}"
-    //           ></ha-slider>
-    //         `
-    //       : ''}
-    //     ${this._colorTempKelvin
-    //       ? html`
-    //           <ha-slider
-    //             class="color-temp-slider"
-    //             style="width: var(--paper-slider-width)"
-    //             step="1"
-    //             .min="${this._colorTempKelvin.min}"
-    //             .max="${this._colorTempKelvin.max}"
-    //             .value="${this._colorTempKelvin.value}"
-    //             .expand="${true}"
-    //             pin
-    //             @change="${this._colorTempChange}"
-    //           ></ha-slider>
-    //         `
-    //       : ''}
-    //   </div>
-    // `;
-  }
-
-  /**
-   * Access slider and update styles
-   * @private
-   */
-  private _makeSliderPretty(selector: string): void {
-    waitElement(this, selector, true)
-      .then(element => waitElement(element, 'paper-progress', true))
-      .then(element => waitElement(element, '#progressContainer', true))
-      .then(element => {
-        if (!element) {
-          return;
-        }
-        element.style.borderRadius = '2px';
-        element.style.overflow = 'hidden';
-      })
-      .catch(console.error);
   }
 
   /**
@@ -192,30 +152,12 @@ export class AreaCardLight extends LitElement {
   }
 
   /**
-   * Light button color depend from light state.
-   * @private
-   */
-  private _getLightButtonStyles(): string {
-    const state = this._getLightState();
-    if (!state || state.state === 'off' || !state.attributes.brightness) {
-      return '';
-    }
-
-    let styles = `filter: brightness(${(state.attributes.brightness + 245) / 5}%);`;
-    if (state.attributes.rgb_color) {
-      styles += `color: rgb(${state.attributes.rgb_color.join(',')});`;
-    }
-    return styles;
-  }
-
-  /**
    * Change brightness handler
    * @param event
    * @private
    */
   private _brightnessChange(event: CustomEvent): void {
-    const brightnessPercent = Math.floor(Number(event.detail?.value) || 0);
-    const brightness = Math.round((255 / 100) * brightnessPercent);
+    const brightness = event.detail.value;
 
     this.hass.callService('light', 'turn_on', { brightness }, { entity_id: this.entity }).catch(console.error);
   }
@@ -227,6 +169,7 @@ export class AreaCardLight extends LitElement {
    */
   private _colorTempChange(event: CustomEvent): void {
     const colorTempKelvin = Math.floor(Number(event.detail?.value) || 0);
+
     this.hass.callService('light', 'turn_on', { color_temp_kelvin: colorTempKelvin }, { entity_id: this.entity }).catch(console.error);
   }
 
