@@ -17,7 +17,7 @@ export const ENTITY_LIGHT_STATE: HassEntityState = {
     max_mireds: 370,
     supported_color_modes: ['color_temp'],
     color_mode: 'color_temp',
-    brightness: 255,
+    brightness: 155,
     color_temp_kelvin: 4000,
     color_temp: 153,
     hs_color: [54.768, 1.6],

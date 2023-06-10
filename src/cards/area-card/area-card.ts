@@ -6,6 +6,7 @@ import './area-card-sensor';
 import './area-card-light';
 import './area-card-conditioner';
 import { fireEvent } from '../../utils/fire-event';
+// import { ENTITY_LIGHT, ENTITY_LIGHT_STATE } from '../../test-data/entity-light';
 
 declare global {
   interface HTMLElementTagNameMap {

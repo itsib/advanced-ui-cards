@@ -5,10 +5,17 @@
 .area-card-light {
   height: 100%;
   width: 100%;
-  max-width: 200px;
-  min-width: 100px;
-  text-align: center;
+  display: flex;
   position: relative;
+
+  .slider-block {
+    display: flex;
+    align-items: flex-end;
+
+    .icon {
+      --mdc-icon-size: 24px;
+    }
+  }
 
   mwc-icon-button {
     --mdc-icon-button-size: 50%;
