@@ -2,8 +2,11 @@
   --slider-height: var(--ls-slider-height, 120px);
   --slider-width: var(--ls-slider-width, 4px);
   --slider-thumb-size: var(--ls-slider-thumb-size, 14px);
-  --slider-track-color: var(--ls-slider-track-color, var(--accent-color, #2196f3)); // #2196f3
+  --slider-track-color: var(--ls-slider-track-color, var(--accent-color, #2196f3));
   --slider-bg-color: var(--ls-slider-bg-color, rgba(194, 194, 194, .2));
+  --slider-disabled-color: var(--ls-slider-disabled-color, var(--secondary-text-color));
+  --slider-thumb-color: var(--ls-slider-thumb-color, var(--slider-track-color));
+  --slider-thumb-min-color: var(--ls-slider-thumb-min-color, var(--secondary-text-color));
 
   width: calc(var(--slider-width) + 16px);
   height: var(--slider-height);
@@ -36,6 +39,7 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: var(--slider-width);
   background: var(--slider-track-color);
   background: var(--ls-slider-full-color, var(--track-gradient));
+  transition: filter .1s ease-in-out;
 }
 
 input[type=range]::-moz-range-track {
@@ -44,6 +48,7 @@ input[type=range]::-moz-range-track {
   border-radius: var(--slider-width);
   background: var(--slider-track-color);
   background: var(--ls-slider-full-color, var(--track-gradient));
+  transition: filter .1s ease-in-out;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -51,11 +56,11 @@ input[type=range]::-webkit-slider-thumb {
   width: var(--slider-thumb-size);
   height: var(--slider-thumb-size);
   margin-top: calc(var(--slider-width) * 0.5 - var(--slider-thumb-size) * 0.5);
-  background: var(--slider-track-color);
+  background: var(--thumb-color);
   border-radius: 1em;
   transition: all .1s ease-in-out;
 
-  &:active {
+  &:active{
     transform: scale(1.5);
   }
 }
@@ -64,11 +69,35 @@ input[type=range]::-moz-range-thumb {
   width: var(--slider-thumb-size);
   height: var(--slider-thumb-size);
   margin-top: calc(var(--slider-width) * 0.5 - var(--slider-thumb-size) * 0.5);
-  background: var(--slider-track-color);
+  background: var(--thumb-color);
   border-radius: 1em;
   transition: all .1s ease-in-out;
 
   &:active {
     transform: scale(1.5);
+  }
+}
+
+input[type=range]:disabled::-webkit-slider-runnable-track {
+  filter: grayscale(100%);
+}
+
+input[type=range]:disabled::-moz-range-track {
+  filter: grayscale(100%);
+}
+
+input[type=range]:disabled::-webkit-slider-thumb {
+  background: var(--slider-disabled-color);
+
+  &:active {
+    transform: unset;
+  }
+}
+
+input[type=range]:disabled::-moz-range-thumb {
+  background: var(--slider-disabled-color);
+
+  &:active {
+    transform: unset;
   }
 }

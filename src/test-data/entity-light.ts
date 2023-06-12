@@ -9,7 +9,7 @@ export const ENTITY_LIGHT: HassEntity = {
 
 export const ENTITY_LIGHT_STATE: HassEntityState = {
   entity_id: 'light.room_light',
-  state: 'off',
+  state: 'on',
   attributes: {
     min_color_temp_kelvin: 2702,
     max_color_temp_kelvin: 6535,

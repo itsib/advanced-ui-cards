@@ -81,6 +81,11 @@ export class LcVerticalSlider extends LitElement {
     if (changed.has('value')) {
       this._input.value = this.value.toString();
       this._input.style.setProperty('--value', this.value.toString());
+      this._input.style.setProperty('--thumb-color', this.value > this.min ? 'var(--slider-thumb-color)' : 'var(--slider-thumb-min-color)');
+    }
+
+    if (changed.has('disabled')) {
+      this._input.disabled = this.disabled;
     }
 
     return false;
@@ -105,6 +110,7 @@ export class LcVerticalSlider extends LitElement {
   private _handleInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.style.setProperty('--value', input.value);
+    input.style.setProperty('--thumb-color', input.value && Number(input.value) > this.min ? 'var(--slider-thumb-color)' : 'var(--slider-thumb-min-color)');
   }
 }
 
