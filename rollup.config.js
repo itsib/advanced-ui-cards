@@ -9,7 +9,7 @@ import litScss from './rollup-plugins/lit-scss.js';
 import clean from 'rollup-plugin-delete';
 
 const plugins = [
-  clean({ targets: 'custom_components/lovelace_cards/lovelace/*' }),
+  clean({ targets: 'custom_components/ui_lovelace_minimalist/lovelace/*' }),
   litScss({
     minify: true,
     options: { loadPaths: ['src/scss'] },
@@ -24,15 +24,15 @@ const plugins = [
   }),
   terser(),
   copy({
-    targets: [{ src: 'src/images/**/*', dest: 'custom_components/lovelace_cards/lovelace' }],
+    targets: [{ src: 'src/images/**/*', dest: 'custom_components/ui_lovelace_minimalist/lovelace' }],
   }),
 ];
 
 export default [
   {
-    input: 'src/lovelace-cards.ts',
+    input: 'src/ui-lovelace-minimalist.ts',
     output: {
-      dir: 'custom_components/lovelace_cards/lovelace',
+      dir: 'custom_components/ui_lovelace_minimalist/lovelace',
       format: 'es',
     },
     plugins: [...plugins],

@@ -6,14 +6,14 @@
   "integrations": [],
   "config_flow": true,
   "documentation": "https://github.com/itsib/lovelace-cards",
-  "domain": "lovelace_cards",
+  "domain": "ui_lovelace_minimalist",
   "iot_class": "local_polling",
   "loggers": [
-    "lovelace_cards"
+    "ui_lovelace_minimalist"
   ],
   "requirements": [],
   "dependencies": [
     "lovelace"
   ],
-  "version": "2.0.0"
+  "version": "2.0.1"
 }

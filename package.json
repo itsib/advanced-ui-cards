@@ -1,6 +1,6 @@
 {
-  "name": "lovelace-cards",
-  "version": "2.0.0",
+  "name": "ui-lovelace-minimalist",
+  "version": "2.0.1",
   "description": "Custom lovelace cards for Home Assistant",
   "author": "Sergey <itsib.su@gmail.com>",
   "license": "MIT",
@@ -25,8 +25,8 @@
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "npm run lint && rollup -c --environment BUILD:production",
     "lint": "eslint src/*.ts",
-    "add": "git add custom_components/lovelace_cards/lovelace/*",
-    "bump": "bump package.json package-lock.json custom_components/lovelace_cards/manifest.json -t -p -a",
+    "add": "git add custom_components/ui_lovelace_minimalist/lovelace/*",
+    "bump": "bump package.json package-lock.json custom_components/ui_lovelace_minimalist/manifest.json -t -p -a",
     "publish": "npm run lint && npm run build && npm run add && npm run bump"
   },
   "devDependencies": {
