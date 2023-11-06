@@ -8,7 +8,6 @@ import time
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.integration_platform import async_process_integration_platform_for_component
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN, NAME
@@ -37,8 +36,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
-    await async_process_integration_platform_for_component(hass, DOMAIN)
-
     hass.data[DOMAIN] = {'name': NAME}
     await hass.config_entries.async_forward_entry_setups(entry, [])
     return True

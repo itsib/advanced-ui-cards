@@ -3,6 +3,7 @@
   "codeowners": [
     "@itsib"
   ],
+  "integrations": [],
   "config_flow": true,
   "documentation": "https://github.com/itsib/lovelace-cards",
   "domain": "lovelace_cards",
@@ -14,5 +15,5 @@
   "dependencies": [
     "lovelace"
   ],
-  "version": "1.0.35"
+  "version": "2.0.0"
 }

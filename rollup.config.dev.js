@@ -1,11 +1,11 @@
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import copy from 'rollup-plugin-copy';
 import clean from 'rollup-plugin-delete';
-import litScss from './rollup-plugins/lit-scss';
+import litScss from './rollup-plugins/lit-scss.js';
 
 const plugins = [
   clean({ targets: 'custom_components/lovelace_cards/lovelace/*' }),
