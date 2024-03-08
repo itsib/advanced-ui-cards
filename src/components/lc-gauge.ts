@@ -94,7 +94,7 @@ export class LcGauge extends LitElement {
   firstUpdated(changed: PropertyValues): void {
     super.firstUpdated(changed);
 
-    waitGauge(this.hass);
+    waitGauge(this.hass).catch(console.error);
 
     waitElement(this, 'ha-gauge', true)
       .then(element => waitElement(element, 'svg.text', true))
@@ -102,7 +102,8 @@ export class LcGauge extends LitElement {
         if (element) {
           element.style.visibility = 'hidden';
         }
-      });
+      })
+      .catch(console.error);
   }
 
   willUpdate(changed: PropertyValues) {

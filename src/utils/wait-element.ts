@@ -1,7 +1,7 @@
 export type TargetElement = HTMLElement | null | undefined;
 
 export async function waitElement<T extends HTMLElement = HTMLElement>(element: TargetElement, selector: string, inShadowRoot = false): Promise<T | null | undefined> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<T>(async (resolve, reject) => {
     if (!element) {
       return reject(new Error('Target element not provided'));
     }

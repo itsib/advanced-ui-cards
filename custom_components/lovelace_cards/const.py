@@ -1,6 +1,6 @@
 """Constants of the Dashboard"""
 from typing import Final
 
-DOMAIN: Final = "ui_lovelace_minimalist"
+DOMAIN: Final = "lovelace_cards"
 NAME: Final = "Lovelace UI Cards"
 

@@ -43,8 +43,8 @@ export class LcVerticalSlider extends LitElement {
       this.shadowRoot!.append(this._input);
     }
 
-    this._input.addEventListener('change', this._handleChange);
-    this._input.addEventListener('input', this._handleInput);
+    this._input.addEventListener('change', this._handleChange.bind(this));
+    this._input.addEventListener('input', this._handleInput.bind(this));
   }
 
   disconnectedCallback() {

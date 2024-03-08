@@ -48,7 +48,7 @@ export class LcRoundSlider extends LitElement {
   firstUpdated(changed: PropertyValues) {
     super.firstUpdated(changed);
 
-    waitThermostat(this.hass);
+    waitThermostat(this.hass).catch(console.error);
   }
 
   willUpdate(changed: PropertyValues) {

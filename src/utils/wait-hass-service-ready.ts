@@ -10,5 +10,5 @@ const COMPONENTS_TO_WAIT = {
 
 export async function waitHassServiceReady(): Promise<void> {
   const { conn } = await window.hassConnection;
-  await Promise.all(Object.values(COMPONENTS_TO_WAIT).map(key => new Promise(resolve => conn[key]['subscribe'](resolve))));
+  await Promise.all(Object.values(COMPONENTS_TO_WAIT).map(key => new Promise((resolve: any) => conn[key]['subscribe'](resolve))));
 }

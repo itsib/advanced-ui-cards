@@ -5,11 +5,11 @@ export async function getHassioFeatures(): Promise<string[] | null> {
   if (!('_srv' in conn)) {
     return null;
   }
-  const subscribe = conn['_srv']?.['subscribe'];
+  const subscribe = conn['_srv']?.['subscribe'] as any;
   if (typeof subscribe !== 'function') {
     return null;
   }
-  await new Promise(resolve => subscribe(resolve));
+  await new Promise((resolve: any) => subscribe(resolve));
 
   const hass = document.body.querySelector('home-assistant')?.['__hass'] as HomeAssistant | undefined;
   if (!hass || !hass.services || !hass.services.hassio) {

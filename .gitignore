@@ -7,7 +7,4 @@ node_modules/
 .config/
 .database/
 .mqtt/
-custom_components/coinbase/
-custom_components/hacs/
-custom_components/sun/
 /dist/
