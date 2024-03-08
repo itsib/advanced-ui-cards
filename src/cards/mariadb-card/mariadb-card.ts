@@ -212,7 +212,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
-    const logoUrl = `/ui-lovelace-minimalist/mariadb-logo-${this._isDark ? 'white' : 'dark'}.svg`;
+    const logoUrl = `/lovelace-cards/mariadb-logo-${this._isDark ? 'white' : 'dark'}.svg`;
 
     const isInitialized = this._cpuPercent !== undefined && this._ramPercent !== undefined && this._ramUsage !== undefined && this._ramLimit !== undefined;
 
@@ -278,7 +278,7 @@ class MariadbCard extends LitElement implements LovelaceCard {
             ${dbSize
               ? html`
                   <div class="icon" data-tooltip-pos="top" aria-label="${t('mariadb.db_size')}" @click="${() => this._showMoreInfo(MariadbCard.dbSizeSensor)}">
-                    <img src="/ui-lovelace-minimalist/database-size.svg" alt="DB Size Icon" />
+                    <img src="/lovelace-cards/database-size.svg" alt="DB Size Icon" />
                   </div>
                   <div class="value" @click="${() => this._showMoreInfo(MariadbCard.dbSizeSensor)}">${this._bdSize()}</div>
                 `

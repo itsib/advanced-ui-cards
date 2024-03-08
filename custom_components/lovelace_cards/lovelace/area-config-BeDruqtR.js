@@ -1,4 +1,4 @@
-import{c as e,L as a,h as s,t,a as i}from"./index-Do-gI7xO.js";var o=e``;const r=[{name:"name",type:"string",required:!1},{name:"area",required:!0,selector:{area:{}}}];class n extends a{setConfig(e){this.config=e}shouldUpdate(e){return!this.config||!this.hass||e.has("config")}render(){return this.hass&&this.config?(console.log(this.hass.areas),s`
+import{c as e,L as a,h as s,t,a as i}from"./index-DS5FOwaB.js";var o=e``;const r=[{name:"name",type:"string",required:!1},{name:"area",required:!0,selector:{area:{}}}];class n extends a{setConfig(e){this.config=e}shouldUpdate(e){return!this.config||!this.hass||e.has("config")}render(){return this.hass&&this.config?(console.log(this.hass.areas),s`
       <slot></slot>
       <div class="area-config">
         <ha-form
