@@ -1,5 +1,5 @@
 {
-  "title": "Карточки UI для Lovelace",
+  "title": "UI Lovelace",
   "config": {
     "abort": {
       "single_instance_allowed": "Уже настроен. Возможна только одна конфигурация."

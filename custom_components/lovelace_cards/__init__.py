@@ -1,48 +1,86 @@
-"""The Lovelace UI Cards integration."""
+"""The UI Lovelace integration."""
 from __future__ import annotations
 
 import logging
-import os
 import time
 
-from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.frontend import add_extra_js_url, remove_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
-from .const import DOMAIN, NAME
+from .const import DOMAIN, BASE_URL, NAME, DEFAULT_CONFIG
 
 LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Setup integration."""
 
-    # Register UI lovelace cards
-    card_file_path = os.path.dirname(os.path.realpath(__file__)) + "/lovelace"
-    hass.http.register_static_path("/lovelace-cards", card_file_path, False)
-    add_extra_js_url(hass, "/lovelace-cards/index.js?cache=" + str(time.time()), es5=False)
+    hass.data[DOMAIN] = {}
+    if DOMAIN not in config:
+        return True
+
+    # should_cache = False
+
+    # Lovelace UI
+    # card_file_path = Path(__file__) / "lovelace"
+    # await hass.http.async_register_static_paths([
+    #     StaticPathConfig("/lovelace-cards", str(card_file_path), should_cache),
+    #     StaticPathConfig("/lovelace-cards/index.js", str(card_file_path) + "index.js", should_cache),
+    # ])
+
+    # Attach main js file (this file loads other batched files)
+    # add_extra_js_url(hass, "/lovelace-cards/index.js?cache=" + str(time.time()), es5=True)
+
+    # Replacer config
+    data = DEFAULT_CONFIG if config[DOMAIN] is None else config[DOMAIN]
+    hass.data[DOMAIN] = data
+    LOGGER.info("async_setup: \n%s", data)
 
     # Async init entry
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN,
             context={"source": SOURCE_IMPORT},
-            data=config,
+            data=data,
         )
     )
     return True
 
-
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
-    hass.data[DOMAIN] = {'name': NAME}
-    await hass.config_entries.async_forward_entry_setups(entry, [])
-    return True
 
+    LOGGER.info("Register paths: %s", f"{BASE_URL}")
+    LOGGER.info("Register paths: %s", f"{BASE_URL}/brand-resolver.js")
+    LOGGER.info("Register paths: %s", f"{BASE_URL}/lovelace-cards.js")
+
+    integration_dir = hass.config.path(f"custom_components/{DOMAIN}")
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(f"{BASE_URL}", f"{integration_dir}/lovelace", cache_headers=False),
+        StaticPathConfig(f"{BASE_URL}/brand-resolver.js", f"{integration_dir}/lovelace/brand-resolver.js", cache_headers=False),
+        StaticPathConfig(f"{BASE_URL}/lovelace-cards.js", f"{integration_dir}/lovelace/lovelace-cards.js", cache_headers=False),
+    ])
+
+    add_extra_js_url(hass, f"{BASE_URL}/brand-resolver.js", es5=False)
+    add_extra_js_url(hass, f"{BASE_URL}/lovelace-cards.js", es5=False)
+
+    data: dict = {'name': NAME}
+    if DOMAIN in hass.data:
+        data.update(hass.data[DOMAIN])
+
+    hass.data[DOMAIN] = data
+    await hass.config_entries.async_forward_entry_setups(entry, [])
+
+    LOGGER.info(f"Finish setup {DOMAIN}")
+    return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+
+    remove_extra_js_url(hass, f"{BASE_URL}/brand-resolver.js", es5=False)
+    remove_extra_js_url(hass, f"{BASE_URL}/lovelace-cards.js", es5=False)
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, [])
     if unload_ok:
         hass.data.pop(DOMAIN)

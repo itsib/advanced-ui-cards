@@ -1,8 +1,8 @@
 {
-  "title": "Lovelace UI Cards",
-    "config": {
-        "abort": {
-            "single_instance_allowed": "Already configured. Only a single configuration possible."
-        }
+  "title": "UI Lovelace",
+  "config": {
+    "abort": {
+      "single_instance_allowed": "Already configured. Only a single configuration possible."
     }
+  }
 }

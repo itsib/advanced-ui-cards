@@ -40,22 +40,6 @@ export class AreaCardLight extends LitElement {
    * @private
    */
   private _brightnessBound?: [number, number];
-  /**
-   * Color temperature recalculated as a percentage
-   * @private
-   */
-  private _colorTemp?: number;
-  /**
-   * Min and max color temp
-   * If undefined, then color temperature settings is not support.
-   * @private
-   */
-  private _colorTempBound?: [number, number];
-  /**
-   * Light color
-   * @private
-   */
-  private _rgbColor?: string;
 
   static properties = {
     hass: { attribute: true },
@@ -63,8 +47,6 @@ export class AreaCardLight extends LitElement {
     _state: { state: true },
     _brightness: { state: true, type: Number },
     _brightnessBound: { state: true },
-    _colorTemp: { state: true, type: Number },
-    _colorTempBound: { state: true },
     _rgbColor: { state: true, type: String },
   };
 
@@ -90,34 +72,10 @@ export class AreaCardLight extends LitElement {
             this._brightness = state.attributes.brightness;
           }
         }
-
-        // Update color temperature
-        if (
-          (state.attributes.color_mode && state.attributes.color_mode === HassLightColorMode.COLOR_TEMP) ||
-          state.attributes.supported_color_modes?.includes(HassLightColorMode.COLOR_TEMP)
-        ) {
-          if (!this._colorTempBound) {
-            this._colorTempBound = [state.attributes.min_color_temp_kelvin ?? 2000, state.attributes.max_color_temp_kelvin ?? 6500];
-          }
-          const colorTemp = state.attributes.color_temp_kelvin || 2000;
-
-          if (this._colorTemp !== colorTemp) {
-            this._colorTemp = colorTemp;
-          }
-        }
-
-        // Update RGB color
-        const rgbColor = state.attributes.rgb_color ? `color: rgb(${state.attributes.rgb_color.join(',')});` : '';
-        if (rgbColor !== this._rgbColor) {
-          this._rgbColor = rgbColor;
-        }
       } else {
         this._state = undefined;
         this._brightness = undefined;
         this._brightnessBound = undefined;
-        this._colorTemp = undefined;
-        this._colorTempBound = undefined;
-        this._rgbColor = undefined;
       }
     }
   }
@@ -150,21 +108,6 @@ export class AreaCardLight extends LitElement {
               </div>
             `
           : null}
-        ${this._colorTempBound
-          ? html`
-              <div class="slider-block">
-                <lc-vertical-slider
-                  class="slider color-temp"
-                  .min="${this._colorTempBound[0]}"
-                  .max="${this._colorTempBound[1]}"
-                  .value="${this._colorTemp}"
-                  .disabled="${!isOn}"
-                  @change="${this._colorTempChange}"
-                ></lc-vertical-slider>
-                <ha-icon class="icon" icon="mdi:temperature-kelvin" .style="${this._rgbColor && isOn ? this._rgbColor : 'color: var(--secondary-text-color)'}"></ha-icon>
-              </div>
-            `
-          : null}
       </div>
     `;
   }
@@ -186,22 +129,7 @@ export class AreaCardLight extends LitElement {
   private _brightnessChange(event: CustomEvent): void {
     const brightness = event.detail.value;
 
-    // this._brightness = brightness;
-
     this.hass.callService('light', 'turn_on', { brightness }, { entity_id: this.entity }).catch(console.error);
-  }
-
-  /**
-   * Change color temperature handler
-   * @param event
-   * @private
-   */
-  private _colorTempChange(event: CustomEvent): void {
-    const colorTempKelvin = Math.floor(Number(event.detail?.value) || 0);
-
-    // this._colorTemp = colorTempKelvin;
-
-    this.hass.callService('light', 'turn_on', { color_temp_kelvin: colorTempKelvin }, { entity_id: this.entity }).catch(console.error);
   }
 
   /**

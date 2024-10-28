@@ -1,0 +1,62 @@
+:host {
+  --lc-switch-color: var(--blue-color);
+  --lc-switch-aspect-ratio: 1.8333333;
+  --lc-switch-thumb-size: 20px;
+  --lc-switch-thumb-margin: 2px;
+  /* Computed size54s */
+  --lc-switch-height: calc(var(--lc-switch-thumb-size) + (var(--lc-switch-thumb-margin) * 2));
+  --lc-switch-width: calc(var(--lc-switch-height) * var(--lc-switch-aspect-ratio));
+
+  /* Colors */
+  --lc-switch-bg-color: color-mix(in lch, var(--secondary-background-color), var(--secondary-text-color) 20%);
+  --lc-switch-border-color: var(--lc-switch-bg-color);
+  --lc-switch-thumb-color: color-mix(in lch, rgb(255 255 255 / 1), var(--secondary-background-color) 12%);
+  --lc-switch-thumb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.15), 0 1px 2px -1px rgb(0 0 0 / 0.15);
+  /* Colors state */
+  --lc-switch-bg-active-color: var(--lc-switch-color);
+  --lc-switch-thumb-active-color: rgb(255 255 255 / 1);
+
+  display: block;
+}
+
+.lc-switch {
+  height: var(--lc-switch-height);
+  width: var(--lc-switch-width);
+  aspect-ratio: var(--lc-switch-aspect-ratio);
+  background-color: var(--lc-switch-bg-color);
+  border-radius: 999999px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.15s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  .lc-switch-thumb {
+    top: var(--lc-switch-thumb-margin);
+    left: var(--lc-switch-thumb-margin);
+    width: var(--lc-switch-thumb-size);
+    height: var(--lc-switch-thumb-size);
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: var(--lc-switch-thumb-color);
+    transition-duration: 0.15s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    box-shadow: var(--lc-switch-thumb-shadow);
+    display: block;
+    position: absolute;
+    z-index: 2;
+  }
+
+  &.active {
+    --lc-switch-border-color: var(--lc-switch-bg-active-color);
+    --lc-switch-bg-color: var(--lc-switch-bg-active-color);
+
+    .lc-switch-thumb {
+      left: calc(var(--lc-switch-width) - var(--lc-switch-thumb-size) - var(--lc-switch-thumb-margin));
+      --lc-switch-thumb-color: var(--lc-switch-thumb-active-color);
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './lc-gauge.scss';
 import { HomeAssistant } from 'types';
-import { waitElement } from '../utils/wait-element';
+import { waitElement } from '../utils/dom-utils';
 import { formatNumberValue } from '../utils/format-number-value';
 
 declare global {
@@ -96,8 +96,8 @@ export class LcGauge extends LitElement {
 
     waitGauge(this.hass).catch(console.error);
 
-    waitElement(this, 'ha-gauge', true)
-      .then(element => waitElement(element, 'svg.text', true))
+    waitElement(this, 'ha-gauge')
+      .then(element => waitElement(element, 'svg.text'))
       .then(element => {
         if (element) {
           element.style.visibility = 'hidden';

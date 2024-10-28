@@ -29,6 +29,8 @@ export class AreaCard extends LitElement implements LovelaceCard {
    * Home assistant instance
    */
   hass!: HomeAssistant;
+
+  test: number = 0;
   /**
    * Configuration model
    * @private
@@ -44,6 +46,9 @@ export class AreaCard extends LitElement implements LovelaceCard {
    * @private
    */
   private _remoteEntities: (string | undefined)[] = [];
+
+  value1 = 32;
+  value2 = 0;
 
   static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./area-config');
@@ -70,6 +75,7 @@ export class AreaCard extends LitElement implements LovelaceCard {
     hass: { attribute: false },
     _config: { state: true },
     _climaticSensors: { state: true },
+    test: { attribute: true }
   };
 
   setConfig(config: AreaCardConfig): void {
@@ -101,28 +107,31 @@ export class AreaCard extends LitElement implements LovelaceCard {
           <div class="name">${areaName}</div>
           <div class="climate">
             ${this._headerEntities.map(entity => {
-              return entity ? html` <lc-area-card-sensor .hass="${this.hass}" .entity="${entity}" @click="${() => this._showMoreInfo(entity)}"></lc-area-card-sensor>` : undefined;
+              return entity ? html` <lc-area-card-sensor .hass="${this.hass}" .entity="${entity}" @click="${() => this._showMoreInfo(entity!)}"></lc-area-card-sensor>` : undefined;
             })}
           </div>
         </div>
         <div class="card-content">
-          ${this._remoteEntities.map((entity, index) => {
-            if (entity && index === RemoteEntityIndex.LIGHT) {
-              return html` <div class="item">
-                <lc-area-card-light .hass="${this.hass}" .entity="${entity}"></lc-area-card-light>
-              </div>`;
-            }
-            if (entity && index === RemoteEntityIndex.CONDITIONER) {
-              return html` <div class="item">
-                <lc-area-card-conditioner .hass="${this.hass}" .entity="${entity}"></lc-area-card-conditioner>
-              </div>`;
-            }
-            return '';
-          })}
+          <div>
+             <lc-vertical-slider
+                class="slider brightness"
+                .value="${this.value1}"
+                .min="${0}"
+                .max="${255}"
+                @change="${event => this.value1 = event.detail?.value}"
+              />
+          </div>
         </div>
-        <div class="card-footer"></div>
+        <div class="card-footer">
+            
+        </div>
       </ha-card>
     `;
+  }
+
+  private _onChange(event: any) {
+    console.log('value', event.detail?.value);
+    this.test = event.detail?.value;
   }
 
   /**
@@ -190,3 +199,18 @@ export class AreaCard extends LitElement implements LovelaceCard {
   preview: false,
   description: t('area.description'),
 });
+
+
+// ${this._remoteEntities.map((entity, index) => {
+//             if (entity && index === RemoteEntityIndex.LIGHT) {
+//               return html` <div class="item">
+//                 <lc-area-card-light .hass="${this.hass}" .entity="${entity}"></lc-area-card-light>
+//               </div>`;
+//             }
+//             if (entity && index === RemoteEntityIndex.CONDITIONER) {
+//               return html` <div class="item">
+//                 <lc-area-card-conditioner .hass="${this.hass}" .entity="${entity}"></lc-area-card-conditioner>
+//               </div>`;
+//             }
+//             return '';
+//           })}

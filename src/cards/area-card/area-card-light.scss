@@ -6,26 +6,26 @@
 // var(--paper-item-icon-color, #44739e)
 
 .area-card-light {
-  height: 100%;
   width: 100%;
   display: flex;
   position: relative;
 
   .slider-block {
+    height: 160px;
     margin-right: 12px;
     display: flex;
     align-items: flex-end;
 
-    .slider {
-
-      &.brightness {
-        --ls-slider-track-color: var(--blue-color);
-      }
-
-      &.color-temp {
-        --ls-slider-full-color: linear-gradient(to right, #d18847, #d1d0cd);
-      }
-    }
+    //.slider {
+    //
+    //  &.brightness {
+    //    --ls-slider-track-color: var(--blue-color);
+    //  }
+    //
+    //  &.color-temp {
+    //    --ls-slider-full-color: linear-gradient(to right, #d18847, #d1d0cd);
+    //  }
+    //}
 
     .icon {
       --mdc-icon-size: 20px;

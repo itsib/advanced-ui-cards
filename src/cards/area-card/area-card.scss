@@ -32,11 +32,10 @@
   }
 
   .card-content {
-    margin: 0 -10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    min-height: 200px;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
 
     .item {
       //width: 50%;

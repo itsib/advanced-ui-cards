@@ -1,4 +1,4 @@
-@use "tooltip" as *;
+//@use "../../scss/tooltip";
 
 :host {
   font-family: var(--paper-font-body1_-_font-family);
@@ -9,13 +9,13 @@
   color: var(--primary-text-color);
 }
 
-[aria-label] {
-  &[data-tooltip-pos] {
-    @include tooltip;
-    @include tooltip-top;
-    @include tooltip-left;
-  }
-}
+//[aria-label] {
+//  &[data-tooltip-pos] {
+//    @include tooltip.tooltip;
+//    @include tooltip.tooltip-top;
+//    @include tooltip.tooltip-left;
+//  }
+//}
 
 .mariadb-card {
 

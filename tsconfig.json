@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "target": "es2017",
-    "module": "esnext",
+    "target": "es2020",
+    "module": "es2020",
     "moduleResolution": "node",
     "lib": [
       "es2017",
@@ -15,10 +15,15 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "useUnknownInCatchVariables": false,
+    "types": [
+      "node_modules/@types",
+      "../../node_modules/@types"
+    ],
     "paths": {
       "lit": [
         "types/lit.ts"
@@ -29,6 +34,15 @@
       "i18n": [
         "i18n/i18n.ts"
       ]
-    }
+    },
+    "include": [
+      "src/**/*",
+      "package.json"
+    ],
+    "references": [
+      {
+        "path": "./tsconfig.node.json"
+      }
+    ]
   }
 }

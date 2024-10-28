@@ -1,15 +1,15 @@
-// @ts-check
-
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 export default tseslint.config(
   {
-    files: ['src/**/*.ts'],
     ignores: [
-      'src/i18n/i18n.ts'
+      '**/custom_components',
+      '**/src/i18n/i18n.ts',
+      "**/*config.*"
     ],
+    files: ['src/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
