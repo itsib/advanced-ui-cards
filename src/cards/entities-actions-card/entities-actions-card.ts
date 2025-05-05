@@ -253,7 +253,7 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
 
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'entities-actions-card',
+  type: 'lc-entities-actions-card',
   name: 'Entities With Actions Card',
   preview: true,
   description: 'This map allows you to group entities and actions that are triggered by buttons in the footer.',
