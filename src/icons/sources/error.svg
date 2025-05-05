@@ -1,0 +1,27 @@
+<svg version="1.1" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+  <path
+    stroke-dasharray="138"
+    stroke-dashoffset="138"
+    d="m25 2.5c12 0 22 10 22 22s-10 22-22 22-22-10-22-22 10-22 22-22z"
+    fill="#f00"
+    fill-opacity="0"
+    stroke="#f00"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="5"
+  >
+    <animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.15s" values="0;0.3" />
+    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="138;0" />
+  </path>
+  <path
+    d="m25 25 10 10m-10-10-10-10m10 10-10 10m10-10 10-10"
+    fill="none"
+    stroke="#f00"
+    stroke-dasharray="16"
+    stroke-dashoffset="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="5">
+    <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.75s" dur="0.2s" values="16;0" />
+  </path>
+</svg>

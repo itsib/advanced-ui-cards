@@ -1,3 +1,5 @@
+import type { HTMLTemplateResult } from 'lit';
+
 export interface FrontendLocaleData {
   language: string;
   number_format: NumberFormat;
@@ -48,7 +50,39 @@ export type TranslationCategory =
   | 'issues'
   | 'selector';
 
-export type LocalizeFunc = (key: string, values: { [name: string]: string }) => string;
+export type LocalizeKeys =
+  | `panel.${string}`
+  | `ui.card.alarm_control_panel.${string}`
+  | `ui.card.weather.attributes.${string}`
+  | `ui.card.weather.cardinal_direction.${string}`
+  | `ui.card.lawn_mower.actions.${string}`
+  | `ui.components.calendar.event.rrule.${string}`
+  | `ui.components.selectors.file.${string}`
+  | `ui.components.logbook.messages.detected_device_classes.${string}`
+  | `ui.components.logbook.messages.cleared_device_classes.${string}`
+  | `ui.dialogs.entity_registry.editor.${string}`
+  | `ui.dialogs.more_info_control.lawn_mower.${string}`
+  | `ui.dialogs.more_info_control.vacuum.${string}`
+  | `ui.dialogs.quick-bar.commands.${string}`
+  | `ui.dialogs.unhealthy.reason.${string}`
+  | `ui.dialogs.unsupported.reason.${string}`
+  | `ui.panel.config.${string}.${"caption" | "description"}`
+  | `ui.panel.config.dashboard.${string}`
+  | `ui.panel.config.zha.${string}`
+  | `ui.panel.config.zwave_js.${string}`
+  | `ui.panel.lovelace.card.${string}`
+  | `ui.panel.lovelace.editor.${string}`
+  | `ui.panel.page-authorize.form.${string}`
+  | `component.${string}`
+  | string;
+
+export type LocalizeFunc<Keys extends string = LocalizeKeys> = (
+  key: Keys,
+  values?: Record<
+    string,
+    string | number | HTMLTemplateResult | null | undefined
+  >
+) => string;
 
 export interface TranslationMetadata {
   fragments: string[];

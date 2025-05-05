@@ -1,5 +1,7 @@
 import { Context } from './ha-common';
 
+export type Error = 1 | 2 | 3 | 4;
+
 export enum HassEntityCategory {
   CONFIG = 'config',
   DIAGNOSTIC = 'diagnostic',
@@ -18,16 +20,19 @@ export enum HassLightColorMode {
   WHITE = 'white',
 }
 
-export interface HassEntity {
+export interface HassEntityBase {
   entity_id: string;
-  name?: string;
-  device_id?: string;
-  display_precision?: number;
-  area_id?: string;
-  hidden?: boolean;
-  entity_category?: HassEntityCategory;
-  translation_key?: string;
-  platform?: string;
+  state: string;
+  last_changed: string;
+  last_updated: string;
+  attributes: HassEntityAttributeBase;
+  context: Context;
+}
+
+export interface HassEntity extends HassEntityBase {
+  attributes: {
+    [key: string]: any;
+  };
 }
 
 export interface HassEntityState {
@@ -39,7 +44,7 @@ export interface HassEntityState {
   context: Context;
 }
 
-export interface HassEntityStateAttributes extends Record<string, any> {
+export interface HassEntityAttributeBase {
   friendly_name?: string;
   unit_of_measurement?: string;
   icon?: string;
@@ -52,7 +57,11 @@ export interface HassEntityStateAttributes extends Record<string, any> {
   restored?: boolean;
 }
 
-export interface HassLightEntityStateAttributes extends HassEntityStateAttributes {
+export interface HassEntityStateAttributes extends HassEntityAttributeBase {
+
+}
+
+export interface HassLightEntityStateAttributes extends HassEntityAttributeBase {
   min_color_temp_kelvin?: number;
   max_color_temp_kelvin?: number;
   min_mireds?: number;
@@ -96,16 +105,45 @@ export interface HassArea {
   aliases: string[];
 }
 
+export interface HassEntities {
+  [entity_id: string]: HassEntity;
+}
+
 export interface HassService {
   name?: string;
   description: string;
   target?: {} | null;
   fields: {
     [field_name: string]: {
+      example?: string | boolean | number;
+      default?: unknown;
+      required?: boolean;
+      advanced?: boolean;
+      selector?: {};
+      filter?: {
+        supported_features?: number[];
+        attribute?: Record<string, any[]>;
+      };
       name?: string;
       description: string;
-      example: string | boolean | number;
-      selector?: {};
     };
   };
+  response?: {
+    optional: boolean;
+  };
+}
+
+export interface HassDomainServices {
+  [service_name: string]: HassService;
+}
+
+export interface HassServices {
+  [domain: string]: HassDomainServices;
+}
+
+export interface HassUser {
+  id: string;
+  is_admin: boolean;
+  is_owner: boolean;
+  name: string;
 }

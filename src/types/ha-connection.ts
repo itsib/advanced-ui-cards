@@ -1,4 +1,5 @@
 import { Context } from './ha-common';
+import { HassEntity } from './ha-entity';
 
 export interface AuthData {
   hassUrl: string;
@@ -35,6 +36,15 @@ export interface HassEventBase {
 export interface HassEvent extends HassEventBase {
   event_type: string;
   data: { [key: string]: any };
+}
+
+export interface StateChangedEvent extends HassEventBase {
+    event_type: "state_changed";
+    data: {
+        entity_id: string;
+        new_state: HassEntity | null;
+        old_state: HassEntity | null;
+    };
 }
 
 export interface MessageBase {
@@ -127,8 +137,3 @@ export interface Connection {
   subscribeMessage<Result>(callback: (result: Result) => void, subscribeMessage: MessageBase, options?: { resubscribe?: boolean }): Promise<SubscriptionUnsubscribe>;
 }
 
-export interface HassServiceTarget {
-  entity_id?: string | string[];
-  device_id?: string | string[];
-  area_id?: string | string[];
-}

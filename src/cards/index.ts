@@ -1,2 +1,2 @@
-export * from './area-card/area-card';
-export * from './mariadb-card/mariadb-card';
+export * from './entities-actions-card/entities-actions-card-config';
+export * from './entities-actions-card/entities-actions-card';

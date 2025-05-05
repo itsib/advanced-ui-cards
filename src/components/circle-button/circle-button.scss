@@ -1,0 +1,45 @@
+:host {
+  --lc-button-size: 40px;
+  --lc-button-icon-size: 24px;
+  --lc-button-color: currentColor;
+
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  color: var(--lc-button-color);
+  font-family: var(--paper-font-body1_-_font-family);
+  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
+  font-size: var(--paper-font-body1_-_font-size);
+  font-weight: var(--paper-font-body1_-_font-weight);
+  line-height: var(--paper-font-body1_-_line-height);
+  display: inline-block;
+  position: relative;
+
+  &:before {
+    content: " ";
+    left: 0;
+    right: 0;
+    width: var(--lc-button-size);
+    height: var(--lc-button-size);
+    border-radius: 50%;
+    background-color: currentcolor;
+    opacity: 0.15;
+    position: absolute;
+  }
+
+}
+
+.lc-circle-button-icon {
+  --ha-icon-display: block;
+  --mdc-icon-button-size: var(--lc-button-size);
+  --mdc-icon-size: var(--lc-button-icon-size);
+  --mdc-theme-primary: var(--lc-button-color);
+
+   color: var(--lc-button-color);
+}
+
+.lc-circle-button-spinner {
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  border-radius: 50%;
+  font-size: var(--lc-button-icon-size);
+}

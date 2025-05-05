@@ -22,26 +22,31 @@
     "url": "https://github.com/itsib/lovelace-cards/issues"
   },
   "scripts": {
+    "watch": "vite build --watch",
     "build": "vite build --mode production",
     "lint": "eslint -c eslint.config.js",
     "preversion": "npm run lint && npm run build",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@eslint/js": "^9.13.0",
-    "@rollup/pluginutils": "^5.1.2",
+    "@eslint/js": "^9.25.1",
+    "@rollup/pluginutils": "^5.1.4",
     "@types/node": "^22.8.1",
-    "eslint-config-prettier": "^9.1.0",
-    "sass-embedded": "^1.80.3",
-    "typescript": "5.5.4",
-    "vite": "^5.4.9",
-    "vite-plugin-cp": "^4.0.8",
-    "vite-plugin-watch-and-run": "^1.7.1"
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-lit": "^2.1.1",
+    "lit": "^3.3.0",
+    "sass-embedded": "^1.87.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.4",
+    "vite-plugin-cp": "^6.0.3"
   },
   "peerDependencies": {
     "lit": "^3.1.4"
   },
   "overrides": {
     "braces": "^3.0.3"
+  },
+  "dependencies": {
+    "superstruct": "^2.0.2"
   }
 }

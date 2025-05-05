@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-import time
 
 from homeassistant.components.frontend import add_extra_js_url, remove_extra_js_url
 from homeassistant.components.http import StaticPathConfig
@@ -20,18 +19,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.data[DOMAIN] = {}
     if DOMAIN not in config:
         return True
-
-    # should_cache = False
-
-    # Lovelace UI
-    # card_file_path = Path(__file__) / "lovelace"
-    # await hass.http.async_register_static_paths([
-    #     StaticPathConfig("/lovelace-cards", str(card_file_path), should_cache),
-    #     StaticPathConfig("/lovelace-cards/index.js", str(card_file_path) + "index.js", should_cache),
-    # ])
-
-    # Attach main js file (this file loads other batched files)
-    # add_extra_js_url(hass, "/lovelace-cards/index.js?cache=" + str(time.time()), es5=True)
 
     # Replacer config
     data = DEFAULT_CONFIG if config[DOMAIN] is None else config[DOMAIN]
