@@ -1,0 +1,25 @@
+.footer {
+  margin-top: 0;
+
+  .divider {
+    margin: 0;
+    border: none;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--divider-color);
+  }
+
+  .buttons {
+    width: auto;
+    padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+
+    .btn-wrap {
+      padding: 0 6px;
+    }
+  }
+}

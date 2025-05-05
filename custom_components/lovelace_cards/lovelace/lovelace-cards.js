@@ -368,14 +368,14 @@ const styles$7 = css`:host {
   border-radius: 50%;
   font-size: var(--lc-button-icon-size);
 }`;
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
   return result;
 };
 function createComponent(Base) {
@@ -472,19 +472,19 @@ function createComponent(Base) {
   };
   _LCCircleButton.styles = styles$7;
   let LCCircleButton = _LCCircleButton;
-  __decorateClass$7([
+  __decorateClass$8([
     n2({ attribute: true })
   ], LCCircleButton.prototype, "icon", 2);
-  __decorateClass$7([
+  __decorateClass$8([
     n2({ attribute: "color", reflect: true, type: String })
   ], LCCircleButton.prototype, "color", 1);
-  __decorateClass$7([
+  __decorateClass$8([
     n2({ attribute: true })
   ], LCCircleButton.prototype, "tooltip", 2);
-  __decorateClass$7([
+  __decorateClass$8([
     n2({ attribute: "status", reflect: true, type: String })
   ], LCCircleButton.prototype, "status", 2);
-  __decorateClass$7([
+  __decorateClass$8([
     n2({ attribute: "disabled", reflect: true, type: Boolean })
   ], LCCircleButton.prototype, "disabled", 2);
   return LCCircleButton;
@@ -494,6 +494,258 @@ function createComponent(Base) {
   const source = await customElements.whenDefined("mwc-icon-button");
   customElements.define("lc-circle-button", createComponent(source), { extends: "button" });
 })();
+function fireEvent(node, type2, detail, options = {}) {
+  const _detail = detail === null || detail === void 0 ? {} : detail;
+  const event = new Event(type2, {
+    bubbles: options.bubbles === void 0 ? true : options.bubbles,
+    cancelable: Boolean(options.cancelable),
+    composed: options.composed === void 0 ? true : options.composed
+  });
+  event.detail = _detail;
+  node.dispatchEvent(event);
+  return event;
+}
+function forwardHaptic(hapticType) {
+  fireEvent(window, "haptic", hapticType);
+}
+function domainToName(localize, domain, manifest) {
+  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
+}
+const MAIN_WINDOW_NAME = "ha-main-window";
+const mainWindow = (() => {
+  try {
+    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
+  } catch {
+    return window;
+  }
+})();
+function isValidEntityId(id) {
+  return /^(\w+)\.(\w+)$/.test(id);
+}
+function isCustomType(type2) {
+  return type2.startsWith("custom:");
+}
+function computeDomain(entityId) {
+  return entityId.substring(0, entityId.indexOf("."));
+}
+function arrayFilter(array2, conditions, maxSize) {
+  if (!maxSize || maxSize > array2.length) {
+    maxSize = array2.length;
+  }
+  const filteredArray = [];
+  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
+    let meetsConditions = true;
+    for (const condition of conditions) {
+      if (!condition(array2[i2])) {
+        meetsConditions = false;
+        break;
+      }
+    }
+    if (meetsConditions) {
+      filteredArray.push(array2[i2]);
+    }
+  }
+  return filteredArray;
+}
+function processConfigEntities(entities, checkEntityId = true) {
+  return entities.map((entityConf, index) => {
+    if (typeof entityConf === "object" && !Array.isArray(entityConf) && entityConf.type) {
+      return entityConf;
+    }
+    let config;
+    if (typeof entityConf === "string") {
+      config = { entity: entityConf };
+    } else if (typeof entityConf === "object" && !Array.isArray(entityConf)) {
+      if (!("entity" in entityConf)) {
+        throw new Error(`Object at position ${index} is missing entity field`);
+      }
+      config = entityConf;
+    } else {
+      throw new Error(`Invalid entity ID at position ${index}`);
+    }
+    if (checkEntityId && !isValidEntityId(config.entity)) {
+      throw new Error(`Invalid entity ID at position ${index}: ${config.entity}`);
+    }
+    return config;
+  });
+}
+function processEditorEntities(entities) {
+  return entities.map((entityConf) => {
+    if (typeof entityConf === "string") {
+      return { entity: entityConf };
+    }
+    return entityConf;
+  });
+}
+function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
+  const conditions = [];
+  if (includeDomains == null ? void 0 : includeDomains.length) {
+    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
+  }
+  const entityIds = arrayFilter(entities, conditions, maxEntities);
+  if (entityIds.length < maxEntities && entitiesFallback.length) {
+    const fallbackEntityIds = findEntities(
+      hass,
+      maxEntities - entityIds.length,
+      entitiesFallback,
+      [],
+      includeDomains
+    );
+    entityIds.push(...fallbackEntityIds);
+  }
+  return entityIds;
+}
+function isShowConfirmation(confirmation, userId) {
+  if (!confirmation) return false;
+  if (confirmation === true) return true;
+  return !confirmation.exemptions || !confirmation.exemptions.some((e2) => e2.user === userId);
+}
+const style = css`.footer {
+  margin-top: 0;
+}
+.footer .divider {
+  margin: 0;
+  border: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--divider-color);
+}
+.footer .buttons {
+  width: auto;
+  padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.footer .buttons .btn-wrap {
+  padding: 0 6px;
+}`;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$7(target, key, result);
+  return result;
+};
+let FooterButtons = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._statuses = [];
+  }
+  render() {
+    var _a;
+    if (!((_a = this.buttons) == null ? void 0 : _a.length)) {
+      return html``;
+    }
+    return html`
+      <div class="footer">
+        <hr class="divider" role="separator" />
+
+        <div class="buttons">
+          ${this.buttons.map((config, index) => this._renderButton(index, config))}
+        </div>
+      </div>
+    `;
+  }
+  _renderButton(index, config) {
+    if (!config) {
+      return html``;
+    }
+    return html`
+      <div class="btn-wrap">
+        <lc-circle-button
+          data-index=${index}
+          color=${config.color}
+          icon=${config.icon}
+          tooltip=${config.tooltip}
+          .status=${this._statuses[index]}
+          @click=${this._onClick}
+        ></lc-circle-button>
+      </div>
+    `;
+  }
+  async _onClick(event) {
+    event.stopPropagation();
+    const element = event.target;
+    const index = parseInt(element.dataset.index);
+    if (this._statuses[index] === "loading") return;
+    this._setButtonStatus(index, "loading");
+    const config = this.buttons[index];
+    if (await this._isConfirmed(config)) {
+      this._setButtonStatus(index, void 0);
+      return;
+    }
+    const [domain, service] = config.action.split(".", 2);
+    const begin = Date.now();
+    try {
+      await this.hass.callService(domain, service, config.data, config.target);
+      const delay = Date.now() - begin;
+      if (delay > 600) {
+        this._setCallResult(index, "success")();
+      } else {
+        setTimeout(this._setCallResult(index, "success"), 600 - delay);
+      }
+    } catch {
+      this._setCallResult(index, "error")();
+    }
+  }
+  async _isConfirmed(config) {
+    var _a;
+    if (!isShowConfirmation(config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
+    forwardHaptic("warning");
+    let text = "";
+    if (typeof config.confirmation !== "boolean" && config.confirmation.text) {
+      text = config.confirmation.text;
+    } else {
+      const [domain, service] = config.action.split(".", 2);
+      const serviceDomains = this.hass.services;
+      let serviceName = "";
+      if (domain in serviceDomains && service in serviceDomains[domain]) {
+        await this.hass.loadBackendTranslation("title");
+        const localize = await this.hass.loadBackendTranslation("entity");
+        serviceName += domainToName(localize, domain);
+        serviceName += ": ";
+        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
+      }
+      text = this.hass.localize("ui.panel.lovelace.cards.actions.action_confirmation", {
+        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${config.action}`) || config.action
+      });
+    }
+    const utils = await mainWindow.loadCardHelpers();
+    return !await utils.showConfirmationDialog(this, { text, title: config.tooltip });
+  }
+  _setButtonStatus(index, status) {
+    this._statuses[index] = status;
+    this._statuses = [...this._statuses];
+  }
+  _setCallResult(index, status) {
+    return () => {
+      forwardHaptic("light");
+      this._setButtonStatus(index, status);
+      setTimeout(() => {
+        this._setButtonStatus(index, void 0);
+      }, 2500);
+    };
+  }
+};
+FooterButtons.styles = style;
+__decorateClass$7([
+  n2({ attribute: false })
+], FooterButtons.prototype, "hass", 2);
+__decorateClass$7([
+  n2({ attribute: false })
+], FooterButtons.prototype, "buttons", 2);
+__decorateClass$7([
+  r()
+], FooterButtons.prototype, "_statuses", 2);
+FooterButtons = __decorateClass$7([
+  t$1("lc-footer-buttons")
+], FooterButtons);
 function compareRects(newVal, oldVal) {
   if (!oldVal) return true;
   return newVal.x !== oldVal.x || newVal.y !== oldVal.y || newVal.width !== oldVal.width || newVal.height !== oldVal.height;
@@ -1395,93 +1647,6 @@ function refine(struct, name, refiner) {
     }
   });
 }
-function isValidEntityId(id) {
-  return /^(\w+)\.(\w+)$/.test(id);
-}
-function isCustomType(type2) {
-  return type2.startsWith("custom:");
-}
-function computeDomain(entityId) {
-  return entityId.substring(0, entityId.indexOf("."));
-}
-function arrayFilter(array2, conditions, maxSize) {
-  if (!maxSize || maxSize > array2.length) {
-    maxSize = array2.length;
-  }
-  const filteredArray = [];
-  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
-    let meetsConditions = true;
-    for (const condition of conditions) {
-      if (!condition(array2[i2])) {
-        meetsConditions = false;
-        break;
-      }
-    }
-    if (meetsConditions) {
-      filteredArray.push(array2[i2]);
-    }
-  }
-  return filteredArray;
-}
-function processConfigEntities(entities, checkEntityId = true) {
-  return entities.map((entityConf, index) => {
-    if (typeof entityConf === "object" && !Array.isArray(entityConf) && entityConf.type) {
-      return entityConf;
-    }
-    let config;
-    if (typeof entityConf === "string") {
-      config = { entity: entityConf };
-    } else if (typeof entityConf === "object" && !Array.isArray(entityConf)) {
-      if (!("entity" in entityConf)) {
-        throw new Error(`Object at position ${index} is missing entity field`);
-      }
-      config = entityConf;
-    } else {
-      throw new Error(`Invalid entity ID at position ${index}`);
-    }
-    if (checkEntityId && !isValidEntityId(config.entity)) {
-      throw new Error(`Invalid entity ID at position ${index}: ${config.entity}`);
-    }
-    return config;
-  });
-}
-function processEditorEntities(entities) {
-  return entities.map((entityConf) => {
-    if (typeof entityConf === "string") {
-      return { entity: entityConf };
-    }
-    return entityConf;
-  });
-}
-function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
-  const conditions = [];
-  if (includeDomains == null ? void 0 : includeDomains.length) {
-    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
-  }
-  const entityIds = arrayFilter(entities, conditions, maxEntities);
-  if (entityIds.length < maxEntities && entitiesFallback.length) {
-    const fallbackEntityIds = findEntities(
-      hass,
-      maxEntities - entityIds.length,
-      entitiesFallback,
-      [],
-      includeDomains
-    );
-    entityIds.push(...fallbackEntityIds);
-  }
-  return entityIds;
-}
-function fireEvent(node, type2, detail, options = {}) {
-  const _detail = detail === null || detail === void 0 ? {} : detail;
-  const event = new Event(type2, {
-    bubbles: options.bubbles === void 0 ? true : options.bubbles,
-    cancelable: Boolean(options.cancelable),
-    composed: options.composed === void 0 ? true : options.composed
-  });
-  event.detail = _detail;
-  node.dispatchEvent(event);
-  return event;
-}
 const configElementStyle = css`
     .card-config {
         /* Cancels overlapping Margins for HAForm + Card Config options */
@@ -1994,25 +2159,6 @@ __decorateClass$1([
 EntitiesActionsCardConfig = __decorateClass$1([
   t$1("lc-entities-actions-card-config")
 ], EntitiesActionsCardConfig);
-const MAIN_WINDOW_NAME = "ha-main-window";
-const mainWindow = (() => {
-  try {
-    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
-  } catch {
-    return window;
-  }
-})();
-function forwardHaptic(hapticType) {
-  fireEvent(window, "haptic", hapticType);
-}
-function domainToName(localize, domain, manifest) {
-  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
-}
-function isShowConfirmation(confirmation, userId) {
-  if (!confirmation) return false;
-  if (confirmation === true) return true;
-  return !confirmation.exemptions || !confirmation.exemptions.some((e2) => e2.user === userId);
-}
 const styles = css`ha-card {
   height: 100%;
   display: flex;
@@ -2071,30 +2217,6 @@ const styles = css`ha-card {
   border-bottom-right-radius: var(--ha-card-border-radius, 12px);
   margin-top: -16px;
   overflow: hidden;
-}
-
-/*------------------*/
-.header-footer.footer {
-  margin-top: 0;
-}
-.header-footer.footer .divider {
-  border: none;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--divider-color);
-}
-.header-footer.footer .buttons {
-  width: auto;
-  margin-top: -8px;
-  padding: var(--padding-top, 8px) 12px var(--padding-bottom, 8px);
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-}
-.header-footer.footer .buttons .btn-wrap {
-  padding: 0 6px;
 }`;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -2153,7 +2275,10 @@ let EntitiesActionsCard = class extends LitElement {
       <ha-card>
         ${this._renderHeader()}
         ${this._renderEntities()}
-        ${this._renderFooter()}
+        <lc-footer-buttons 
+          .hass=${this.hass}
+          .buttons=${this._config.buttons}
+        ></lc-footer-buttons>
       </ha-card>
     `;
   }

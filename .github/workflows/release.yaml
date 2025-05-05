@@ -6,12 +6,28 @@ on:
       - 'v*'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .npmrc file
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.1
+          registry-url: "https://registry.npmjs.org"
+      - name: Install Dependencies
+        run: |
+          npm install -g npm@latest
+          npm install --no-fund --no-audit
+      - name: Build
+        run: |
+          npm run build
+          rm -rf node_modules
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -75,7 +75,10 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
       <ha-card>
         ${this._renderHeader()}
         ${this._renderEntities()}
-        ${this._renderFooter()}
+        <lc-footer-buttons 
+          .hass=${this.hass}
+          .buttons=${this._config.buttons}
+        ></lc-footer-buttons>
       </ha-card>
     `;
   }
