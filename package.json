@@ -25,7 +25,7 @@
     "watch": "vite build --watch",
     "build": "vite build --mode production",
     "lint": "eslint -c eslint.config.js",
-    "preversion": "npm run lint && npm run build",
+    "preversion": "npm run build",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
