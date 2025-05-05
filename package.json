@@ -25,7 +25,7 @@
     "watch": "vite build --watch",
     "build": "vite build --mode production",
     "lint": "eslint -c eslint.config.js",
-    "preversion": "npm run build",
+    "preversion": "npm run build && tsx ../../plugins/patch-manifest.ts lovelace-cards && git add .",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
