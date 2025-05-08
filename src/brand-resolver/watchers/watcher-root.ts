@@ -8,7 +8,7 @@ export class WatcherRoot extends Watcher {
     const elements = document.body.getElementsByTagName('home-assistant') as HTMLCollection;
     const homeAssistant = elements.item(0) as HTMLElement;
     if (!homeAssistant) {
-      throw new Error('No <home-assistant> element')
+      throw new Error('No <home-assistant> element');
     }
     super(homeAssistant, images);
 
@@ -16,6 +16,7 @@ export class WatcherRoot extends Watcher {
   }
 
   onAddElement(element: HTMLElement) {
+    console.log('WatcherRoot %o', element);
     switch (element.nodeName) {
       case 'HOME-ASSISTANT-MAIN':
         if (this._watcher.main) this._watcher.main?.destroy();

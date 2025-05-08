@@ -12,10 +12,14 @@ import {
   LovelaceRowConfig,
 } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
-import { processEditorEntities, processEntities } from '../../utils/entities-utils';
+import { processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
-import { GaugeActionsCardConfigSchema, IGaugeActionsCardConfigSchema } from './gauge-actions-card-schema';
+import {
+  GaugeActionsCardConfigSchema,
+  IGaugeActionsCardConfigSchema,
+  type IGaugeEntityConfigSchema,
+} from './gauge-actions-card-schema';
 import styles from './gauge-actions-card-config.scss';
 
 interface SubElementEditorConfig {
@@ -42,14 +46,14 @@ class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
 
   @state() private _config?: IGaugeActionsCardConfigSchema;
 
-  @state() private _configEntities?: LovelaceRowConfig[];
+  @state() private _configEntities?: IGaugeEntityConfigSchema[];
 
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
   setConfig(config: IGaugeActionsCardConfigSchema): void {
     assert(config, GaugeActionsCardConfigSchema);
     this._config = config;
-    this._configEntities = processEntities(config.entities, { domains: 'sensor' });
+    this._configEntities = processEntities(config.entities, { domains: ['sensor'] });
   }
 
   protected async firstUpdated(_changedProperties: PropertyValues) {
@@ -140,7 +144,7 @@ class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
         entities: newConfigEntities,
       };
 
-      this._configEntities = processEditorEntities(this._config!.entities);
+      this._configEntities = processEntities(this._config!.entities, { domains: ['counter', 'input_number', 'number', 'sensor'] });
     } else if (configValue) {
       if (value === '') {
         this._config = { ...this._config };
@@ -175,7 +179,7 @@ class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
       }
 
       this._config = { ...this._config!, entities: newConfigEntities };
-      this._configEntities = processEditorEntities(this._config!.entities);
+      this._configEntities = processEntities(this._config!.entities, { domains: ['counter', 'input_number', 'number', 'sensor'] });
     } else if (configValue) {
       if (value === '') {
         this._config = { ...this._config };

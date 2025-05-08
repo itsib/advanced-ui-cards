@@ -8,12 +8,19 @@ ha-card {
 .card-header {
   display: flex;
   justify-content: space-between;
-}
 
-.card-header .name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .icon {
+      --mdc-icon-size: 38px;
+      top: -2px;
+      padding: 0 10px 0 0;
+      position: relative;
+    }
+  }
 }
 
 #states {
@@ -38,10 +45,6 @@ ha-card {
 
 #states > div {
   position: relative;
-}
-
-.icon {
-  padding: 0px 18px 0px 8px;
 }
 
 .header {

@@ -79,14 +79,13 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
     if (!this._config?.title && !this._config?.icon) {
       return html``;
     }
-    const icon = this._config.icon ? html`
-      <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : '';
+
 
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${icon}
-          ${this._config.title}
+          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
+          <span>${this._config.title}</span>
         </div>
       </h1>
     `;

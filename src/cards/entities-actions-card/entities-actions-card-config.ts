@@ -12,7 +12,7 @@ import {
   LovelaceRowConfig,
 } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
-import { processEditorEntities, processEntities } from '../../utils/entities-utils';
+import { processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
 import { EntitiesActionsCardConfigSchema, IEntitiesActionsCardConfigSchema } from './entities-actions-card-schema';
@@ -140,7 +140,7 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
         entities: newConfigEntities,
       };
 
-      this._configEntities = processEditorEntities(this._config!.entities);
+      this._configEntities = processEntities(this._config!.entities);
     } else if (configValue) {
       if (value === '') {
         this._config = { ...this._config };
@@ -175,7 +175,7 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
       }
 
       this._config = { ...this._config!, entities: newConfigEntities };
-      this._configEntities = processEditorEntities(this._config!.entities);
+      this._configEntities = processEntities(this._config!.entities);
     } else if (configValue) {
       if (value === '') {
         this._config = { ...this._config };

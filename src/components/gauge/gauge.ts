@@ -91,19 +91,46 @@ export class Gauge extends LitElement {
       this._levels = undefined;
 
     } else {
-      this._levels = levels
-        .map(({ level, color }) => ({ level, color }))
-        .sort((a, b) => a.level - b.level);
+      this._levels = levels.map(item => {
+        let { color = 'var(--primary-color)', level = 0 } = item || {};
+
+        switch (color) {
+          case 'primary':
+            color = 'var(--primary-color)';
+            break;
+          case 'accent':
+            color = 'var(--accent-color)';
+            break;
+          case 'error':
+          case 'err':
+            color = 'var(--error-color)';
+            break;
+          case 'warning':
+          case 'warn':
+            color = 'var(--warning-color)';
+            break;
+          case 'success':
+            color = 'var(--success-color)';
+            break;
+          case 'info':
+            color = 'var(--info-color)';
+            break;
+        }
+
+        return { level, color };
+      });
+
+      this._levels.sort((a, b) => a.level - b.level);
+
+      if (this._levels[0].level !== this.min) {
+        this._levels = [{ level: this.min, color: 'var(--info-color)' }, ...this._levels];
+      }
     }
   }
 
   get levels(): ({ level: number; color: string }[] | undefined) {
     if (!this._levels || this._levels.length === 0) {
       return undefined;
-    }
-
-    if (this._levels[0].level !== this.min) {
-      this._levels = [{ level: this.min, color: 'var(--info-color)' }, ...this._levels];
     }
 
     return this._levels;
@@ -278,11 +305,12 @@ export class Gauge extends LitElement {
         const level = this.levels[i];
         const nextLevel = this.levels[i + 1];
 
-        const beginAngle = toRadians(getAngle(level.level, this.min, this.max));
+
+        const beginAngle = toRadians(getAngle(...normalize(level.level, this.min, this.max)));
         const beginAngleCos = Math.cos(beginAngle);
         const beginAngleSin = Math.sin(beginAngle);
 
-        const endAngle = toRadians(getAngle(nextLevel?.level ?? this.max, this.min, this.max));
+        const endAngle = toRadians(getAngle(...normalize(nextLevel?.level ?? this.max, this.min, this.max)));
         const endAngleCos = Math.cos(endAngle);
         const endAngleSin = Math.sin(endAngle);
 

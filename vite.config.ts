@@ -36,7 +36,7 @@ export default defineConfig({
         chunkFileNames: '[name].js',
         manualChunks(id: string) {
           const path = relative(APP_ROOT, id);
-          if (path.startsWith('brand-resolver')) {
+          if (/\/brand-resolver\//.test(path)) {
             return 'brand-resolver';
           } else {
             return 'lovelace-cards';

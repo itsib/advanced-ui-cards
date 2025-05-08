@@ -54,7 +54,7 @@ export const GaugeActionsCardConfigSchema = assign(
     title: optional(union([string(), boolean()])),
     icon: optional(string()),
     theme: optional(string()),
-    entities: array(GaugeEntitySchema),
+    entities: array(union([string(), GaugeEntitySchema])),
     buttons: optional(array(ButtonConfigSchema)),
   }),
 );

@@ -1,15 +1,26 @@
 const LC_ICONS = {
-  "reload-config": "M18 14.5c1.1 0 2.1.4 2.8 1.2l1.2-1.2v4h-4l1.8-1.8c-.5-.4-1.1-.7-1.8-.7c-1.4 0-2.5 1.1-2.5 2.5S16.6 21 18 21c.8 0 1.5-.4 2-1h1.7c-.6 1.5-2 2.5-3.7 2.5c-2.2 0-4-1.8-4-4s1.8-4 4-4m-6.5 4c0-1.1.3-2.1.7-3H12c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5c0 .2 0 .4-.1.5c.8-.3 1.6-.5 2.6-.5c.5 0 1 .1 1.5.2V12c0-.3 0-.7-.1-1l2.1-1.6c.2-.2.2-.4.1-.6l-2-3.5c-.1-.3-.3-.3-.6-.3l-2.5 1c-.5-.4-1.1-.7-1.7-1l-.4-2.7c.1-.1-.2-.3-.4-.3h-4c-.2 0-.5.2-.5.4l-.4 2.7c-.6.2-1.1.6-1.7.9L5 5c-.3 0-.5 0-.7.3l-2 3.5c-.1.2 0 .4.2.6L4.6 11c0 .3-.1.7-.1 1s0 .7.1 1l-2.1 1.7c-.2.2-.2.4-.1.6l2 3.5c.1.2.3.2.6.2l2.5-1c.5.4 1.1.7 1.7 1l.4 2.7c0 .2.2.4.5.4h2.5c-.7-1.1-1.1-2.3-1.1-3.6"
-};
-const LC_ICONS_MAP = Object.freeze(Object.keys(LC_ICONS).map((icon) => Object.freeze({ name: icon })));
-window.customIcons = window.customIcons || {};
-window.customIcons["lc"] = {
-  async getIcon(name) {
-    return { path: LC_ICONS[name.replace(/_/g, "-")] };
+  "reload-config": {
+    path: "M18 14.5c1.1 0 2.1.4 2.8 1.2l1.2-1.2v4h-4l1.8-1.8c-.5-.4-1.1-.7-1.8-.7c-1.4 0-2.5 1.1-2.5 2.5S16.6 21 18 21c.8 0 1.5-.4 2-1h1.7c-.6 1.5-2 2.5-3.7 2.5c-2.2 0-4-1.8-4-4s1.8-4 4-4m-6.5 4c0-1.1.3-2.1.7-3H12c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5c0 .2 0 .4-.1.5c.8-.3 1.6-.5 2.6-.5c.5 0 1 .1 1.5.2V12c0-.3 0-.7-.1-1l2.1-1.6c.2-.2.2-.4.1-.6l-2-3.5c-.1-.3-.3-.3-.6-.3l-2.5 1c-.5-.4-1.1-.7-1.7-1l-.4-2.7c.1-.1-.2-.3-.4-.3h-4c-.2 0-.5.2-.5.4l-.4 2.7c-.6.2-1.1.6-1.7.9L5 5c-.3 0-.5 0-.7.3l-2 3.5c-.1.2 0 .4.2.6L4.6 11c0 .3-.1.7-.1 1s0 .7.1 1l-2.1 1.7c-.2.2-.2.4-.1.6l2 3.5c.1.2.3.2.6.2l2.5-1c.5.4 1.1.7 1.7 1l.4 2.7c0 .2.2.4.5.4h2.5c-.7-1.1-1.1-2.3-1.1-3.6",
+    keywords: ["reload", "gear", "config"]
   },
-  async getIconList() {
-    return LC_ICONS_MAP;
+  brain: {
+    path: "m7.1 22q-0.34 0-0.64-0.17t-0.45-0.48l-2.4-4.3h1.8l1.2 2.5h2.9v-1.2h-2.1l-1.2-2.5h-3.2l-1.8-3.1q-0.062-0.16-0.11-0.31-0.046-0.16-0.048-0.31 0-0.12 0.16-0.62l1.8-3.1h3.2l1.2-2.5h2.1v-1.2h-2.9l-1.2 2.5h-1.8l2.4-4.3q0.16-0.31 0.45-0.48 0.3-0.17 0.64-0.17h3q0.53 0 0.89 0.36 0.36 0.36 0.36 0.89v5h-1.9l-1.2 1.2h3.1v3.7h-2.8l-1.2-2.5h-2.9l-1.2 1.2h3.4l1.2 2.5h3.5v6.2q0 0.53-0.36 0.89-0.36 0.36-0.89 0.36zm6.8 0q-0.53 0-0.89-0.36-0.36-0.36-0.36-0.89v-6.2h3.5l1.2-2.5h3.4l-1.2-1.2h-2.9l-1.2 2.5h-2.8v-3.7h3.1l-1.2-1.2h-1.9v-5q0-0.53 0.36-0.89 0.36-0.36 0.89-0.36h3q0.34 0 0.64 0.17 0.3 0.17 0.45 0.48l2.4 4.3h-1.8l-1.2-2.5h-2.9v1.2h2.1l1.2 2.5h3.2l1.8 3.1q0.062 0.16 0.11 0.31 0.048 0.16 0.046 0.31 0 0.12-0.16 0.62l-1.8 3.1h-3.2l-1.2 2.5h-2.1v1.2h2.9l1.2-2.5h1.8l-2.4 4.3q-0.16 0.31-0.45 0.48-0.3 0.17-0.64 0.17z",
+    keywords: ["brain", "intelligence", "main"]
+  },
+  "maria-db": {
+    path: "M23.157 4.412c-.676.284-.79.31-1.673.372c-.65.045-.757.057-1.212.209c-.75.246-1.395.75-2.02 1.59c-.296.398-1.249 1.913-1.249 1.988c0 .057-.65.998-.915 1.32c-.574.713-1.08 1.079-2.14 1.59c-.77.36-1.224.524-4.102 1.477c-1.073.353-2.133.738-2.367.864c-.852.449-1.515 1.036-2.203 1.938c-1.003 1.32-.972 1.313-3.042.947a12 12 0 0 0-.675-.063c-.644-.05-1.023.044-1.332.334L0 17.193l.177.088c.094.05.353.234.561.398c.215.17.461.347.55.391c.088.044.17.088.183.101s-.089.17-.228.353c-.435.581-.593.871-.574 1.048c.019.164.032.17.43.17c.517-.006.826-.056 1.261-.208c.65-.233 2.058-.94 2.784-1.4c.776-.5 1.717-.998 1.956-1.042c.082-.02.354-.07.594-.114c.58-.107 1.464-.095 2.587.05c.108.013.373.045.6.064c.227.025.43.057.454.076c.026.012.474.037.998.056c.934.026 1.104.007 1.3-.189c.126-.133.385-.631.498-.985c.209-.643.417-.921.366-.492c-.113.966-.322 1.692-.713 2.411c-.259.499-.663 1.092-.934 1.395c-.322.347-.315.36.088.315c.619-.063 1.471-.397 2.096-.82c.827-.562 1.647-1.691 2.19-3.03c.107-.27.22-.22.183.083c-.013.094-.038.315-.057.498l-.031.328l.353-.202c.833-.48 1.414-1.262 2.127-2.884c.227-.518.877-2.922 1.073-3.976a10 10 0 0 1 .271-1.042c.127-.429.196-.555.48-.858c.183-.19.625-.555.978-.808c.72-.505.953-.75 1.187-1.205c.208-.417.284-1.13.132-1.357c-.132-.202-.284-.196-.763.006",
+    keywords: ["database", "sql", "maria", "db"]
   }
+};
+const LC_ICONS_MAP = Object.entries(LC_ICONS).map(([icon, content]) => ({ name: icon, keywords: content.keywords }));
+window.customIcons = window.customIcons || {};
+window.customIconsets = window.customIconsets || {};
+window.customIcons["lc"] = {
+  getIcon: async (iconName) => {
+    var _a;
+    return { path: (_a = LC_ICONS[iconName]) == null ? void 0 : _a.path };
+  },
+  getIconList: async () => LC_ICONS_MAP
 };
 const { LitElement, css, html } = function getLit() {
   const keys = Object.keys(customElements);
@@ -546,18 +557,11 @@ function arrayFilter(array2, conditions, maxSize) {
   }
   return filteredArray;
 }
-function processEditorEntities(entities) {
-  return entities.map((entityConf) => {
-    if (typeof entityConf === "string") {
-      return { entity: entityConf };
-    }
-    return entityConf;
-  });
-}
 function processEntities(entities, opts = {}) {
   const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
   const maxLength = opts.maxLength ?? Infinity;
   const validateId = opts.validateId == null ? true : opts.validateId;
+  const callback = opts.callback || ((entity) => entity);
   if (maxLength < entities.length) {
     throw new Error(`The maximum number of elements is ${maxLength}`);
   }
@@ -591,7 +595,7 @@ function processEntities(entities, opts = {}) {
         throw new Error(`Invalid entity domain ${regExResult[1]} at position ${i2}. Allowed ${domains.join(". ")}`);
       }
     }
-    results[i2] = result;
+    results[i2] = callback(result);
   }
   return results;
 }
@@ -1142,15 +1146,41 @@ let Gauge = class extends LitElement {
     if (!levels) {
       this._levels = void 0;
     } else {
-      this._levels = levels.map(({ level, color }) => ({ level, color })).sort((a2, b2) => a2.level - b2.level);
+      this._levels = levels.map((item) => {
+        let { color = "var(--primary-color)", level = 0 } = item || {};
+        switch (color) {
+          case "primary":
+            color = "var(--primary-color)";
+            break;
+          case "accent":
+            color = "var(--accent-color)";
+            break;
+          case "error":
+          case "err":
+            color = "var(--error-color)";
+            break;
+          case "warning":
+          case "warn":
+            color = "var(--warning-color)";
+            break;
+          case "success":
+            color = "var(--success-color)";
+            break;
+          case "info":
+            color = "var(--info-color)";
+            break;
+        }
+        return { level, color };
+      });
+      this._levels.sort((a2, b2) => a2.level - b2.level);
+      if (this._levels[0].level !== this.min) {
+        this._levels = [{ level: this.min, color: "var(--info-color)" }, ...this._levels];
+      }
     }
   }
   get levels() {
     if (!this._levels || this._levels.length === 0) {
       return void 0;
-    }
-    if (this._levels[0].level !== this.min) {
-      this._levels = [{ level: this.min, color: "var(--info-color)" }, ...this._levels];
     }
     return this._levels;
   }
@@ -1262,10 +1292,10 @@ let Gauge = class extends LitElement {
       for (let i2 = 0; i2 < this.levels.length; i2++) {
         const level = this.levels[i2];
         const nextLevel = this.levels[i2 + 1];
-        const beginAngle = toRadians(getAngle(level.level, this.min, this.max));
+        const beginAngle = toRadians(getAngle(...normalize(level.level, this.min, this.max)));
         const beginAngleCos = Math.cos(beginAngle);
         const beginAngleSin = Math.sin(beginAngle);
-        const endAngle = toRadians(getAngle((nextLevel == null ? void 0 : nextLevel.level) ?? this.max, this.min, this.max));
+        const endAngle = toRadians(getAngle(...normalize((nextLevel == null ? void 0 : nextLevel.level) ?? this.max, this.min, this.max)));
         const endAngleCos = Math.cos(endAngle);
         const endAngleSin = Math.sin(endAngle);
         let d2 = "";
@@ -2437,7 +2467,7 @@ let EntitiesActionsCardConfig = class extends LitElement {
         ...this._config,
         entities: newConfigEntities
       };
-      this._configEntities = processEditorEntities(this._config.entities);
+      this._configEntities = processEntities(this._config.entities);
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -2468,7 +2498,7 @@ let EntitiesActionsCardConfig = class extends LitElement {
         newConfigEntities[this._subElementEditorConfig.index] = value;
       }
       this._config = { ...this._config, entities: newConfigEntities };
-      this._configEntities = processEditorEntities(this._config.entities);
+      this._configEntities = processEntities(this._config.entities);
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -2534,11 +2564,16 @@ const styles$2 = css`ha-card {
   display: flex;
   justify-content: space-between;
 }
-
 .card-header .name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.card-header .name .icon {
+  --mdc-icon-size: 38px;
+  top: -2px;
+  padding: 0 10px 0 0;
+  position: relative;
 }
 
 #states {
@@ -2563,10 +2598,6 @@ const styles$2 = css`ha-card {
 
 #states > div {
   position: relative;
-}
-
-.icon {
-  padding: 0px 18px 0px 8px;
 }
 
 .header {
@@ -2726,7 +2757,7 @@ const GaugeActionsCardConfigSchema = assign(
     title: optional(union([string(), boolean()])),
     icon: optional(string()),
     theme: optional(string()),
-    entities: array(GaugeEntitySchema),
+    entities: array(union([string(), GaugeEntitySchema])),
     buttons: optional(array(ButtonConfigSchema))
   })
 );
@@ -2745,7 +2776,7 @@ let GaugeActionsCardConfig = class extends LitElement {
   setConfig(config) {
     assert(config, GaugeActionsCardConfigSchema);
     this._config = config;
-    this._configEntities = processEntities(config.entities, { domains: "sensor" });
+    this._configEntities = processEntities(config.entities, { domains: ["sensor"] });
   }
   async firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
@@ -2819,7 +2850,7 @@ let GaugeActionsCardConfig = class extends LitElement {
         ...this._config,
         entities: newConfigEntities
       };
-      this._configEntities = processEditorEntities(this._config.entities);
+      this._configEntities = processEntities(this._config.entities, { domains: ["counter", "input_number", "number", "sensor"] });
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -2850,7 +2881,7 @@ let GaugeActionsCardConfig = class extends LitElement {
         newConfigEntities[this._subElementEditorConfig.index] = value;
       }
       this._config = { ...this._config, entities: newConfigEntities };
-      this._configEntities = processEditorEntities(this._config.entities);
+      this._configEntities = processEntities(this._config.entities, { domains: ["counter", "input_number", "number", "sensor"] });
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -2905,7 +2936,30 @@ __decorateClass$1([
 GaugeActionsCardConfig = __decorateClass$1([
   t$1("lc-gauge-actions-card-config")
 ], GaugeActionsCardConfig);
-const styles = css`.card-content {
+const styles = css`ha-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+.card-header .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-header .name .icon {
+  --mdc-icon-size: 38px;
+  top: -2px;
+  padding: 0 10px 0 0;
+  position: relative;
+}
+
+.card-content {
   padding: 16px 6px;
   display: flex;
   gap: 10px;
@@ -2980,13 +3034,11 @@ let GaugeActionsCard = class extends LitElement {
     if (!((_a = this._config) == null ? void 0 : _a.title) && !((_b = this._config) == null ? void 0 : _b.icon)) {
       return html``;
     }
-    const icon = this._config.icon ? html`
-      <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : "";
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${icon}
-          ${this._config.title}
+          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
+          <span>${this._config.title}</span>
         </div>
       </h1>
     `;
@@ -3037,241 +3089,6 @@ window.customCards.push({
   preview: true,
   configurable: false
 });
-async function resolveElement(element) {
-  return new Promise(async (resolve) => {
-    if (element.updateComplete) {
-      await element.updateComplete;
-    }
-    setTimeout(() => resolve(element), 10);
-  });
-}
-function select(element, selector) {
-  var _a;
-  if (element["renderRoot"]) {
-    const result2 = element["renderRoot"].querySelector(selector);
-    if (result2) {
-      return result2;
-    }
-  }
-  const result = (_a = element.querySelector) == null ? void 0 : _a.call(element, selector);
-  if (result) {
-    return result;
-  }
-  if (element.shadowRoot) {
-    return element.shadowRoot.querySelector(selector);
-  }
-  return null;
-}
-function selectAll(element, selector) {
-  var _a;
-  if (element["renderRoot"]) {
-    const result2 = element["renderRoot"].querySelectorAll(selector);
-    if (result2) {
-      return result2;
-    }
-  }
-  const result = (_a = element.querySelectorAll) == null ? void 0 : _a.call(element, selector);
-  if (result) {
-    return result;
-  }
-  if (element.shadowRoot) {
-    return element.shadowRoot.querySelectorAll(selector);
-  }
-  return null;
-}
-function getElement(element) {
-  const shadowRoot = element.shadowRoot || element["renderRoot"];
-  return shadowRoot || element;
-}
-async function waitSelect(element, selector) {
-  const selected = select(element, selector);
-  if (selected) return selected;
-  return new Promise((resolve) => {
-    const observable = getElement(element);
-    const observer = new MutationObserver((mutations) => {
-      const newNodes = mutations.flatMap(({ addedNodes }) => addedNodes);
-      if (!newNodes.length) return;
-      observer.disconnect();
-      setTimeout(() => resolve(select(element, selector)), 50);
-    });
-    observer.observe(observable, { childList: true, subtree: true });
-  });
-}
-async function waitSelectAll(element, selector) {
-  const nodeList = selectAll(element, selector);
-  if (nodeList == null ? void 0 : nodeList.length) return nodeList;
-  return new Promise((resolve) => {
-    const observable = getElement(element);
-    const observer = new MutationObserver((mutations) => {
-      const newNodes = mutations.flatMap(({ addedNodes }) => addedNodes);
-      if (!newNodes.length) return;
-      observer.disconnect();
-      setTimeout(() => resolve(selectAll(element, selector)), 50);
-    });
-    observer.observe(observable, { childList: true, subtree: true });
-  });
-}
-const DEFAULT_CONFIG = Object.freeze({
-  childList: true,
-  subtree: true
-});
-class Watcher {
-  constructor(element, images, config = DEFAULT_CONFIG) {
-    this._shadow = null;
-    this._element = element;
-    this._images = images;
-    this._observer = new MutationObserver((m) => this._onMutate(m));
-    if (this._element.shadowRoot) {
-      this._shadow = this._element.shadowRoot;
-      this._observer.observe(this._shadow, config);
-    } else {
-      this._observer.observe(this._element, config);
-      const attachShadowFn = this._element.attachShadow;
-      this._element.attachShadow = (init) => {
-        const shadow = attachShadowFn.call(this._element, init);
-        this._shadow = shadow;
-        this._observer.observe(this._shadow, config);
-        return shadow;
-      };
-    }
-  }
-  destroy() {
-    this._observer.disconnect();
-    Reflect.deleteProperty(this, "_observer");
-    Reflect.deleteProperty(this, "_element");
-  }
-  getImgSrc(domain) {
-    return domain && domain in this._images ? this._images[domain] : null;
-  }
-  _onMutate(mutations) {
-    for (let i2 = 0; i2 < mutations.length; i2++) {
-      const { addedNodes, removedNodes } = mutations[i2];
-      for (let j = 0; j < removedNodes.length; j++) {
-        const node = removedNodes.item(j);
-        if (node && node.nodeType === Node.ELEMENT_NODE) {
-          this.onRemoveElement(node);
-        }
-      }
-      for (let j = 0; j < addedNodes.length; j++) {
-        const node = addedNodes.item(j);
-        if (node && node.nodeType === Node.ELEMENT_NODE) {
-          this._resolveNewElement(node);
-        }
-      }
-    }
-  }
-  _resolveNewElement(element) {
-    resolveElement(element).then((_element) => {
-      this.onAddElement(_element);
-    });
-  }
-}
-class WatcherDialog extends Watcher {
-  constructor(element, images) {
-    super(element, images);
-  }
-  destroy() {
-    super.destroy();
-    Reflect.deleteProperty(this, "_images");
-  }
-  onAddElement(element) {
-    var _a, _b;
-    if (!((_a = element == null ? void 0 : element.integration) == null ? void 0 : _a.domain)) return;
-    const domain = element.integration.domain;
-    const src = this.getImgSrc(domain);
-    if (src) {
-      const img = (_b = element.shadowRoot) == null ? void 0 : _b.querySelector("span img");
-      if (img) {
-        img.src = src;
-      }
-    }
-  }
-  onRemoveElement(_element) {
-  }
-}
-class WatcherMain extends Watcher {
-  onRemoveElement(element) {
-    switch (element.nodeName) {
-    }
-  }
-  onAddElement(element) {
-    switch (element.nodeName) {
-      case "HA-CONFIG-INTEGRATIONS-DASHBOARD":
-        waitSelectAll(element, "[data-domain]").then((list) => this.handleIntegrationList(list));
-        break;
-      case "HA-CONFIG-INTEGRATION-PAGE":
-        const domain = element == null ? void 0 : element.domain;
-        waitSelect(element, ".logo-container").then((_element) => _element && this.handleIntegrationPage(domain, _element));
-        break;
-    }
-  }
-  handleIntegrationList(list) {
-    for (const element of list.values()) {
-      const domain = element.getAttribute("data-domain");
-      const src = this.getImgSrc(domain);
-      if (src) {
-        const header = select(element, "ha-integration-header");
-        if (header) {
-          const img = select(header, "img");
-          if (img) {
-            img.src = src;
-          }
-        }
-      }
-    }
-  }
-  handleIntegrationPage(domain, element) {
-    const src = this.getImgSrc(domain);
-    const img = select(element, "img");
-    if (img && src) {
-      img.src = src;
-    }
-  }
-}
-class WatcherRoot extends Watcher {
-  constructor(images) {
-    const elements = document.body.getElementsByTagName("home-assistant");
-    const homeAssistant = elements.item(0);
-    if (!homeAssistant) {
-      throw new Error("No <home-assistant> element");
-    }
-    super(homeAssistant, images);
-    this._watcher = {};
-  }
-  onAddElement(element) {
-    var _a, _b;
-    switch (element.nodeName) {
-      case "HOME-ASSISTANT-MAIN":
-        if (this._watcher.main) (_a = this._watcher.main) == null ? void 0 : _a.destroy();
-        this._watcher.main = new WatcherMain(element, this._images);
-        break;
-      case "DIALOG-ADD-INTEGRATION":
-        if (this._watcher.dialog) (_b = this._watcher.dialog) == null ? void 0 : _b.destroy();
-        this._watcher.dialog = new WatcherDialog(element, this._images);
-        break;
-    }
-  }
-  onRemoveElement(element) {
-    var _a, _b;
-    switch (element.nodeName) {
-      case "DIALOG-ADD-INTEGRATION":
-        (_a = this._watcher.dialog) == null ? void 0 : _a.destroy();
-        Reflect.deleteProperty(this._watcher, "dialog");
-        break;
-      case "HOME-ASSISTANT-MAIN":
-        (_b = this._watcher.main) == null ? void 0 : _b.destroy();
-        Reflect.deleteProperty(this._watcher, "main");
-        break;
-    }
-  }
-}
-(async () => {
-  if (window.brandResolver) return;
-  window.brandResolver = new WatcherRoot({
-    ["lovelace_cards"]: "/lovelace_cards_files/lovelace-cards.svg",
-    ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg"
-  });
-})();
 export {
   Gauge,
   IconError,

@@ -1,10 +1,20 @@
 import { selectAll, select } from './select';
 
+/**
+ * Returns an element. If element contains shadow root then returns them.
+ *
+ * @param element
+ */
 function getElement(element: HTMLElement): ShadowRoot | HTMLElement {
   const shadowRoot = element.shadowRoot || ((element as any)['renderRoot'] as ShadowRoot);
   return shadowRoot || element;
 }
 
+/**
+ * Waits for an element to appear in the DOM tree of the element or in its Shadow Dom
+ * @param element
+ * @param selector
+ */
 export async function waitSelect<T extends HTMLElement = HTMLElement>(element: HTMLElement, selector: string): Promise<T | null> {
   const selected = select<T>(element, selector);
   if (selected) return selected;

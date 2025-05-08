@@ -9,10 +9,12 @@ export class WatcherMain extends Watcher {
       case 'HA-CONFIG-INTEGRATIONS-DASHBOARD':
         // console.log('REMOVE HA-CONFIG-INTEGRATIONS-DASHBOARD');
         break;
+
     }
   }
 
   onAddElement(element: HTMLElement) {
+  console.log('WatcherMain %o', element);
     switch (element.nodeName) {
       case 'HA-CONFIG-INTEGRATIONS-DASHBOARD':
         waitSelectAll(element, '[data-domain]').then(list => this.handleIntegrationList(list));
@@ -20,6 +22,9 @@ export class WatcherMain extends Watcher {
       case 'HA-CONFIG-INTEGRATION-PAGE':
         const domain = (element as any)?.domain as string;
         waitSelect<HTMLElement>(element, '.logo-container').then(_element => _element && this.handleIntegrationPage(domain, _element));
+        break;
+      case 'PARTIAL-PANEL-RESOLVER':
+        console.log('PARTIAL-PANEL-RESOLVER');
         break;
     }
   }

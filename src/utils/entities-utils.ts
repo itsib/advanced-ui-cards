@@ -1,11 +1,4 @@
-import {
-  EntityConfig,
-  EntityConfigLike,
-  HassEntity,
-  HomeAssistant,
-  LovelaceRowConfig,
-  ServiceCallResponse,
-} from 'types';
+import { EntityConfigLike, HassEntity, HomeAssistant, ServiceCallResponse } from 'types';
 
 /** States that we consider "off". */
 export const STATES_OFF = ['closed', 'locked', 'off'];
@@ -47,52 +40,18 @@ export function arrayFilter<T>(array: T[], conditions: ((value: T) => boolean)[]
   return filteredArray;
 }
 
-export function processConfigEntities<T extends EntityConfig | LovelaceRowConfig>(entities: (T | string)[], checkEntityId = true): T[] {
-  return entities.map((entityConf, index): T => {
-    if (typeof entityConf === 'object' && !Array.isArray(entityConf) && entityConf.type) {
-      return entityConf;
-    }
-
-    let config: T;
-
-    if (typeof entityConf === 'string') {
-      config = { entity: entityConf } as T;
-    } else if (typeof entityConf === 'object' && !Array.isArray(entityConf)) {
-      if (!('entity' in entityConf)) {
-        throw new Error(`Object at position ${index} is missing entity field`);
-      }
-      config = entityConf as T;
-    } else {
-      throw new Error(`Invalid entity ID at position ${index}`);
-    }
-
-    if (checkEntityId && !isValidEntityId((config as EntityConfig).entity!)) {
-      throw new Error(`Invalid entity ID at position ${index}: ${(config as EntityConfig).entity}`);
-    }
-
-    return config;
-  });
-}
-
-export function processEditorEntities(entities: (any | string)[]): EntityConfig[] {
-  return entities.map((entityConf) => {
-    if (typeof entityConf === 'string') {
-      return { entity: entityConf };
-    }
-    return entityConf;
-  });
-}
-
-export interface ProcessEntitiesOpts {
+export interface ProcessEntitiesOpts<T extends EntityConfigLike> {
   domains?: string[] | string;
   maxLength?: number;
   validateId?: boolean;
+  callback?: (entity: any) => T;
 }
 
-export function processEntities<T extends EntityConfigLike>(entities: (any | string)[], opts: ProcessEntitiesOpts = {}): T[] {
+export function processEntities<T extends EntityConfigLike>(entities: (any | string)[], opts: ProcessEntitiesOpts<T> = {}): T[] {
   const domains = opts.domains ? typeof opts.domains === 'string' ? [opts.domains] : opts.domains : null;
   const maxLength = opts.maxLength ?? Infinity;
   const validateId = opts.validateId == null ? true : opts.validateId;
+  const callback = opts.callback || ((entity: any) => entity);
 
   if (maxLength < entities.length) {
     throw new Error(`The maximum number of elements is ${maxLength}`);
@@ -134,7 +93,7 @@ export function processEntities<T extends EntityConfigLike>(entities: (any | str
       }
     }
 
-    results[i] = result;
+    results[i] = callback(result);
   }
 
   return results;
