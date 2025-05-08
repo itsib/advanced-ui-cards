@@ -1,6 +1,6 @@
-import { WatcherMain, WatcherDialog, Watcher } from './';
+import { WatcherMain, WatcherDialog, WatcherBase } from './';
 
-export class WatcherRoot extends Watcher {
+export class WatcherRoot extends WatcherBase {
 
   private _watcher: { main?: WatcherMain; dialog?: WatcherDialog };
 
@@ -15,7 +15,7 @@ export class WatcherRoot extends Watcher {
     this._watcher = {};
   }
 
-  onAddElement(element: HTMLElement) {
+  async onAddElement(element: HTMLElement) {
     console.log('WatcherRoot %o', element);
     switch (element.nodeName) {
       case 'HOME-ASSISTANT-MAIN':
@@ -29,7 +29,7 @@ export class WatcherRoot extends Watcher {
     }
   }
 
-  onRemoveElement(element: HTMLElement) {
+  async onRemoveElement(element: HTMLElement) {
     switch (element.nodeName) {
       case 'DIALOG-ADD-INTEGRATION':
         this._watcher.dialog?.destroy();

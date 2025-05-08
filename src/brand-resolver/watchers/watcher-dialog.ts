@@ -1,6 +1,6 @@
-import { Watcher } from './watcher';
+import { WatcherBase } from './watcher-base';
 
-export class WatcherDialog extends Watcher {
+export class WatcherDialog extends WatcherBase {
 
   constructor(element: HTMLElement, images: { [domain: string]: string }) {
     super(element, images);

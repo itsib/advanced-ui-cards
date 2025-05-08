@@ -5,7 +5,7 @@ const DEFAULT_CONFIG: MutationObserverInit = Object.freeze({
   subtree: true,
 });
 
-export abstract class Watcher {
+export abstract class WatcherBase {
 
   protected _images: { [domain: string]: string };
 
@@ -38,9 +38,9 @@ export abstract class Watcher {
     }
   }
 
-  abstract onAddElement(element: HTMLElement): void;
+  abstract onAddElement(element: HTMLElement): Promise<void>;
 
-  abstract onRemoveElement(element: HTMLElement): void;
+  abstract onRemoveElement(element: HTMLElement): Promise<void>;
 
   destroy() {
     this._observer.disconnect();
@@ -60,7 +60,7 @@ export abstract class Watcher {
       for (let j = 0; j < removedNodes.length; j++) {
         const node = removedNodes.item(j);
         if (node && node.nodeType === Node.ELEMENT_NODE) {
-          this.onRemoveElement(node as HTMLElement);
+          this.onRemoveElement(node as HTMLElement).catch(console.error);
         }
       }
 
@@ -74,8 +74,6 @@ export abstract class Watcher {
   }
 
   private _resolveNewElement(element: HTMLElement) {
-    resolveElement(element).then(_element => {
-      this.onAddElement(_element);
-    });
+    resolveElement(element).then(this.onAddElement.bind(this)).catch(console.error);
   }
 }

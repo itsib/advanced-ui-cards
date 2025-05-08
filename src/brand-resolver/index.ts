@@ -1,16 +1,29 @@
-import { type Watcher, WatcherRoot } from './watchers';
+import { type WatcherBase, WatcherRoot } from './watchers';
+import { DomWatcher } from './watchers/dom-watcher';
+import { waitShadowRoot } from './utils';
 
 declare global {
   interface Window {
-    brandResolver?: Watcher;
+    brandResolver?: DomWatcher;
   }
 }
 
 (async () => {
   if (window.brandResolver) return;
 
-  window.brandResolver = new WatcherRoot({
-    ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
-    ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
+  const elements = document.body.getElementsByTagName('home-assistant') as HTMLCollection;
+  const homeAssistant = elements.item(0) as HTMLElement;
+  if (!homeAssistant) {
+    throw new Error('No <home-assistant> element');
+  }
+
+  const root = await waitShadowRoot(homeAssistant);
+
+  window.brandResolver = new DomWatcher({
+    root: root,
+    images: {
+      ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
+      ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
+    },
   });
 })();
