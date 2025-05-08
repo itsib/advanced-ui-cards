@@ -102,7 +102,6 @@ export class DomWatcher {
     const section = await waitSelector(element, ':shadow ha-top-app-bar-fixed');
     console.log('HA-TOP-APP-BAR-FIXED: %o ', element);
     if (!section) return;
-
     this._watchers[element.nodeName] = onElementChange(section, this.onChangeCallback.bind(this));
   }
 
