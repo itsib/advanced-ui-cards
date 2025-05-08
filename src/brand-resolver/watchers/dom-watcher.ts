@@ -115,11 +115,9 @@ export class DomWatcher {
       const domain = (child as any)?.entity_id?.replace(/^update\./, '')?.replace(/_update$/, '');
       console.log('domain: %s entity_id: %s', domain, (child as any)?.entity_id);
       const url = this.getImgSrc(domain);
-
       if (!url) continue;
-
-      console.log('Found child: %o ', child);
+      console.log('Founds child: %o ', child);
     }
-    console.log('updates: %o ', element);
+    console.log('update: %o ', element);
   }
 }
