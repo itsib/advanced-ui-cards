@@ -1024,54 +1024,65 @@ const styles$8 = css`:host {
   --gauge-needle-position: 0deg;
   display: block;
 }
-:host .gauge .needle-shadow {
-  transition: all 1s ease-in-out;
-}
-:host .gauge .needle {
-  transition: transform 0.6s cubic-bezier(0.26, 0, 0.78, 1.4);
-}
-
-.lc-gauge {
-  filter: none;
-  position: relative;
-}
-.lc-gauge .gauge {
-  position: relative;
-  z-index: 1;
-}
-.lc-gauge .gauge.animated {
-  animation-name: flicker;
-  animation-timing-function: linear;
-  animation-duration: 800ms;
-}
-.lc-gauge .value {
-  left: 0;
-  right: 0;
-  transform: translateY(-100%);
-  text-align: center;
-  position: absolute;
-  z-index: 2;
-}
-.lc-gauge .label {
+:host .lc-gauge {
   width: 100%;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 16px;
-  position: relative;
-  z-index: 3;
+  height: auto;
 }
-.lc-gauge.disabled .gauge {
+:host .lc-gauge .scale {
+  stroke: rgb(0, 0, 0);
+  stroke-width: 0;
+  stroke-linejoin: round;
+}
+:host .lc-gauge .needle {
+  transform: rotate(var(--gauge-needle-position));
+}
+:host .lc-gauge .value {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--text-primary-color);
+}
+:host .lc-gauge .label {
+  font-size: 7px;
+  font-weight: 400;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--text-primary-color);
+}
+:host .lc-gauge.disabled .gauge {
   filter: grayscale(1) brightness(0.6);
-}
-
-@keyframes flicker {
-  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-    filter: grayscale(1) brightness(0.6);
-  }
-  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-    filter: none;
-  }
 }`;
+const tau = 2 * Math.PI;
+const amplitude = 1;
+const period = 0.3;
+function tpmt(x) {
+  return (Math.pow(2, -10 * x) - 9765625e-10) * 1.0009775171065494;
+}
+(function custom(a2, p2) {
+  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
+  function elasticIn2(t2) {
+    return a2 * tpmt(- --t2) * Math.sin((s2 - t2) / p2);
+  }
+  elasticIn2.amplitude = function(a22) {
+    return custom(a22, p2 * tau);
+  };
+  elasticIn2.period = function(p22) {
+    return custom(a2, p22);
+  };
+  return elasticIn2;
+})(amplitude, period);
+const elasticOut = function custom2(a2, p2) {
+  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
+  function elasticOut2(t2) {
+    return 1 - a2 * tpmt(t2 = +t2) * Math.sin((t2 + s2) / p2);
+  }
+  elasticOut2.amplitude = function(a22) {
+    return custom2(a22, p2 * tau);
+  };
+  elasticOut2.period = function(p22) {
+    return custom2(a2, p22);
+  };
+  return elasticOut2;
+}(amplitude, period);
 var __defProp$8 = Object.defineProperty;
 var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
 var __decorateClass$8 = (decorators, target, key, kind) => {
@@ -1086,20 +1097,34 @@ function round(value, decimals = 2) {
   const mul = 10 ** decimals;
   return Math.round(value * mul) / mul;
 }
-function normalize(value, min, max) {
+function normalize(value, min, max, step = 0.1) {
+  var _a;
   min = isNaN(min) ? 0 : min;
-  max = isNaN(max) || max < min ? 100 : max;
+  max = isNaN(max) ? 100 : max;
+  if (min > max) {
+    throw new Error("MIN_MAX");
+  }
   value = value == null || isNaN(value) ? 0 : value;
-  value = value > max ? max : value < min ? min : value;
+  value = Math.max(value, min);
+  value = Math.min(value, max);
+  const decimals = ((_a = `${step}`.split(".")[1]) == null ? void 0 : _a.length) || 0;
+  const remains = value % step;
+  const half = step / 2;
+  const rounded = value - remains;
+  const nextTick = rounded + step;
+  if (half < remains && nextTick <= max) {
+    value = parseFloat(nextTick.toFixed(decimals));
+  } else {
+    value = parseFloat(rounded.toFixed(decimals));
+  }
   return [value, min, max];
 }
-function getPercent(value, min, max) {
-  [value, min, max] = normalize(value, min, max);
-  return round((value - min) / (max - min) * 100);
-}
 function getAngle(value, min, max) {
-  const percent = getPercent(value, min, max);
+  const percent = (value - min) / (max - min) * 100;
   return percent * 180 / 100;
+}
+function toRadians(deg) {
+  return deg * Math.PI / 180;
 }
 let Gauge = class extends LitElement {
   constructor() {
@@ -1108,8 +1133,10 @@ let Gauge = class extends LitElement {
     this.unit = "";
     this.min = 0;
     this.max = 100;
+    this.step = 0.1;
     this.value = 0;
     this.disabled = false;
+    this._angleDeg = 0;
   }
   set levels(levels) {
     if (!levels) {
@@ -1128,133 +1155,141 @@ let Gauge = class extends LitElement {
     return this._levels;
   }
   connectedCallback() {
-    var _a;
     super.connectedCallback();
-    const insetShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
-    const dropShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
-    this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this._svg.classList.add("gauge");
-    this._svg.setAttribute("viewBox", "-50 -50 100 60");
-    this._svg.setAttribute("width", "250");
-    this._svg.setAttribute("height", "125");
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    defs.append(this._renderInsetShadow(insetShadowFilterId));
-    defs.append(this._renderDropShadow(dropShadowFilterId));
-    this._svg.append(defs);
-    this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._scale.setAttribute("stroke-linejoin", "round");
-    this._scale.setAttribute("stroke-width", "0");
-    this._scale.setAttribute("stroke", "rgb(0, 0, 0)");
-    this._scale.setAttribute("filter", `url(#${insetShadowFilterId})`);
-    this._svg.append(this._scale);
-    this._needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._needle.classList.add("needle");
-    this._needle.setAttribute("style", `transform: rotate(var(--gauge-needle-position))`);
-    this._needle.setAttribute("filter", `url(#${dropShadowFilterId})`);
-    this._svg.append(this._needle);
-    this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    this._text.setAttribute("text-anchor", "middle");
-    this._text.setAttribute("x", "0");
-    this._text.setAttribute("y", "-2");
-    this._text.setAttribute("font-weight", "400");
-    this._text.setAttribute("font-family", "Roboto, Noto, sans-serif");
-    this._text.setAttribute("font-size", "14px");
-    this._text.setAttribute("fill", "var(--text-primary-color)");
-    this._svg.append(this._text);
-    (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
-    this._renderScale();
-    this._renderNeedle();
-    this._renderTextValue();
-    this.applyValue();
+    this._renderRootElements();
+    this._renderDynamicElements();
+    this._syncValue();
   }
   disconnectedCallback() {
     var _a;
     super.disconnectedCallback();
+    if (this._rafID != null) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
     (_a = this._svg) == null ? void 0 : _a.remove();
     this._svg = void 0;
     this._scale = void 0;
   }
   updated(_changed) {
+    var _a, _b, _c;
     super.updated(_changed);
     if (_changed.has("levels") || _changed.has("min") || _changed.has("max")) {
-      this._renderScale();
+      this._renderDynamicElements();
     }
     if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
-      this.applyValue();
-      this._renderTextValue();
+      this._syncValue();
+    }
+    if (_changed.has("disabled")) {
+      (_c = (_b = (_a = this._svg) == null ? void 0 : _a.classList) == null ? void 0 : _b[this.disabled ? "add" : "remove"]) == null ? void 0 : _c.call(_b, "disabled");
     }
   }
-  applyValue() {
+  _syncValue() {
     if (this._rafID != null) {
       cancelAnimationFrame(this._rafID);
       this._rafID = null;
     }
-    const [value, min, max] = normalize(this.value, this.min, this.max);
-    const angle = getAngle(value, min, max);
-    const angleRad = (angle - 90) * Math.PI / 180;
-    this.style.setProperty("--gauge-needle-position", `${angle}deg`);
-    this._shadow.setAttribute("dx", `${round(Math.cos(angleRad), 4)}`);
-    this._shadow.setAttribute("dy", `${round(Math.sin(angleRad), 4)}`);
-    this._text.innerHTML = `${value}${this.unit}`;
-    parseFloat(this.style.getPropertyValue("--gauge-needle-position").replace("deg", ""));
-    getAngle(value, min, max);
+    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
+    this._text.innerHTML = `${value}${this.unit || ""}`;
+    const oldAngle = this._angleDeg;
+    const newAngle = getAngle(value, min, max);
+    const diffAngle = newAngle - oldAngle;
+    const duration = 500;
+    const timingFunction = elasticOut.amplitude(0.5).period(0.4);
+    let start = null;
+    const setAngle = (angle) => {
+      const angleRad = toRadians(angle - 90);
+      this.style.setProperty("--gauge-needle-position", `${angle}deg`);
+      this._shadow.setAttribute("dx", round(Math.cos(angleRad), 4).toString());
+      this._shadow.setAttribute("dy", round(Math.sin(angleRad), 4).toString());
+    };
+    const animate = (time) => {
+      if (!start) {
+        start = time;
+        this._rafID = requestAnimationFrame(animate);
+        return;
+      }
+      if (start + duration > time) {
+        const progress = timingFunction((time - start) / duration);
+        this._angleDeg = Math.min(180, Math.max(0, oldAngle + diffAngle * progress));
+        setAngle(this._angleDeg);
+        this._rafID = requestAnimationFrame(animate);
+      }
+    };
+    this._rafID = requestAnimationFrame(animate);
   }
-  _render() {
+  _renderRootElements() {
+    var _a;
+    const insetShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
+    const dropShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
+    this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this._svg.classList.add("lc-gauge");
+    this._svg.setAttribute("viewBox", "-50 -50 100 60");
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.append(this._renderInsetShadow(insetShadowFilterId));
+    defs.append(this._renderDropShadow(dropShadowFilterId));
+    this._svg.append(defs);
+    this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._scale.classList.add("scale");
+    this._scale.setAttribute("filter", `url(#${insetShadowFilterId})`);
+    this._svg.append(this._scale);
+    this._needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._needle.classList.add("needle");
+    this._needle.setAttribute("filter", `url(#${dropShadowFilterId})`);
+    this._svg.append(this._needle);
+    this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this._text.classList.add("value");
+    this._text.setAttribute("text-anchor", "middle");
+    this._text.setAttribute("x", "0");
+    this._text.setAttribute("y", "-2");
+    this._svg.append(this._text);
+    this._label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this._label.classList.add("label");
+    this._label.setAttribute("text-anchor", "middle");
+    this._label.setAttribute("x", "0px");
+    this._label.setAttribute("y", "9px");
+    this._svg.append(this._label);
+    (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
   }
-  _renderNeedle() {
-    if (!this._needle) return;
-    for (let i2 = 0; i2 < this._needle.childNodes.length; i2++) {
-      this._needle.childNodes.item(i2).remove();
+  _renderDynamicElements() {
+    var _a;
+    if (!this._scale || !this._needle || !this._label) return;
+    for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
+      this._scale.childNodes.item(i2).remove();
+    }
+    (_a = this._needle.childNodes.item(0)) == null ? void 0 : _a.remove();
+    if (this.levels) {
+      for (let i2 = 0; i2 < this.levels.length; i2++) {
+        const level = this.levels[i2];
+        const nextLevel = this.levels[i2 + 1];
+        const beginAngle = toRadians(getAngle(level.level, this.min, this.max));
+        const beginAngleCos = Math.cos(beginAngle);
+        const beginAngleSin = Math.sin(beginAngle);
+        const endAngle = toRadians(getAngle((nextLevel == null ? void 0 : nextLevel.level) ?? this.max, this.min, this.max));
+        const endAngleCos = Math.cos(endAngle);
+        const endAngleSin = Math.sin(endAngle);
+        let d2 = "";
+        d2 += `M ${round(0 - 47.5 * beginAngleCos)} ${round(0 - 47.5 * beginAngleSin)} `;
+        d2 += `A 47.5 47.5 0 0 1 ${round(0 - 47.5 * endAngleCos)} ${round(0 - 47.5 * endAngleSin)} `;
+        d2 += `L ${round(0 - 32.5 * endAngleCos)} ${round(0 - 32.5 * endAngleSin)} `;
+        d2 += `A 32.5 32.5 0 0 0 ${round(0 - 32.5 * beginAngleCos)} ${round(0 - 32.5 * beginAngleSin)} `;
+        d2 += "z";
+        const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path2.setAttribute("d", d2);
+        path2.setAttribute("fill", level.color);
+        this._scale.append(path2);
+      }
+    } else {
+      const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path2.setAttribute("d", "M -47.5 0 A 47.5 47.5 0 0 1 47.5 0 L 32.5 0 A 32.5 32.5 0 1 0 -32.5 0 z");
+      path2.setAttribute("fill", "var(--info-color)");
+      this._scale.append(path2);
     }
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", "M -25 -2 L -47.5 0 L -25 2 z");
     path.setAttribute("fill", "rgb(200, 200, 200)");
     this._needle.append(path);
-  }
-  _renderScale() {
-    if (!this._scale) return;
-    for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
-      this._scale.childNodes.item(i2).remove();
-    }
-    if (this.levels) {
-      for (let i2 = 0; i2 < this.levels.length; i2++) {
-        const { level, color } = this.levels[i2];
-        const beginAngle = getAngle(level, this.min, this.max);
-        const beginAngleCos = Math.cos(beginAngle * Math.PI / 180);
-        const beginAngleSin = Math.sin(beginAngle * Math.PI / 180);
-        const endAngle = this.levels[i2 + 1] ? getAngle(this.levels[i2 + 1].level, this.min, this.max) : 180;
-        const endAngleCos = Math.cos(endAngle * Math.PI / 180);
-        const endAngleSin = Math.sin(endAngle * Math.PI / 180);
-        let d2 = "M ";
-        d2 += round(0 - 47.5 * beginAngleCos);
-        d2 += " ";
-        d2 += round(0 - 47.5 * beginAngleSin);
-        d2 += " A 47.5 47.5 0 0 1 ";
-        d2 += round(0 - 47.5 * endAngleCos);
-        d2 += " ";
-        d2 += round(0 - 47.5 * endAngleSin);
-        d2 += " L ";
-        d2 += round(0 - 32.5 * endAngleCos);
-        d2 += " ";
-        d2 += round(0 - 32.5 * endAngleSin);
-        d2 += " A 32.5 32.5 0 0 0 ";
-        d2 += round(0 - 32.5 * beginAngleCos);
-        d2 += " ";
-        d2 += round(0 - 32.5 * beginAngleSin);
-        d2 += " z";
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", d2);
-        path.setAttribute("fill", color);
-        this._scale.append(path);
-      }
-    } else {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", "M -47.5 0 A 47.5 47.5 0 0 1 47.5 0 L 32.5 0 A 32.5 32.5 0 1 0 -32.5 0 z");
-      path.setAttribute("fill", "var(--info-color)");
-      this._scale.append(path);
-    }
-  }
-  _renderTextValue() {
+    this._label.innerHTML = "CPU in use";
   }
   _renderInsetShadow(filterId) {
     const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
@@ -1318,6 +1353,9 @@ __decorateClass$8([
 __decorateClass$8([
   n2({ type: Number, reflect: true })
 ], Gauge.prototype, "max", 2);
+__decorateClass$8([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "step", 2);
 __decorateClass$8([
   n2({ type: Number })
 ], Gauge.prototype, "value", 2);
@@ -2666,26 +2704,29 @@ window.customCards.push({
   description: "This map allows you to group entities and actions that are triggered by buttons in the footer.",
   documentationURL: "https://github.com/itsib/lovelace-cards/blob/main/README.md"
 });
-const TestEntity = object({
-  val: optional(number()),
+const GaugeLevel = object({
+  level: number(),
+  color: string()
+});
+const GaugeEntitySchema = object({
   entity: string(),
+  attribute: optional(string()),
   name: optional(string()),
   icon: optional(string()),
   image: optional(string()),
-  secondary_info: optional(string()),
-  state_color: optional(boolean()),
-  tap_action: optional(ActionConfigSchema),
-  hold_action: optional(ActionConfigSchema),
-  double_tap_action: optional(ActionConfigSchema),
-  confirmation: optional(ConfirmationConfigSchema)
+  unit: optional(string()),
+  min: optional(number()),
+  max: optional(number()),
+  step: optional(number()),
+  levels: array(GaugeLevel)
 });
 const GaugeActionsCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),
-    entities: array(TestEntity),
-    theme: optional(string()),
     icon: optional(string()),
+    theme: optional(string()),
+    entities: array(GaugeEntitySchema),
     buttons: optional(array(ButtonConfigSchema))
   })
 );
@@ -2864,101 +2905,14 @@ __decorateClass$1([
 GaugeActionsCardConfig = __decorateClass$1([
   t$1("lc-gauge-actions-card-config")
 ], GaugeActionsCardConfig);
-const styles = css`:host {
-  font-family: var(--paper-font-body1_-_font-family);
-  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
-  font-size: var(--paper-font-body1_-_font-size);
-  font-weight: var(--paper-font-body1_-_font-weight);
-  line-height: var(--paper-font-body1_-_line-height);
-  color: var(--primary-text-color);
-}
-
-.mariadb-card .card-header {
-  padding: 16px;
+const styles = css`.card-content {
+  padding: 16px 6px;
   display: flex;
+  gap: 10px;
 }
-.mariadb-card .card-header .logo {
-  width: auto;
-  height: 40px;
-}
-.mariadb-card .card-header .info {
-  padding-left: 16px;
-}
-.mariadb-card .card-header .info .name {
-  font-size: 22px;
-  color: var(--ha-card-header-color, --primary-text-color);
-  line-height: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.mariadb-card .card-header .info .version {
-  margin-top: 4px;
-  color: var(--secondary-text-color);
-  font-size: 14px;
-  line-height: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.mariadb-card .card-content {
-  margin: 0;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.mariadb-card .card-content .gauge-wrap {
-  width: 132px;
-  margin: 0 6px;
-  cursor: pointer;
-}
-.mariadb-card .card-footer {
-  margin: 16px 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--entities-divider-color, var(--divider-color));
-  display: flex;
-  justify-content: space-between;
-}
-.mariadb-card .card-footer .database-size {
-  display: flex;
-  align-items: center;
-}
-.mariadb-card .card-footer .database-size .icon {
-  cursor: pointer;
-}
-.mariadb-card .card-footer .database-size .icon img {
-  width: auto;
-  height: 36px;
-  opacity: 0.7;
-  transition: opacity 0.2s ease-in-out 0s;
-}
-.mariadb-card .card-footer .database-size .icon:hover img {
-  opacity: 0.9;
-}
-.mariadb-card .card-footer .database-size .value {
-  margin-left: 14px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.mariadb-card .card-footer .actions {
-  margin-right: -8px;
-  display: flex;
-}
-.mariadb-card .card-footer .actions .btn-wrap {
-  padding: 0 8px;
-}
-.mariadb-card .card-footer .actions .btn-wrap.purge {
-  --button-icon-color: var(--info-color);
-}
-.mariadb-card .card-footer .actions .btn-wrap.reload {
-  --button-icon-color: var(--warning-color);
-}
-.mariadb-card .card-footer .actions .btn-wrap.stop {
-  --button-icon-color: var(--error-color);
-}
-.mariadb-card .card-footer .actions .btn-wrap.start {
-  --button-icon-color: var(--success-color);
+.card-content .gauge-wrap {
+  width: 50%;
+  flex-shrink: 1;
 }`;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -2986,7 +2940,6 @@ let GaugeActionsCard = class extends LitElement {
       ["sensor"],
       (entity) => /^\d+(:?\.\d+)?$/.test(entity.state)
     );
-    console.log(foundEntities);
     return {
       entities: foundEntities,
       buttons: [
@@ -2998,17 +2951,8 @@ let GaugeActionsCard = class extends LitElement {
     if (!config.entities || !Array.isArray(config.entities)) {
       throw new Error("Entities must be specified");
     }
-    const entities = processEntities(config.entities, {
-      domains: [
-        "counter",
-        "input_number",
-        "number",
-        "sensor",
-        "light"
-      ]
-    });
     this._config = config;
-    this._configEntities = entities;
+    this._configEntities = processEntities(config.entities, { validateId: false });
   }
   getCardSize() {
     if (!this._config) {
@@ -3056,27 +3000,21 @@ let GaugeActionsCard = class extends LitElement {
       <div class="card-content">${entities}</div>`;
   }
   _renderEntity(_entity) {
-    var _a, _b, _c, _d;
+    var _a, _b;
     const stateObj = (_b = (_a = this.hass) == null ? void 0 : _a.states) == null ? void 0 : _b[_entity.entity];
-    (stateObj == null ? void 0 : stateObj.state) ? Number(stateObj == null ? void 0 : stateObj.state) : void 0;
-    ((_c = this._config) == null ? void 0 : _c.attribute) ? stateObj == null ? void 0 : stateObj.attributes[this._config.attribute] : stateObj == null ? void 0 : stateObj.state;
-    const value = Math.round((((_d = stateObj == null ? void 0 : stateObj.attributes) == null ? void 0 : _d.brightness) ?? 0) / 255 * 1e3) / 10;
-    console.log(value);
+    const valueToDisplay = Number(_entity.attribute ? stateObj == null ? void 0 : stateObj.attributes[_entity.attribute] : stateObj == null ? void 0 : stateObj.state);
     return html`
       <div class="gauge-wrap">
         <lc-gauge
           .hass="${this.hass}"
-          .label="${"CPU"}"
-          .unit="${"%"}"
-          .min="${0}"
-          .max="${100}"
-          .levels="${[
-      { level: 0, color: "var(--success-color)" },
-      { level: 20, color: "var(--warning-color)" },
-      { level: 70, color: "var(--error-color)" }
-    ]}"
-          .value="${value}"
-          .disabled="${true}"
+          .label="${_entity.name}"
+          .unit="${_entity.unit}"
+          .min="${_entity.min}"
+          .max="${_entity.max}"
+          .step="${_entity.step}"
+          .levels="${_entity.levels}"
+          .value="${valueToDisplay || 0}"
+          .disabled=${isNaN(valueToDisplay)}
         ></lc-gauge>
       </div>`;
   }

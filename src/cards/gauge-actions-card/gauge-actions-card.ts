@@ -1,8 +1,8 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import { EntityConfig, HomeAssistant, LovelaceCard, type LovelaceCardEditor } from 'types';
+import type { HomeAssistant, LovelaceCard, LovelaceCardEditor } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities } from '../../utils/entities-utils';
-import { IGaugeActionsCardConfigSchema } from './gauge-actions-card-schema';
+import type { IGaugeActionsCardConfigSchema, IGaugeEntityConfigSchema } from './gauge-actions-card-schema';
 import styles from './gauge-actions-card.scss';
 
 @customElement('lc-gauge-actions-card')
@@ -24,7 +24,6 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
       ['sensor'],
       entity => /^\d+(:?\.\d+)?$/.test(entity.state),
     );
-    console.log(foundEntities);
 
     return {
       entities: foundEntities,
@@ -40,25 +39,15 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
 
   @state() private _config?: IGaugeActionsCardConfigSchema;
 
-  private _configEntities?: EntityConfig[];
+  private _configEntities?: IGaugeEntityConfigSchema[];
 
   async setConfig(config: IGaugeActionsCardConfigSchema) {
     if (!config.entities || !Array.isArray(config.entities)) {
       throw new Error('Entities must be specified');
     }
 
-    const entities = processEntities<EntityConfig>(config.entities, {
-      domains: [
-        'counter',
-        'input_number',
-        'number',
-        'sensor',
-        'light',
-      ],
-    });
-
     this._config = config;
-    this._configEntities = entities;
+    this._configEntities = processEntities<IGaugeEntityConfigSchema>(config.entities, { validateId: false });
   }
 
   getCardSize(): number {
@@ -103,7 +92,7 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderEntities() {
+  private _renderEntities(): TemplateResult {
     if (!this._configEntities) {
       return html``;
     }
@@ -113,35 +102,22 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
       <div class="card-content">${entities}</div>`;
   }
 
-  private _renderEntity(_entity: EntityConfig): TemplateResult {
+  private _renderEntity(_entity: IGaugeEntityConfigSchema): TemplateResult {
     const stateObj = this.hass?.states?.[_entity.entity];
-    const entityState = stateObj?.state ? Number(stateObj?.state) : undefined;
-    const valueToDisplay = this._config?.attribute
-      ? stateObj?.attributes[this._config.attribute]
-      : stateObj?.state;
-
-    const value = Math.round((stateObj?.attributes?.brightness ?? 0) / 255 * 1000) / 10;
-    console.log(value);
-
-    // const valueToDisplay = this._config.attribute
-    //  ? stateObj.attributes[this._config.attribute]
-    //  : stateObj.state;
+    const valueToDisplay = Number(_entity.attribute ? stateObj?.attributes[_entity.attribute] : stateObj?.state);
 
     return html`
       <div class="gauge-wrap">
         <lc-gauge
           .hass="${this.hass}"
-          .label="${'CPU'}"
-          .unit="${'%'}"
-          .min="${0}"
-          .max="${100}"
-          .levels="${[
-            { level: 0, color: 'var(--success-color)' },
-            { level: 20, color: 'var(--warning-color)' },
-            { level: 70, color: 'var(--error-color)' },
-          ]}"
-          .value="${value}"
-          .disabled="${true}"
+          .label="${_entity.name}"
+          .unit="${_entity.unit}"
+          .min="${_entity.min}"
+          .max="${_entity.max}"
+          .step="${_entity.step}"
+          .levels="${_entity.levels}"
+          .value="${valueToDisplay || 0}"
+          .disabled=${isNaN(valueToDisplay)}
         ></lc-gauge>
       </div>`;
   }
@@ -161,49 +137,3 @@ declare global {
   preview: true,
   configurable: false,
 });
-
-
-// <div class="gauge-wrap" @click="${() => this._showMoreInfo(GaugeActionsCard.cpuPercentSensor)}">
-//             <lc-gauge
-//               .hass="${this.hass}"
-//               .label="${'CPU'}"
-//               .unit="${'%'}"
-//               .min="${0}"
-//               .max="${10}"
-//               .levels="${[
-//                 { level: 0, stroke: 'var(--success-color)' },
-//                 { level: 2, stroke: 'var(--warning-color)' },
-//                 { level: 7, stroke: 'var(--error-color)' },
-//               ]}"
-//               .value="${this._cpuPercent}"
-//               .disabled="${!this._isWorks || !isInitialized}"
-//             ></lc-gauge>
-//           </div>
-//
-//           <div class="gauge-wrap" @click="${() => this._showMoreInfo(GaugeActionsCard.ramPercentSensor)}">
-//             <lc-gauge
-//               .hass="${this.hass}"
-//               .label="${'RAM'}"
-//               .unit="${'%'}"
-//               .min="${0}"
-//               .max="${100}"
-//               .levels="${[{ level: 0, stroke: 'var(--info-color)' }]}"
-//               .value="${this._ramPercent}"
-//               .loading="${false}"
-//               .disabled="${!this._isWorks || !isInitialized}"
-//             ></lc-gauge>
-//           </div>
-//
-//           <div class="gauge-wrap" @click="${() => this._showMoreInfo(GaugeActionsCard.ramPercentSensor)}">
-//             <lc-gauge
-//               .hass="${this.hass}"
-//               .label="${'RAM'}"
-//               .unit="${'Mb'}"
-//               .min="${0}"
-//               .max="${this._ramLimit}"
-//               .levels="${[{ level: 0, stroke: 'var(--warning-color)' }]}"
-//               .value="${this._ramUsage}"
-//               .loading="${false}"
-//               .disabled="${!this._isWorks || !isInitialized}"
-//             ></lc-gauge>
-//           </div>

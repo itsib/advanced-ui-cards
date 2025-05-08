@@ -1,31 +1,49 @@
 import { LitElement, PropertyValues } from 'lit';
 import styles from './gauge.scss';
 import { customElement, property } from 'lit/decorators.js';
+import { elasticOut } from '../../utils/timing-functions';
 
 function round(value: number, decimals = 2): number {
   const mul = 10 ** decimals;
   return Math.round(value * mul) / mul;
 }
 
-function normalize(value: number, min: number, max: number): [number, number, number] {
+function normalize(value: number, min: number, max: number, step = 0.1): [number, number, number] {
   min = isNaN(min) ? 0 : min;
-  max = isNaN(max) || max < min ? 100 : max;
+  max = isNaN(max) ? 100 : max;
+
+  if (min > max) {
+    throw new Error('MIN_MAX');
+  }
+
   value = value == null || isNaN(value) ? 0 : value;
-  value = value > max ? max : value < min ? min : value;
+  value = Math.max(value, min);
+  value = Math.min(value, max);
+
+  const decimals = `${step}`.split('.')[1]?.length || 0;
+
+  const remains = value % step;
+  const half = step / 2;
+  const rounded = value - remains;
+  const nextTick = rounded + step;
+
+  if (half < remains && nextTick <= max) {
+    value = parseFloat(nextTick.toFixed(decimals));
+  } else {
+    value = parseFloat(rounded.toFixed(decimals));
+  }
 
   return [value, min, max];
 }
 
-function getPercent(value: number, min: number, max: number): number {
-  [value, min, max] = normalize(value, min, max);
-
-  return round((value - min) / (max - min) * 100);
-}
-
 function getAngle(value: number, min: number, max: number): number {
-  const percent = getPercent(value, min, max);
+  const percent = (value - min) / (max - min) * 100;
 
   return (percent * 180) / 100;
+}
+
+function toRadians(deg: number): number {
+  return (deg * Math.PI) / 180;
 }
 
 @customElement('lc-gauge')
@@ -51,6 +69,8 @@ export class Gauge extends LitElement {
    */
   @property({ type: Number, reflect: true })
   max = 100;
+  @property({ type: Number, reflect: true })
+  step = 0.1;
   /**
    * Displayed value
    */
@@ -91,71 +111,53 @@ export class Gauge extends LitElement {
 
   private _levels?: { level: number; color: string }[];
 
-  private _canvas?: HTMLCanvasElement;
-
   private _svg?: SVGSVGElement;
 
   private _scale?: SVGGElement;
 
   private _needle?: SVGGElement;
-
+  /**
+   * Text value
+   * @private
+   */
   private _text?: SVGTextElement;
-
+  /**
+   * Label <text /> element
+   * @private
+   */
+  private _label?: SVGTextElement;
+  /**
+   * Needle shadow
+   * @private
+   */
   private _shadow?: SVGFEDropShadowElement;
-
+  /**
+   * Request animation frame to cancel
+   * @private
+   */
   private _rafID?: ReturnType<typeof requestAnimationFrame> | null;
+  /**
+   * Current angle in degree
+   * @private
+   */
+  private _angleDeg = 0;
 
   connectedCallback() {
     super.connectedCallback();
 
-    const insetShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
-    const dropShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
+    this._renderRootElements();
+    this._renderDynamicElements();
 
-    this._svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    this._svg.classList.add('gauge');
-    this._svg.setAttribute('viewBox', '-50 -50 100 60');
-    this._svg.setAttribute('width', '250');
-    this._svg.setAttribute('height', '125');
-
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    defs.append(this._renderInsetShadow(insetShadowFilterId));
-    defs.append(this._renderDropShadow(dropShadowFilterId));
-    this._svg.append(defs);
-
-    this._scale = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    this._scale.setAttribute('stroke-linejoin', 'round');
-    this._scale.setAttribute('stroke-width', '0');
-    this._scale.setAttribute('stroke', 'rgb(0, 0, 0)');
-    this._scale.setAttribute('filter', `url(#${insetShadowFilterId})`);
-    this._svg.append(this._scale);
-
-    this._needle = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    this._needle.classList.add('needle');
-    this._needle.setAttribute('style', `transform: rotate(var(--gauge-needle-position))`);
-    this._needle.setAttribute('filter', `url(#${dropShadowFilterId})`);
-    this._svg.append(this._needle);
-
-    this._text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    this._text.setAttribute('text-anchor', 'middle');
-    this._text.setAttribute('x', '0');
-    this._text.setAttribute('y', '-2');
-    this._text.setAttribute('font-weight', '400');
-    this._text.setAttribute('font-family', 'Roboto, Noto, sans-serif');
-    this._text.setAttribute('font-size', '14px');
-    this._text.setAttribute('fill', 'var(--text-primary-color)');
-    this._svg.append(this._text);
-
-    this.shadowRoot?.append(this._svg);
-
-    this._renderScale();
-    this._renderNeedle();
-    this._renderTextValue();
-
-    this.applyValue();
+    this._syncValue();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
+
+    if (this._rafID != null) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
 
     this._svg?.remove();
     this._svg = undefined;
@@ -166,37 +168,43 @@ export class Gauge extends LitElement {
     super.updated(_changed);
 
     if (_changed.has('levels') || _changed.has('min') || _changed.has('max')) {
-      this._renderScale();
+      this._renderDynamicElements();
     }
 
     if (_changed.has('value') || _changed.has('min') || _changed.has('max')) {
-      this.applyValue();
-      this._renderTextValue();
+      this._syncValue();
+    }
+
+    if (_changed.has('disabled')) {
+      this._svg?.classList?.[this.disabled ? 'add' : 'remove']?.('disabled');
     }
   }
 
-  applyValue() {
+  private _syncValue() {
     if (this._rafID != null) {
       cancelAnimationFrame(this._rafID);
       this._rafID = null;
     }
 
-    const [value, min, max] = normalize(this.value, this.min, this.max);
-    const angle = getAngle(value, min, max);
-    const angleRad = ((angle - 90) * Math.PI) / 180;
+    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
 
-    this.style.setProperty('--gauge-needle-position', `${angle}deg`);
-    this._shadow!.setAttribute('dx', `${round(Math.cos(angleRad), 4)}`);
-    this._shadow!.setAttribute('dy', `${round(Math.sin(angleRad), 4)}`);
+    this._text!.innerHTML = `${value}${this.unit || ''}`;
 
-    this._text!.innerHTML = `${value}${this.unit}`;
-
-    const oldAngle = parseFloat(this.style.getPropertyValue('--gauge-needle-position').replace('deg', ''));
+    const oldAngle = this._angleDeg;
     const newAngle = getAngle(value, min, max);
-
     const diffAngle = newAngle - oldAngle;
-    const duration = Math.abs(diffAngle) * 100;
+    const duration = 500;
+    const timingFunction = elasticOut.amplitude(0.5).period(0.4);
     let start: number | null = null;
+
+    const setAngle = (angle: number) => {
+      const angleRad = toRadians(angle - 90);
+
+      this.style.setProperty('--gauge-needle-position', `${angle}deg`);
+      this._shadow!.setAttribute('dx', round(Math.cos(angleRad), 4).toString());
+      this._shadow!.setAttribute('dy', round(Math.sin(angleRad), 4).toString());
+    };
+
     const animate = (time: number) => {
       if (!start) {
         start = time;
@@ -204,66 +212,90 @@ export class Gauge extends LitElement {
         return;
       }
 
-      const progress = (time - start) / duration;
-    }
+      if (start + duration > time) {
+        const progress = timingFunction((time - start) / duration);
+        this._angleDeg = Math.min(180, Math.max(0, oldAngle + diffAngle * progress));
+        setAngle(this._angleDeg);
+
+        this._rafID = requestAnimationFrame(animate);
+      }
+    };
+
+    this._rafID = requestAnimationFrame(animate);
   }
 
-  private _render(): void {
+  private _renderRootElements(): void {
+    const insetShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
+    const dropShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
 
+    this._svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this._svg.classList.add('lc-gauge');
+    this._svg.setAttribute('viewBox', '-50 -50 100 60');
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.append(this._renderInsetShadow(insetShadowFilterId));
+    defs.append(this._renderDropShadow(dropShadowFilterId));
+    this._svg.append(defs);
+
+    this._scale = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this._scale.classList.add('scale');
+    this._scale.setAttribute('filter', `url(#${insetShadowFilterId})`);
+    this._svg.append(this._scale);
+
+    this._needle = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this._needle.classList.add('needle');
+    this._needle.setAttribute('filter', `url(#${dropShadowFilterId})`);
+    this._svg.append(this._needle);
+
+    this._text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    this._text.classList.add('value');
+    this._text.setAttribute('text-anchor', 'middle');
+    this._text.setAttribute('x', '0');
+    this._text.setAttribute('y', '-2');
+    this._svg.append(this._text);
+
+    this._label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    this._label.classList.add('label');
+    this._label.setAttribute('text-anchor', 'middle');
+    this._label.setAttribute('x', '0px');
+    this._label.setAttribute('y', '9px');
+    this._svg.append(this._label);
+
+    this.shadowRoot?.append(this._svg);
   }
 
-  private _renderNeedle(): void {
-    if (!this._needle) return;
-
-    for (let i = 0; i < this._needle.childNodes.length; i++) {
-      this._needle.childNodes.item(i).remove();
-    }
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M -25 -2 L -47.5 0 L -25 2 z');
-    path.setAttribute('fill', 'rgb(200, 200, 200)');
-    this._needle.append(path);
-  }
-
-  private _renderScale(): void {
-    if (!this._scale) return;
+  private _renderDynamicElements(): void {
+    if (!this._scale || !this._needle || !this._label) return;
 
     for (let i = 0; i < this._scale.childNodes.length; i++) {
       this._scale.childNodes.item(i).remove();
     }
+    this._needle.childNodes.item(0)?.remove();
 
+    // Render scale
     if (this.levels) {
       for (let i = 0; i < this.levels.length; i++) {
-        const { level, color } = this.levels[i];
-        const beginAngle = getAngle(level, this.min, this.max);
-        const beginAngleCos = Math.cos((beginAngle * Math.PI) / 180);
-        const beginAngleSin = Math.sin((beginAngle * Math.PI) / 180);
+        const level = this.levels[i];
+        const nextLevel = this.levels[i + 1];
 
-        const endAngle = this.levels[i + 1] ? getAngle(this.levels[i + 1].level, this.min, this.max) : 180;
-        const endAngleCos = Math.cos((endAngle * Math.PI) / 180);
-        const endAngleSin = Math.sin((endAngle * Math.PI) / 180);
+        const beginAngle = toRadians(getAngle(level.level, this.min, this.max));
+        const beginAngleCos = Math.cos(beginAngle);
+        const beginAngleSin = Math.sin(beginAngle);
 
-        let d = 'M ';
-        d += round(0 - 47.5 * beginAngleCos);
-        d += ' ';
-        d += round(0 - 47.5 * beginAngleSin);
-        d += ' A 47.5 47.5 0 0 1 ';
-        d += round(0 - 47.5 * endAngleCos);
-        d += ' ';
-        d += round(0 - 47.5 * endAngleSin);
-        d += ' L ';
-        d += round(0 - 32.5 * endAngleCos);
-        d += ' ';
-        d += round(0 - 32.5 * endAngleSin);
-        d += ' A 32.5 32.5 0 0 0 ';
-        d += round(0 - 32.5 * beginAngleCos);
-        d += ' ';
-        d += round(0 - 32.5 * beginAngleSin);
-        d += ' z';
+        const endAngle = toRadians(getAngle(nextLevel?.level ?? this.max, this.min, this.max));
+        const endAngleCos = Math.cos(endAngle);
+        const endAngleSin = Math.sin(endAngle);
+
+        let d = '';
+        d += `M ${round(0 - 47.5 * beginAngleCos)} ${round(0 - 47.5 * beginAngleSin)} `;
+        d += `A 47.5 47.5 0 0 1 ${round(0 - 47.5 * endAngleCos)} ${round(0 - 47.5 * endAngleSin)} `;
+        d += `L ${round(0 - 32.5 * endAngleCos)} ${round(0 - 32.5 * endAngleSin)} `;
+        d += `A 32.5 32.5 0 0 0 ${round(0 - 32.5 * beginAngleCos)} ${round(0 - 32.5 * beginAngleSin)} `;
+        d += 'z';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', d);
-        path.setAttribute('fill', color);
+        path.setAttribute('fill', level.color);
         this._scale!.append(path);
       }
     } else {
@@ -272,10 +304,14 @@ export class Gauge extends LitElement {
       path.setAttribute('fill', 'var(--info-color)');
       this._scale.append(path);
     }
-  }
 
-  private _renderTextValue(): void {
+    // Render needle
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M -25 -2 L -47.5 0 L -25 2 z');
+    path.setAttribute('fill', 'rgb(200, 200, 200)');
+    this._needle.append(path);
 
+    this._label!.innerHTML = 'CPU in use';
   }
 
   private _renderInsetShadow(filterId: string): SVGFilterElement {

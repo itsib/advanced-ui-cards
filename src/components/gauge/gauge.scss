@@ -2,65 +2,39 @@
   --gauge-needle-position: 0deg;
   display: block;
 
-  .gauge {
+  .lc-gauge {
+    width: 100%;
+    height: auto;
 
-    .needle-shadow {
-      transition: all 1s ease-in-out;
+    .scale {
+      stroke: rgb(0, 0, 0);
+      stroke-width: 0;
+      stroke-linejoin: round;
     }
 
     .needle {
-      transition: transform .6s cubic-bezier(.26,0,.78,1.4);
+      transform: rotate(var(--gauge-needle-position));
     }
-  }
-}
 
-.lc-gauge {
-  filter: none;
-  position: relative;
-
-  .gauge {
-    position: relative;
-    z-index: 1;
-
-    &.animated {
-      animation-name: flicker;
-      animation-timing-function: linear;
-      animation-duration: 800ms;
+    .value {
+      font-size: 14px;
+      font-weight: 400;
+      font-family: Roboto, Noto, sans-serif;
+      fill: var(--text-primary-color);
     }
-  }
 
-  .value {
-    left: 0;
-    right: 0;
-    transform: translateY(-100%);
-    text-align: center;
-    position: absolute;
-    z-index: 2;
-  }
-
-  .label {
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-    font-size: 16px;
-    position: relative;
-    z-index: 3;
-  }
-
-  &.disabled {
-
-    .gauge {
-      filter: grayscale(1) brightness(0.6);
+    .label {
+      font-size: 7px;
+      font-weight: 400;
+      font-family: Roboto, Noto, sans-serif;
+      fill: var(--text-primary-color);
     }
-  }
-}
 
-@keyframes flicker {
-  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-    filter: grayscale(1) brightness(0.6);
+    &.disabled {
 
-  }
-  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-    filter: none;
+      .gauge {
+        filter: grayscale(1) brightness(0.6);
+      }
+    }
   }
 }

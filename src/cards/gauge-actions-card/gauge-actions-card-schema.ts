@@ -1,41 +1,60 @@
-import { array, assign, boolean, enums, number, object, optional, string, union } from 'superstruct';
+import { array, assign, boolean, number, object, optional, string, union } from 'superstruct';
 import { BaseCardConfigSchema } from '../../schemas/base-card-config-schema';
-import { EntitiesConfigSchema } from '../../schemas/entities-config-schema';
-import { LovelaceCardConfig, LovelaceRowConfig } from 'types';
+import { LovelaceCardConfig } from 'types';
 import { ButtonConfigSchema, IButtonConfigSchema } from '../../schemas/button-config-schema';
-import { ActionConfigSchema } from '../../schemas/action-config-schema';
-import { ConfirmationConfigSchema } from '../../schemas/confirmation-config-schema';
+
+export interface IGaugeLevelConfigSchema {
+  level: number;
+  color: string;
+}
+
+export interface IGaugeEntityConfigSchema {
+  entity: string;
+  attribute?: string;
+  name?: string;
+  icon?: string;
+  image?: string;
+  unit?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  levels?: IGaugeLevelConfigSchema;
+}
 
 export interface IGaugeActionsCardConfigSchema extends LovelaceCardConfig {
   type: 'custom:lc-gauge-actions-card';
   title?: string;
-  entities: (LovelaceRowConfig | string)[];
-  theme?: string;
   icon?: string;
+  theme?: string;
+  entities: (IGaugeEntityConfigSchema | string)[];
   buttons?: IButtonConfigSchema[];
 }
 
-const TestEntity = object({
-  val: optional(number()),
+const GaugeLevel = object({
+  level: number(),
+  color: string(),
+});
+
+const GaugeEntitySchema = object({
   entity: string(),
+  attribute: optional(string()),
   name: optional(string()),
   icon: optional(string()),
   image: optional(string()),
-  secondary_info: optional(string()),
-  state_color: optional(boolean()),
-  tap_action: optional(ActionConfigSchema),
-  hold_action: optional(ActionConfigSchema),
-  double_tap_action: optional(ActionConfigSchema),
-  confirmation: optional(ConfirmationConfigSchema),
-})
+  unit: optional(string()),
+  min: optional(number()),
+  max: optional(number()),
+  step: optional(number()),
+  levels: array(GaugeLevel),
+});
 
 export const GaugeActionsCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),
-    entities: array(TestEntity),
-    theme: optional(string()),
     icon: optional(string()),
-    buttons: optional(array(ButtonConfigSchema))
+    theme: optional(string()),
+    entities: array(GaugeEntitySchema),
+    buttons: optional(array(ButtonConfigSchema)),
   }),
 );
