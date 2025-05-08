@@ -163,9 +163,9 @@ class DomWatcher {
     img.src = src;
   }
   async ["HA-CONFIG-DASHBOARD"](element) {
-    const observable = await waitSelector(element, ":shadow ha-top-app-bar-fixed ha-config-section");
-    if (!observable) return;
-    this._watchers[element.nodeName] = onElementChange(observable, this.onChangeCallback.bind(this));
+    const updates = await waitSelector(element, ":shadow ha-top-app-bar-fixed ha-config-section ha-config-updates");
+    if (!updates) return;
+    console.log("updates: %o ", updates);
   }
 }
 (async () => {
