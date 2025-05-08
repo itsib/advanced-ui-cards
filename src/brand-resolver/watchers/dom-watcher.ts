@@ -99,8 +99,7 @@ export class DomWatcher {
   }
 
   private async ['HA-CONFIG-DASHBOARD'](element: HTMLElement) {
-    const updates = await waitSelector(element, ':shadow ha-top-app-bar-fixed ha-config-section ha-config-updates');
-    if (!updates) return;
+    const updates = await waitSelector(element, ':shadow ha-config-updates');
 
     console.log('updates: %o ', updates);
   }
