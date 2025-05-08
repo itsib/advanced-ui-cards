@@ -175,6 +175,7 @@ class DomWatcher {
       const domain = (_b = (_a = child == null ? void 0 : child.entity_id) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
       console.log("domain: %s entity_id: %s", domain, child == null ? void 0 : child.entity_id);
       const url = this.getImgSrc(domain);
+      console.log("url: %o ", url);
       if (!url) continue;
       console.log("Found child: %o ", child);
     }
