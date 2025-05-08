@@ -118,9 +118,7 @@ export class DomWatcher {
       if (!url) continue;
 
       console.log('Found child: %o ', child);
-
     }
-
     console.log('updates: %o ', element);
   }
 }
