@@ -99,10 +99,11 @@ export class DomWatcher {
   }
 
   private async ['HA-CONFIG-DASHBOARD'](element: HTMLElement) {
-    const section = await waitSelector(element, ':shadow ha-top-app-bar-fixed');
-    console.log('HA-TOP-APP-BAR-FIXED: %o ', element);
-    if (!section) return;
-    this._watchers[element.nodeName] = onElementChange(section, this.onChangeCallback.bind(this));
+    console.log('HA-CONFIG-DASHBOARD: %s, %o ', element.nodeName, element);
+    const root = await waitShadowRoot(element);
+
+    if (!root) return;
+    this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
   }
 
   private async ['HA-CONFIG-UPDATES'](element: HTMLElement) {
