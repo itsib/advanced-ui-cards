@@ -163,8 +163,22 @@ class DomWatcher {
     img.src = src;
   }
   async ["HA-CONFIG-DASHBOARD"](element) {
-    const updates = await waitSelector(element, ":shadow ha-config-updates");
-    console.log("updates: %o ", updates);
+    const section = await waitSelector(element, ":shadow ha-config-section");
+    if (!section) return;
+    this._watchers[element.nodeName] = onElementChange(section, this.onChangeCallback.bind(this));
+  }
+  async ["HA-CONFIG-UPDATES"](element) {
+    var _a, _b;
+    const section = await waitSelector(element, ":shadow ha-md-list");
+    if (!section || section.children.length === 0) return;
+    for (const child of section.children) {
+      const domain = (_b = (_a = child == null ? void 0 : child.entity_id) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
+      console.log("domain: %s entity_id: %s", domain, child == null ? void 0 : child.entity_id);
+      const url = this.getImgSrc(domain);
+      if (!url) continue;
+      console.log("Found child: %o ", child);
+    }
+    console.log("updates: %o ", element);
   }
 }
 (async () => {
