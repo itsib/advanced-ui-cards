@@ -1,5 +1,11 @@
 import type { TemplateResult } from 'lit';
-import { LovelaceBadgeConfig, LovelaceCardConfig, LovelaceElementConfig, LovelaceHeaderFooterConfig } from './ha-ui';
+import {
+  LovelaceBadgeConfig,
+  LovelaceCardConfig,
+  LovelaceElementConfig,
+  LovelaceHeaderFooterConfig,
+  LovelaceRowConfig,
+} from './ha-ui';
 
 interface BaseDialogBoxParams {
   confirmText?: string;
@@ -53,7 +59,7 @@ export interface CustomCardHelpers {
   createCardElement: (config: LovelaceCardConfig) => any;
   createHeaderFooterElement: (config: LovelaceHeaderFooterConfig) => any;
   createHuiElement: (config: LovelaceElementConfig) => any;
-  createRowElement: (config: LovelaceHeaderFooterConfig) => any;
+  createRowElement: (config: LovelaceRowConfig) => HTMLElement;
   showConfirmationDialog: (element: HTMLElement, dialogParams: ConfirmationDialogParams) => Promise<boolean>;
   showAlertDialog: (element: HTMLElement, dialogParams: AlertDialogParams) => Promise<unknown>;
   showEnterCodeDialog: (element: HTMLElement, dialogParams: EnterCodeDialogParams) => Promise<unknown>;

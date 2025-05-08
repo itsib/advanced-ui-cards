@@ -21,7 +21,9 @@ const { LitElement, css, html } = function getLit() {
           const LitElement2 = Object.getPrototypeOf(customElements.get(entityKey));
           const html2 = LitElement2.prototype.html;
           const css2 = LitElement2.prototype.css;
-          return { LitElement: LitElement2, css: css2, html: html2 };
+          if (html2 && css2) {
+            return { LitElement: LitElement2, css: css2, html: html2 };
+          }
         } else {
           break;
         }
@@ -327,7 +329,7 @@ function n2(t2) {
 function r(r2) {
   return n2({ ...r2, state: true, attribute: false });
 }
-const styles$7 = css`:host {
+const styles$a = css`:host {
   --lc-button-size: 40px;
   --lc-button-icon-size: 24px;
   --lc-button-color: currentColor;
@@ -368,14 +370,14 @@ const styles$7 = css`:host {
   border-radius: 50%;
   font-size: var(--lc-button-icon-size);
 }`;
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
+  if (kind && result) __defProp$b(target, key, result);
   return result;
 };
 function createComponent(Base) {
@@ -470,21 +472,21 @@ function createComponent(Base) {
       this._popoverOff = false;
     }
   };
-  _LCCircleButton.styles = styles$7;
+  _LCCircleButton.styles = styles$a;
   let LCCircleButton = _LCCircleButton;
-  __decorateClass$8([
+  __decorateClass$b([
     n2({ attribute: true })
   ], LCCircleButton.prototype, "icon", 2);
-  __decorateClass$8([
+  __decorateClass$b([
     n2({ attribute: "color", reflect: true, type: String })
   ], LCCircleButton.prototype, "color", 1);
-  __decorateClass$8([
+  __decorateClass$b([
     n2({ attribute: true })
   ], LCCircleButton.prototype, "tooltip", 2);
-  __decorateClass$8([
+  __decorateClass$b([
     n2({ attribute: "status", reflect: true, type: String })
   ], LCCircleButton.prototype, "status", 2);
-  __decorateClass$8([
+  __decorateClass$b([
     n2({ attribute: "disabled", reflect: true, type: Boolean })
   ], LCCircleButton.prototype, "disabled", 2);
   return LCCircleButton;
@@ -519,9 +521,6 @@ const mainWindow = (() => {
     return window;
   }
 })();
-function isValidEntityId(id) {
-  return /^(\w+)\.(\w+)$/.test(id);
-}
 function isCustomType(type2) {
   return type2.startsWith("custom:");
 }
@@ -547,28 +546,6 @@ function arrayFilter(array2, conditions, maxSize) {
   }
   return filteredArray;
 }
-function processConfigEntities(entities, checkEntityId = true) {
-  return entities.map((entityConf, index) => {
-    if (typeof entityConf === "object" && !Array.isArray(entityConf) && entityConf.type) {
-      return entityConf;
-    }
-    let config;
-    if (typeof entityConf === "string") {
-      config = { entity: entityConf };
-    } else if (typeof entityConf === "object" && !Array.isArray(entityConf)) {
-      if (!("entity" in entityConf)) {
-        throw new Error(`Object at position ${index} is missing entity field`);
-      }
-      config = entityConf;
-    } else {
-      throw new Error(`Invalid entity ID at position ${index}`);
-    }
-    if (checkEntityId && !isValidEntityId(config.entity)) {
-      throw new Error(`Invalid entity ID at position ${index}: ${config.entity}`);
-    }
-    return config;
-  });
-}
 function processEditorEntities(entities) {
   return entities.map((entityConf) => {
     if (typeof entityConf === "string") {
@@ -577,10 +554,56 @@ function processEditorEntities(entities) {
     return entityConf;
   });
 }
+function processEntities(entities, opts = {}) {
+  const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
+  const maxLength = opts.maxLength ?? Infinity;
+  const validateId = opts.validateId == null ? true : opts.validateId;
+  if (maxLength < entities.length) {
+    throw new Error(`The maximum number of elements is ${maxLength}`);
+  }
+  const results = new Array(entities.length);
+  for (let i2 = 0; i2 < entities.length; i2++) {
+    const entity = entities[i2];
+    if (!entity) {
+      throw new Error(`Missing entity in position ${i2}, null provided`);
+    }
+    let result;
+    if (typeof entity === "string") {
+      result = { entity };
+    } else if (typeof entity === "object" && !Array.isArray(entity)) {
+      if ("type" in entity || "entity" in entity) {
+        result = entity;
+      } else {
+        throw new Error(`Object at position ${i2} is missing entity or type field`);
+      }
+    } else {
+      throw new Error(`Invalid entity at position ${i2}`);
+    }
+    if ((domains == null ? void 0 : domains.length) || validateId) {
+      let regExResult = null;
+      if (result.entity) {
+        regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
+        if (!regExResult && validateId) {
+          throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
+        }
+      }
+      if (domains && regExResult && !domains.includes(regExResult[1])) {
+        throw new Error(`Invalid entity domain ${regExResult[1]} at position ${i2}. Allowed ${domains.join(". ")}`);
+      }
+    }
+    results[i2] = result;
+  }
+  return results;
+}
 function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
   const conditions = [];
   if (includeDomains == null ? void 0 : includeDomains.length) {
     conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
+  }
+  if (entityFilter) {
+    conditions.push(
+      (eid) => hass.states[eid] && entityFilter(hass.states[eid])
+    );
   }
   const entityIds = arrayFilter(entities, conditions, maxEntities);
   if (entityIds.length < maxEntities && entitiesFallback.length) {
@@ -589,7 +612,8 @@ function findEntities(hass, maxEntities, entities, entitiesFallback, includeDoma
       maxEntities - entityIds.length,
       entitiesFallback,
       [],
-      includeDomains
+      includeDomains,
+      entityFilter
     );
     entityIds.push(...fallbackEntityIds);
   }
@@ -622,14 +646,14 @@ const style = css`.footer {
 .footer .buttons .btn-wrap {
   padding: 0 6px;
 }`;
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$a(target, key, result);
   return result;
 };
 let FooterButtons = class extends LitElement {
@@ -734,23 +758,23 @@ let FooterButtons = class extends LitElement {
   }
 };
 FooterButtons.styles = style;
-__decorateClass$7([
+__decorateClass$a([
   n2({ attribute: false })
 ], FooterButtons.prototype, "hass", 2);
-__decorateClass$7([
+__decorateClass$a([
   n2({ attribute: false })
 ], FooterButtons.prototype, "buttons", 2);
-__decorateClass$7([
+__decorateClass$a([
   r()
 ], FooterButtons.prototype, "_statuses", 2);
-FooterButtons = __decorateClass$7([
+FooterButtons = __decorateClass$a([
   t$1("lc-footer-buttons")
 ], FooterButtons);
 function compareRects(newVal, oldVal) {
   if (!oldVal) return true;
   return newVal.x !== oldVal.x || newVal.y !== oldVal.y || newVal.width !== oldVal.width || newVal.height !== oldVal.height;
 }
-const styles$6 = css`:host {
+const styles$9 = css`:host {
   --lc-popover-y: 0px;
   --lc-popover-x: 0px;
   --lc-popover-width: auto;
@@ -855,13 +879,13 @@ const styles$6 = css`:host {
 .popover.show.in.out {
   opacity: 0;
 }`;
-var __defProp$6 = Object.defineProperty;
-var __decorateClass$6 = (decorators, target, key, kind) => {
+var __defProp$9 = Object.defineProperty;
+var __decorateClass$9 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$6(target, key, result);
+  if (result) __defProp$9(target, key, result);
   return result;
 };
 const _Popover = class _Popover extends LitElement {
@@ -975,36 +999,346 @@ const _Popover = class _Popover extends LitElement {
     setTimeout(() => popover.classList.add("show", "in"), 100);
   }
 };
-_Popover.styles = styles$6;
+_Popover.styles = styles$9;
 let Popover = _Popover;
-__decorateClass$6([
+__decorateClass$9([
   n2()
 ], Popover.prototype, "text");
-__decorateClass$6([
+__decorateClass$9([
   n2()
 ], Popover.prototype, "placement");
-__decorateClass$6([
+__decorateClass$9([
   n2({ hasChanged: compareRects })
 ], Popover.prototype, "rect");
-__decorateClass$6([
+__decorateClass$9([
   n2()
 ], Popover.prototype, "arrow");
-__decorateClass$6([
+__decorateClass$9([
   n2()
 ], Popover.prototype, "offset");
-__decorateClass$6([
+__decorateClass$9([
   n2({ attribute: "max-width" })
 ], Popover.prototype, "maxWidth");
 customElements.define("lc-popover", Popover, { extends: "div" });
-const styles$5 = css``;
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+const styles$8 = css`:host {
+  --gauge-needle-position: 0deg;
+  display: block;
+}
+:host .gauge .needle-shadow {
+  transition: all 1s ease-in-out;
+}
+:host .gauge .needle {
+  transition: transform 0.6s cubic-bezier(0.26, 0, 0.78, 1.4);
+}
+
+.lc-gauge {
+  filter: none;
+  position: relative;
+}
+.lc-gauge .gauge {
+  position: relative;
+  z-index: 1;
+}
+.lc-gauge .gauge.animated {
+  animation-name: flicker;
+  animation-timing-function: linear;
+  animation-duration: 800ms;
+}
+.lc-gauge .value {
+  left: 0;
+  right: 0;
+  transform: translateY(-100%);
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+}
+.lc-gauge .label {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 16px;
+  position: relative;
+  z-index: 3;
+}
+.lc-gauge.disabled .gauge {
+  filter: grayscale(1) brightness(0.6);
+}
+
+@keyframes flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    filter: grayscale(1) brightness(0.6);
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    filter: none;
+  }
+}`;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
+  return result;
+};
+function round(value, decimals = 2) {
+  const mul = 10 ** decimals;
+  return Math.round(value * mul) / mul;
+}
+function normalize(value, min, max) {
+  min = isNaN(min) ? 0 : min;
+  max = isNaN(max) || max < min ? 100 : max;
+  value = value == null || isNaN(value) ? 0 : value;
+  value = value > max ? max : value < min ? min : value;
+  return [value, min, max];
+}
+function getPercent(value, min, max) {
+  [value, min, max] = normalize(value, min, max);
+  return round((value - min) / (max - min) * 100);
+}
+function getAngle(value, min, max) {
+  const percent = getPercent(value, min, max);
+  return percent * 180 / 100;
+}
+let Gauge = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.label = "";
+    this.unit = "";
+    this.min = 0;
+    this.max = 100;
+    this.value = 0;
+    this.disabled = false;
+  }
+  set levels(levels) {
+    if (!levels) {
+      this._levels = void 0;
+    } else {
+      this._levels = levels.map(({ level, color }) => ({ level, color })).sort((a2, b2) => a2.level - b2.level);
+    }
+  }
+  get levels() {
+    if (!this._levels || this._levels.length === 0) {
+      return void 0;
+    }
+    if (this._levels[0].level !== this.min) {
+      this._levels = [{ level: this.min, color: "var(--info-color)" }, ...this._levels];
+    }
+    return this._levels;
+  }
+  connectedCallback() {
+    var _a;
+    super.connectedCallback();
+    const insetShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
+    const dropShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
+    this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this._svg.classList.add("gauge");
+    this._svg.setAttribute("viewBox", "-50 -50 100 60");
+    this._svg.setAttribute("width", "250");
+    this._svg.setAttribute("height", "125");
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.append(this._renderInsetShadow(insetShadowFilterId));
+    defs.append(this._renderDropShadow(dropShadowFilterId));
+    this._svg.append(defs);
+    this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._scale.setAttribute("stroke-linejoin", "round");
+    this._scale.setAttribute("stroke-width", "0");
+    this._scale.setAttribute("stroke", "rgb(0, 0, 0)");
+    this._scale.setAttribute("filter", `url(#${insetShadowFilterId})`);
+    this._svg.append(this._scale);
+    this._needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._needle.classList.add("needle");
+    this._needle.setAttribute("style", `transform: rotate(var(--gauge-needle-position))`);
+    this._needle.setAttribute("filter", `url(#${dropShadowFilterId})`);
+    this._svg.append(this._needle);
+    this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this._text.setAttribute("text-anchor", "middle");
+    this._text.setAttribute("x", "0");
+    this._text.setAttribute("y", "-2");
+    this._text.setAttribute("font-weight", "400");
+    this._text.setAttribute("font-family", "Roboto, Noto, sans-serif");
+    this._text.setAttribute("font-size", "14px");
+    this._text.setAttribute("fill", "var(--text-primary-color)");
+    this._svg.append(this._text);
+    (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
+    this._renderScale();
+    this._renderNeedle();
+    this._renderTextValue();
+    this.applyValue();
+  }
+  disconnectedCallback() {
+    var _a;
+    super.disconnectedCallback();
+    (_a = this._svg) == null ? void 0 : _a.remove();
+    this._svg = void 0;
+    this._scale = void 0;
+  }
+  updated(_changed) {
+    super.updated(_changed);
+    if (_changed.has("levels") || _changed.has("min") || _changed.has("max")) {
+      this._renderScale();
+    }
+    if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
+      this.applyValue();
+      this._renderTextValue();
+    }
+  }
+  applyValue() {
+    if (this._rafID != null) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
+    const [value, min, max] = normalize(this.value, this.min, this.max);
+    const angle = getAngle(value, min, max);
+    const angleRad = (angle - 90) * Math.PI / 180;
+    this.style.setProperty("--gauge-needle-position", `${angle}deg`);
+    this._shadow.setAttribute("dx", `${round(Math.cos(angleRad), 4)}`);
+    this._shadow.setAttribute("dy", `${round(Math.sin(angleRad), 4)}`);
+    this._text.innerHTML = `${value}${this.unit}`;
+    parseFloat(this.style.getPropertyValue("--gauge-needle-position").replace("deg", ""));
+    getAngle(value, min, max);
+  }
+  _render() {
+  }
+  _renderNeedle() {
+    if (!this._needle) return;
+    for (let i2 = 0; i2 < this._needle.childNodes.length; i2++) {
+      this._needle.childNodes.item(i2).remove();
+    }
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M -25 -2 L -47.5 0 L -25 2 z");
+    path.setAttribute("fill", "rgb(200, 200, 200)");
+    this._needle.append(path);
+  }
+  _renderScale() {
+    if (!this._scale) return;
+    for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
+      this._scale.childNodes.item(i2).remove();
+    }
+    if (this.levels) {
+      for (let i2 = 0; i2 < this.levels.length; i2++) {
+        const { level, color } = this.levels[i2];
+        const beginAngle = getAngle(level, this.min, this.max);
+        const beginAngleCos = Math.cos(beginAngle * Math.PI / 180);
+        const beginAngleSin = Math.sin(beginAngle * Math.PI / 180);
+        const endAngle = this.levels[i2 + 1] ? getAngle(this.levels[i2 + 1].level, this.min, this.max) : 180;
+        const endAngleCos = Math.cos(endAngle * Math.PI / 180);
+        const endAngleSin = Math.sin(endAngle * Math.PI / 180);
+        let d2 = "M ";
+        d2 += round(0 - 47.5 * beginAngleCos);
+        d2 += " ";
+        d2 += round(0 - 47.5 * beginAngleSin);
+        d2 += " A 47.5 47.5 0 0 1 ";
+        d2 += round(0 - 47.5 * endAngleCos);
+        d2 += " ";
+        d2 += round(0 - 47.5 * endAngleSin);
+        d2 += " L ";
+        d2 += round(0 - 32.5 * endAngleCos);
+        d2 += " ";
+        d2 += round(0 - 32.5 * endAngleSin);
+        d2 += " A 32.5 32.5 0 0 0 ";
+        d2 += round(0 - 32.5 * beginAngleCos);
+        d2 += " ";
+        d2 += round(0 - 32.5 * beginAngleSin);
+        d2 += " z";
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", d2);
+        path.setAttribute("fill", color);
+        this._scale.append(path);
+      }
+    } else {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M -47.5 0 A 47.5 47.5 0 0 1 47.5 0 L 32.5 0 A 32.5 32.5 0 1 0 -32.5 0 z");
+      path.setAttribute("fill", "var(--info-color)");
+      this._scale.append(path);
+    }
+  }
+  _renderTextValue() {
+  }
+  _renderInsetShadow(filterId) {
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    filter.id = filterId;
+    const feOffset = document.createElementNS("http://www.w3.org/2000/svg", "feOffset");
+    feOffset.setAttribute("in", "SourceGraphic");
+    feOffset.setAttribute("dx", "0");
+    feOffset.setAttribute("dy", "0");
+    filter.append(feOffset);
+    const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
+    feGaussianBlur.setAttribute("stdDeviation", "1");
+    feGaussianBlur.setAttribute("result", "offset-blur");
+    filter.append(feGaussianBlur);
+    const feCompositeOut = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeOut.setAttribute("operator", "out");
+    feCompositeOut.setAttribute("in", "SourceGraphic");
+    feCompositeOut.setAttribute("in2", "offset-blur");
+    feCompositeOut.setAttribute("result", "inverse");
+    filter.append(feCompositeOut);
+    const feFlood = document.createElementNS("http://www.w3.org/2000/svg", "feFlood");
+    feFlood.setAttribute("flood-color", "rgb(0, 0, 0)");
+    feFlood.setAttribute("flood-opacity", ".95");
+    filter.append(feFlood);
+    const feCompositeIn = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeIn.setAttribute("operator", "in");
+    feCompositeIn.setAttribute("in", "color");
+    feCompositeIn.setAttribute("in2", "inverse");
+    feCompositeIn.setAttribute("result", "shadow");
+    filter.append(feCompositeIn);
+    const feCompositeOver = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeOver.setAttribute("operator", "over");
+    feCompositeOver.setAttribute("in", "shadow");
+    feCompositeOver.setAttribute("in2", "SourceGraphic");
+    filter.append(feCompositeOver);
+    return filter;
+  }
+  _renderDropShadow(filterId) {
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    filter.id = filterId;
+    this._shadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
+    this._shadow.classList.add("needle-shadow");
+    this._shadow.setAttribute("dx", "0");
+    this._shadow.setAttribute("dy", "0");
+    this._shadow.setAttribute("stdDeviation", "0");
+    this._shadow.setAttribute("flood-color", "rgb(0, 0, 0)");
+    this._shadow.setAttribute("flood-opacity", "0.3");
+    filter.append(this._shadow);
+    return filter;
+  }
+};
+Gauge.styles = styles$8;
+__decorateClass$8([
+  n2({ type: String })
+], Gauge.prototype, "label", 2);
+__decorateClass$8([
+  n2({ type: String })
+], Gauge.prototype, "unit", 2);
+__decorateClass$8([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "min", 2);
+__decorateClass$8([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "max", 2);
+__decorateClass$8([
+  n2({ type: Number })
+], Gauge.prototype, "value", 2);
+__decorateClass$8([
+  n2({ type: Boolean, reflect: true })
+], Gauge.prototype, "disabled", 2);
+__decorateClass$8([
+  n2({ attribute: false })
+], Gauge.prototype, "levels", 1);
+Gauge = __decorateClass$8([
+  t$1("lc-gauge")
+], Gauge);
+const styles$7 = css``;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$7(target, key, result);
   return result;
 };
 let IconSpinner = class extends LitElement {
@@ -1030,25 +1364,25 @@ let IconSpinner = class extends LitElement {
     `;
   }
 };
-IconSpinner.styles = styles$5;
-__decorateClass$5([
+IconSpinner.styles = styles$7;
+__decorateClass$7([
   n2({ attribute: "size", type: Number })
 ], IconSpinner.prototype, "size", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: "color", type: String })
 ], IconSpinner.prototype, "color", 2);
-IconSpinner = __decorateClass$5([
+IconSpinner = __decorateClass$7([
   t$1("lc-icon-spinner")
 ], IconSpinner);
-const styles$4 = css``;
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+const styles$6 = css``;
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$6(target, key, result);
   return result;
 };
 let IconSuccess = class extends LitElement {
@@ -1079,25 +1413,25 @@ let IconSuccess = class extends LitElement {
     `;
   }
 };
-IconSuccess.styles = styles$4;
-__decorateClass$4([
+IconSuccess.styles = styles$6;
+__decorateClass$6([
   n2({ attribute: "size", type: Number })
 ], IconSuccess.prototype, "size", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: "color", type: String })
 ], IconSuccess.prototype, "color", 2);
-IconSuccess = __decorateClass$4([
+IconSuccess = __decorateClass$6([
   t$1("lc-icon-success")
 ], IconSuccess);
-const styles$3 = css``;
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+const styles$5 = css``;
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
+  if (kind && result) __defProp$5(target, key, result);
   return result;
 };
 let IconError = class extends LitElement {
@@ -1135,25 +1469,25 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = styles$3;
-__decorateClass$3([
+IconError.styles = styles$5;
+__decorateClass$5([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
-__decorateClass$3([
+__decorateClass$5([
   n2({ attribute: "color", type: String })
 ], IconError.prototype, "color", 2);
-IconError = __decorateClass$3([
+IconError = __decorateClass$5([
   t$1("lc-icon-error")
 ], IconError);
-const styles$2 = css``;
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+const styles$4 = css``;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
+  if (kind && result) __defProp$4(target, key, result);
   return result;
 };
 function isSupported(stateObj) {
@@ -1190,17 +1524,17 @@ let ActionButtonFeature = class extends LitElement {
     });
   }
 };
-ActionButtonFeature.styles = styles$2;
-__decorateClass$2([
+ActionButtonFeature.styles = styles$4;
+__decorateClass$4([
   n2({ attribute: true })
 ], ActionButtonFeature.prototype, "hass", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2({ attribute: true })
 ], ActionButtonFeature.prototype, "stateObj", 2);
-__decorateClass$2([
+__decorateClass$4([
   r()
 ], ActionButtonFeature.prototype, "_config", 2);
-ActionButtonFeature = __decorateClass$2([
+ActionButtonFeature = __decorateClass$4([
   t$1("lc-action-button-feature")
 ], ActionButtonFeature);
 window.customCardFeatures = window.customCardFeatures || [];
@@ -1716,43 +2050,43 @@ const BaseCardConfigSchema = object({
   grid_options: any(),
   visibility: any()
 });
-const ActionConfigUserSchema = object({
+const ExemptionSchema = object({
   user: string()
 });
-const ActionConfigConfirmationSchema = union([
+const ConfirmDialogSchema = object({
+  text: optional(string()),
+  exemptions: optional(array(ExemptionSchema))
+});
+const ConfirmationConfigSchema = union([
   boolean(),
-  object({
-    text: optional(string()),
-    exemptions: optional(array(ActionConfigUserSchema))
-  })
+  ConfirmDialogSchema
 ]);
+const TargetConfigSchema = object({
+  entity_id: optional(union([string(), array(string())])),
+  device_id: optional(union([string(), array(string())])),
+  area_id: optional(union([string(), array(string())])),
+  floor_id: optional(union([string(), array(string())])),
+  label_id: optional(union([string(), array(string())]))
+});
 const ActionConfigServiceSchema = object({
   action: enums(["call-service", "perform-action"]),
   service: optional(string()),
   perform_action: optional(string()),
   service_data: optional(object()),
   data: optional(object()),
-  target: optional(
-    object({
-      entity_id: optional(union([string(), array(string())])),
-      device_id: optional(union([string(), array(string())])),
-      area_id: optional(union([string(), array(string())])),
-      floor_id: optional(union([string(), array(string())])),
-      label_id: optional(union([string(), array(string())]))
-    })
-  ),
-  confirmation: optional(ActionConfigConfirmationSchema)
+  target: optional(TargetConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema)
 });
 const ActionConfigNavigateSchema = object({
   action: literal("navigate"),
   navigation_path: string(),
   navigation_replace: optional(boolean()),
-  confirmation: optional(ActionConfigConfirmationSchema)
+  confirmation: optional(ConfirmationConfigSchema)
 });
 const ActionConfigUrlSchema = object({
   action: literal("url"),
   url_path: string(),
-  confirmation: optional(ActionConfigConfirmationSchema)
+  confirmation: optional(ConfirmationConfigSchema)
 });
 const ActionConfigAssistSchema = type({
   action: literal("assist"),
@@ -1774,7 +2108,7 @@ const ActionConfigTypeSchema = object({
     "navigate",
     "assist"
   ]),
-  confirmation: optional(ActionConfigConfirmationSchema)
+  confirmation: optional(ConfirmationConfigSchema)
 });
 const ActionConfigSchema = dynamic((value) => {
   if (value && typeof value === "object" && "action" in value) {
@@ -1805,7 +2139,7 @@ function customType() {
   return refine(string(), "custom element type", isCustomType);
 }
 const TIMESTAMP_RENDERING_FORMATS = ["relative", "total", "date", "time", "datetime"];
-const EntitiesConfigSchema = union([
+const EntitiesConfigBaseSchema = union([
   object({
     entity: string(),
     name: optional(string()),
@@ -1817,11 +2151,11 @@ const EntitiesConfigSchema = union([
     tap_action: optional(ActionConfigSchema),
     hold_action: optional(ActionConfigSchema),
     double_tap_action: optional(ActionConfigSchema),
-    confirmation: optional(ActionConfigConfirmationSchema)
+    confirmation: optional(ConfirmationConfigSchema)
   }),
   string()
 ]);
-const ButtonEntityConfigSchema$1 = object({
+const ButtonEntityConfigSchema = object({
   entity: string(),
   name: optional(string()),
   icon: optional(string()),
@@ -1880,7 +2214,7 @@ const WebLinkEntitiesRowConfigSchema = object({
 });
 const ButtonsEntitiesRowConfigSchema = object({
   type: literal("buttons"),
-  entities: array(ButtonEntityConfigSchema$1)
+  entities: array(ButtonEntityConfigSchema)
 });
 const AttributeEntitiesRowConfigSchema = object({
   type: literal("attribute"),
@@ -1901,7 +2235,7 @@ const TextEntitiesRowConfigSchema = object({
 const CustomEntitiesRowConfigSchema = type({
   type: customType()
 });
-const EntitiesRowConfigSchema = dynamic((value) => {
+const EntitiesConfigSchema = dynamic((value) => {
   if (value && typeof value === "object" && "type" in value) {
     if (isCustomType(value.type)) {
       return CustomEntitiesRowConfigSchema;
@@ -1940,37 +2274,29 @@ const EntitiesRowConfigSchema = dynamic((value) => {
       }
     }
   }
-  return EntitiesConfigSchema;
+  return EntitiesConfigBaseSchema;
 });
-const ButtonEntityConfigSchema = object({
+const ButtonConfigSchema = object({
   color: optional(string()),
   icon: optional(string()),
   tooltip: optional(string()),
   action: string(),
   data: optional(object()),
-  target: optional(
-    object({
-      entity_id: optional(union([string(), array(string())])),
-      device_id: optional(union([string(), array(string())])),
-      area_id: optional(union([string(), array(string())])),
-      floor_id: optional(union([string(), array(string())])),
-      label_id: optional(union([string(), array(string())]))
-    })
-  ),
-  confirmation: optional(ActionConfigConfirmationSchema)
+  target: optional(TargetConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema)
 });
-const CardConfigSchema = assign(
+const EntitiesActionsCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),
     entity: optional(string()),
-    entities: array(EntitiesRowConfigSchema),
+    entities: array(EntitiesConfigSchema),
     theme: optional(string()),
     icon: optional(string()),
-    buttons: optional(array(ButtonEntityConfigSchema))
+    buttons: optional(array(ButtonConfigSchema))
   })
 );
-const styles$1 = css`.edit-entity-row-header {
+const styles$3 = css`.edit-entity-row-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1985,21 +2311,21 @@ ha-textfield {
   display: block;
   margin-bottom: 16px;
 }`;
-var __defProp$1 = Object.defineProperty;
-var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+var __defProp$3 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$3 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$1(target, key, result);
+  if (kind && result) __defProp$3(target, key, result);
   return result;
 };
 let EntitiesActionsCardConfig = class extends LitElement {
   setConfig(config) {
-    assert(config, CardConfigSchema);
+    assert(config, EntitiesActionsCardConfigSchema);
     this._config = config;
-    this._configEntities = processConfigEntities(config.entities);
+    this._configEntities = processEntities(config.entities);
   }
   async firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
@@ -2143,23 +2469,23 @@ let EntitiesActionsCardConfig = class extends LitElement {
     return this._config.theme || "";
   }
 };
-EntitiesActionsCardConfig.styles = [styles$1, configElementStyle];
-__decorateClass$1([
+EntitiesActionsCardConfig.styles = [styles$3, configElementStyle];
+__decorateClass$3([
   n2({ attribute: false })
 ], EntitiesActionsCardConfig.prototype, "hass", 2);
-__decorateClass$1([
+__decorateClass$3([
   r()
 ], EntitiesActionsCardConfig.prototype, "_config", 2);
-__decorateClass$1([
+__decorateClass$3([
   r()
 ], EntitiesActionsCardConfig.prototype, "_configEntities", 2);
-__decorateClass$1([
+__decorateClass$3([
   r()
 ], EntitiesActionsCardConfig.prototype, "_subElementEditorConfig", 2);
-EntitiesActionsCardConfig = __decorateClass$1([
+EntitiesActionsCardConfig = __decorateClass$3([
   t$1("lc-entities-actions-card-config")
 ], EntitiesActionsCardConfig);
-const styles = css`ha-card {
+const styles$2 = css`ha-card {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -2218,21 +2544,17 @@ const styles = css`ha-card {
   margin-top: -16px;
   overflow: hidden;
 }`;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
+  if (kind && result) __defProp$2(target, key, result);
   return result;
 };
 let EntitiesActionsCard = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this._buttons = [];
-  }
   static async getConfigElement() {
     const source = await customElements.whenDefined("hui-entities-card");
     await source.getConfigElement();
@@ -2248,14 +2570,17 @@ let EntitiesActionsCard = class extends LitElement {
       ["light", "switch", "sensor"]
     );
     return {
-      entities: foundEntities
+      entities: foundEntities,
+      buttons: [
+        { color: "info", icon: "mdi:reload", action: "homeassistant.reload_all" }
+      ]
     };
   }
   async setConfig(config) {
     if (!config.entities || !Array.isArray(config.entities)) {
       throw new Error("Entities must be specified");
     }
-    const entities = processConfigEntities(config.entities);
+    const entities = processEntities(config.entities);
     const utils = await mainWindow.loadCardHelpers();
     this._config = config;
     this._configEntities = entities;
@@ -2322,113 +2647,15 @@ let EntitiesActionsCard = class extends LitElement {
     return html`
       <div>${element}</div>`;
   }
-  _renderFooter() {
-    var _a, _b;
-    if (!((_b = (_a = this._config) == null ? void 0 : _a.buttons) == null ? void 0 : _b.length)) {
-      return html``;
-    }
-    return html`
-      <div class="header-footer footer">
-        <hr class="divider" role="separator" />
-
-        <div class="buttons">
-          ${this._config.buttons.map((config, index) => this._renderButton(index, config))}
-        </div>
-      </div>
-    `;
-  }
-  _renderButton(index, config) {
-    if (!config) {
-      return html``;
-    }
-    return html`
-      <div class="btn-wrap">
-        <lc-circle-button
-          data-index=${index}
-          color=${config.color}
-          icon=${config.icon}
-          tooltip=${config.tooltip}
-          .status=${this._buttons[index]}
-          @click=${this._onFooterButtonClick}
-        ></lc-circle-button>
-      </div>
-    `;
-  }
-  _setButtonStatus(index, status) {
-    this._buttons[index] = status;
-    this._buttons = [...this._buttons];
-  }
-  _setCallResult(index, status) {
-    return () => {
-      forwardHaptic("light");
-      this._setButtonStatus(index, status);
-      setTimeout(() => {
-        this._setButtonStatus(index, void 0);
-      }, 2500);
-    };
-  }
-  async _onFooterButtonClick(event) {
-    event.stopPropagation();
-    const element = event.target;
-    const index = parseInt(element.dataset.index);
-    if (this._buttons[index] === "loading") return;
-    this._setButtonStatus(index, "loading");
-    const config = this._config.buttons[index];
-    if (await this._isConfirmed(config)) {
-      this._setButtonStatus(index, void 0);
-      return;
-    }
-    const [domain, service] = config.action.split(".", 2);
-    const begin = Date.now();
-    try {
-      await this.hass.callService(domain, service, config.data, config.target);
-      const delay = Date.now() - begin;
-      if (delay > 600) {
-        this._setCallResult(index, "success")();
-      } else {
-        setTimeout(this._setCallResult(index, "success"), 600 - delay);
-      }
-    } catch {
-      this._setCallResult(index, "error")();
-    }
-  }
-  async _isConfirmed(config) {
-    var _a;
-    if (!isShowConfirmation(config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
-    forwardHaptic("warning");
-    let text = "";
-    if (typeof config.confirmation !== "boolean" && config.confirmation.text) {
-      text = config.confirmation.text;
-    } else {
-      const [domain, service] = config.action.split(".", 2);
-      const serviceDomains = this.hass.services;
-      let serviceName = "";
-      if (domain in serviceDomains && service in serviceDomains[domain]) {
-        await this.hass.loadBackendTranslation("title");
-        const localize = await this.hass.loadBackendTranslation("entity");
-        serviceName += domainToName(localize, domain);
-        serviceName += ": ";
-        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
-      }
-      text = this.hass.localize("ui.panel.lovelace.cards.actions.action_confirmation", {
-        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${config.action}`) || config.action
-      });
-    }
-    const utils = await mainWindow.loadCardHelpers();
-    return !await utils.showConfirmationDialog(this, { text, title: config.tooltip });
-  }
 };
-EntitiesActionsCard.styles = styles;
-__decorateClass([
+EntitiesActionsCard.styles = styles$2;
+__decorateClass$2([
   n2({ attribute: false })
 ], EntitiesActionsCard.prototype, "hass", 2);
-__decorateClass([
+__decorateClass$2([
   r()
 ], EntitiesActionsCard.prototype, "_config", 2);
-__decorateClass([
-  r()
-], EntitiesActionsCard.prototype, "_buttons", 2);
-EntitiesActionsCard = __decorateClass([
+EntitiesActionsCard = __decorateClass$2([
   t$1("lc-entities-actions-card")
 ], EntitiesActionsCard);
 window.customCards = window.customCards || [];
@@ -2438,6 +2665,439 @@ window.customCards.push({
   preview: true,
   description: "This map allows you to group entities and actions that are triggered by buttons in the footer.",
   documentationURL: "https://github.com/itsib/lovelace-cards/blob/main/README.md"
+});
+const TestEntity = object({
+  val: optional(number()),
+  entity: string(),
+  name: optional(string()),
+  icon: optional(string()),
+  image: optional(string()),
+  secondary_info: optional(string()),
+  state_color: optional(boolean()),
+  tap_action: optional(ActionConfigSchema),
+  hold_action: optional(ActionConfigSchema),
+  double_tap_action: optional(ActionConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+const GaugeActionsCardConfigSchema = assign(
+  BaseCardConfigSchema,
+  object({
+    title: optional(union([string(), boolean()])),
+    entities: array(TestEntity),
+    theme: optional(string()),
+    icon: optional(string()),
+    buttons: optional(array(ButtonConfigSchema))
+  })
+);
+const styles$1 = css``;
+var __defProp$1 = Object.defineProperty;
+var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$1(target, key, result);
+  return result;
+};
+let GaugeActionsCardConfig = class extends LitElement {
+  setConfig(config) {
+    assert(config, GaugeActionsCardConfigSchema);
+    this._config = config;
+    this._configEntities = processEntities(config.entities, { domains: "sensor" });
+  }
+  async firstUpdated(_changedProperties) {
+    super.firstUpdated(_changedProperties);
+    const utils = await window.parent.loadCardHelpers();
+    utils.importMoreInfoControl;
+  }
+  render() {
+    if (!this.hass || !this._config) {
+      return html``;
+    }
+    if (this._subElementEditorConfig) {
+      return html`
+        <hui-sub-element-editor
+          .hass=${this.hass}
+          .config=${this._subElementEditorConfig}
+          @go-back=${this._goBack}
+          @config-changed=${this._handleSubElementChanged}
+        >
+        </hui-sub-element-editor>
+      `;
+    }
+    const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
+    return html`
+      <div class="card-config">
+        <ha-textfield
+          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.title")} ${optional2}"
+          .value=${this._title}
+          .configValue=${"title"}
+          @input=${this._valueChanged}
+        ></ha-textfield>
+        <ha-theme-picker
+          .hass=${this.hass}
+          .value=${this._theme}
+          .label=${`${this.hass.localize("ui.panel.lovelace.editor.card.generic.theme")} ${optional2}`}
+          .configValue=${"theme"}
+          @value-changed=${this._valueChanged}
+        ></ha-theme-picker>
+      </div>
+      <hui-entities-card-row-editor
+        .hass=${this.hass}
+        .entities=${this._configEntities}
+        @entities-changed=${this._valueChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></hui-entities-card-row-editor>
+    `;
+  }
+  _valueChanged(ev) {
+    var _a;
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const target = ev.target;
+    const configValue = target.configValue || ((_a = this._subElementEditorConfig) == null ? void 0 : _a.type);
+    const value = target.checked !== void 0 ? target.checked : target.value || ev.detail.config || ev.detail.value;
+    if (configValue === "title" && target.value === this._title || configValue === "theme" && target.value === this._theme) {
+      return;
+    }
+    if (configValue === "row" || ev.detail && ev.detail.entities) {
+      const newConfigEntities = ev.detail.entities || this._configEntities.concat();
+      if (configValue === "row") {
+        if (!value) {
+          newConfigEntities.splice(this._subElementEditorConfig.index, 1);
+          this._goBack();
+        } else {
+          newConfigEntities[this._subElementEditorConfig.index] = value;
+        }
+        this._subElementEditorConfig.elementConfig = value;
+      }
+      this._config = {
+        ...this._config,
+        entities: newConfigEntities
+      };
+      this._configEntities = processEditorEntities(this._config.entities);
+    } else if (configValue) {
+      if (value === "") {
+        this._config = { ...this._config };
+        delete this._config[configValue];
+      } else {
+        this._config = {
+          ...this._config,
+          [configValue]: value
+        };
+      }
+    }
+    fireEvent(this, "config-changed", { config: this._config });
+  }
+  _handleSubElementChanged(ev) {
+    var _a;
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
+    const value = ev.detail.config;
+    if (configValue === "row") {
+      const newConfigEntities = this._configEntities.concat();
+      if (!value) {
+        newConfigEntities.splice(this._subElementEditorConfig.index, 1);
+        this._goBack();
+      } else {
+        newConfigEntities[this._subElementEditorConfig.index] = value;
+      }
+      this._config = { ...this._config, entities: newConfigEntities };
+      this._configEntities = processEditorEntities(this._config.entities);
+    } else if (configValue) {
+      if (value === "") {
+        this._config = { ...this._config };
+        delete this._config[configValue];
+      } else {
+        this._config = {
+          ...this._config,
+          [configValue]: value
+        };
+      }
+    }
+    this._subElementEditorConfig = {
+      ...this._subElementEditorConfig,
+      elementConfig: value
+    };
+    console.log(this._subElementEditorConfig);
+    fireEvent(this, "config-changed", { config: this._config });
+  }
+  _editDetailElement(ev) {
+    this._subElementEditorConfig = ev.detail.subElementConfig;
+    console.log(this._subElementEditorConfig);
+  }
+  _handleConfigChanged(ev) {
+    console.log(ev);
+  }
+  _handleGUIModeChanged(ev) {
+    console.log(ev);
+  }
+  _goBack() {
+    this._subElementEditorConfig = void 0;
+  }
+  get _title() {
+    return this._config.title || "";
+  }
+  get _theme() {
+    return this._config.theme || "";
+  }
+};
+GaugeActionsCardConfig.styles = [styles$1, configElementStyle];
+__decorateClass$1([
+  n2({ attribute: false })
+], GaugeActionsCardConfig.prototype, "hass", 2);
+__decorateClass$1([
+  r()
+], GaugeActionsCardConfig.prototype, "_config", 2);
+__decorateClass$1([
+  r()
+], GaugeActionsCardConfig.prototype, "_configEntities", 2);
+__decorateClass$1([
+  r()
+], GaugeActionsCardConfig.prototype, "_subElementEditorConfig", 2);
+GaugeActionsCardConfig = __decorateClass$1([
+  t$1("lc-gauge-actions-card-config")
+], GaugeActionsCardConfig);
+const styles = css`:host {
+  font-family: var(--paper-font-body1_-_font-family);
+  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
+  font-size: var(--paper-font-body1_-_font-size);
+  font-weight: var(--paper-font-body1_-_font-weight);
+  line-height: var(--paper-font-body1_-_line-height);
+  color: var(--primary-text-color);
+}
+
+.mariadb-card .card-header {
+  padding: 16px;
+  display: flex;
+}
+.mariadb-card .card-header .logo {
+  width: auto;
+  height: 40px;
+}
+.mariadb-card .card-header .info {
+  padding-left: 16px;
+}
+.mariadb-card .card-header .info .name {
+  font-size: 22px;
+  color: var(--ha-card-header-color, --primary-text-color);
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mariadb-card .card-header .info .version {
+  margin-top: 4px;
+  color: var(--secondary-text-color);
+  font-size: 14px;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mariadb-card .card-content {
+  margin: 0;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mariadb-card .card-content .gauge-wrap {
+  width: 132px;
+  margin: 0 6px;
+  cursor: pointer;
+}
+.mariadb-card .card-footer {
+  margin: 16px 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--entities-divider-color, var(--divider-color));
+  display: flex;
+  justify-content: space-between;
+}
+.mariadb-card .card-footer .database-size {
+  display: flex;
+  align-items: center;
+}
+.mariadb-card .card-footer .database-size .icon {
+  cursor: pointer;
+}
+.mariadb-card .card-footer .database-size .icon img {
+  width: auto;
+  height: 36px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out 0s;
+}
+.mariadb-card .card-footer .database-size .icon:hover img {
+  opacity: 0.9;
+}
+.mariadb-card .card-footer .database-size .value {
+  margin-left: 14px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.mariadb-card .card-footer .actions {
+  margin-right: -8px;
+  display: flex;
+}
+.mariadb-card .card-footer .actions .btn-wrap {
+  padding: 0 8px;
+}
+.mariadb-card .card-footer .actions .btn-wrap.purge {
+  --button-icon-color: var(--info-color);
+}
+.mariadb-card .card-footer .actions .btn-wrap.reload {
+  --button-icon-color: var(--warning-color);
+}
+.mariadb-card .card-footer .actions .btn-wrap.stop {
+  --button-icon-color: var(--error-color);
+}
+.mariadb-card .card-footer .actions .btn-wrap.start {
+  --button-icon-color: var(--success-color);
+}`;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+let GaugeActionsCard = class extends LitElement {
+  static async getConfigElement() {
+    const source = await customElements.whenDefined("hui-entities-card");
+    await source.getConfigElement();
+    return document.createElement("lc-gauge-actions-card-config");
+  }
+  static getStubConfig(hass, entities, entitiesFallback) {
+    const maxEntities = 3;
+    const foundEntities = findEntities(
+      hass,
+      maxEntities,
+      entities,
+      entitiesFallback,
+      ["sensor"],
+      (entity) => /^\d+(:?\.\d+)?$/.test(entity.state)
+    );
+    console.log(foundEntities);
+    return {
+      entities: foundEntities,
+      buttons: [
+        { color: "info", icon: "mdi:reload", action: "homeassistant.reload_all" }
+      ]
+    };
+  }
+  async setConfig(config) {
+    if (!config.entities || !Array.isArray(config.entities)) {
+      throw new Error("Entities must be specified");
+    }
+    const entities = processEntities(config.entities, {
+      domains: [
+        "counter",
+        "input_number",
+        "number",
+        "sensor",
+        "light"
+      ]
+    });
+    this._config = config;
+    this._configEntities = entities;
+  }
+  getCardSize() {
+    if (!this._config) {
+      return 0;
+    }
+    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1);
+  }
+  render() {
+    if (!this._config || !this.hass) {
+      return html``;
+    }
+    return html`
+      <ha-card>
+        ${this._renderHeader()}
+        ${this._renderEntities()}
+        <lc-footer-buttons
+          .hass=${this.hass}
+          .buttons=${this._config.buttons}
+        ></lc-footer-buttons>
+      </ha-card>
+    `;
+  }
+  _renderHeader() {
+    var _a, _b;
+    if (!((_a = this._config) == null ? void 0 : _a.title) && !((_b = this._config) == null ? void 0 : _b.icon)) {
+      return html``;
+    }
+    const icon = this._config.icon ? html`
+      <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : "";
+    return html`
+      <h1 class="card-header">
+        <div class="name">
+          ${icon}
+          ${this._config.title}
+        </div>
+      </h1>
+    `;
+  }
+  _renderEntities() {
+    if (!this._configEntities) {
+      return html``;
+    }
+    const entities = this._configEntities.map((entity) => this._renderEntity(entity));
+    return html`
+      <div class="card-content">${entities}</div>`;
+  }
+  _renderEntity(_entity) {
+    var _a, _b, _c, _d;
+    const stateObj = (_b = (_a = this.hass) == null ? void 0 : _a.states) == null ? void 0 : _b[_entity.entity];
+    (stateObj == null ? void 0 : stateObj.state) ? Number(stateObj == null ? void 0 : stateObj.state) : void 0;
+    ((_c = this._config) == null ? void 0 : _c.attribute) ? stateObj == null ? void 0 : stateObj.attributes[this._config.attribute] : stateObj == null ? void 0 : stateObj.state;
+    const value = Math.round((((_d = stateObj == null ? void 0 : stateObj.attributes) == null ? void 0 : _d.brightness) ?? 0) / 255 * 1e3) / 10;
+    console.log(value);
+    return html`
+      <div class="gauge-wrap">
+        <lc-gauge
+          .hass="${this.hass}"
+          .label="${"CPU"}"
+          .unit="${"%"}"
+          .min="${0}"
+          .max="${100}"
+          .levels="${[
+      { level: 0, color: "var(--success-color)" },
+      { level: 20, color: "var(--warning-color)" },
+      { level: 70, color: "var(--error-color)" }
+    ]}"
+          .value="${value}"
+          .disabled="${true}"
+        ></lc-gauge>
+      </div>`;
+  }
+};
+GaugeActionsCard.styles = styles;
+__decorateClass([
+  n2({ attribute: false })
+], GaugeActionsCard.prototype, "hass", 2);
+__decorateClass([
+  r()
+], GaugeActionsCard.prototype, "_config", 2);
+GaugeActionsCard = __decorateClass([
+  t$1("lc-gauge-actions-card")
+], GaugeActionsCard);
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: "lc-gauge-actions-card",
+  name: "Gauge With Actions Card",
+  description: "This map allows you to group three gauge and actions that are triggered by buttons in the footer.",
+  preview: true,
+  configurable: false
 });
 async function resolveElement(element) {
   return new Promise(async (resolve) => {
@@ -2675,6 +3335,7 @@ class WatcherRoot extends Watcher {
   });
 })();
 export {
+  Gauge,
   IconError,
   IconSpinner,
   IconSuccess,

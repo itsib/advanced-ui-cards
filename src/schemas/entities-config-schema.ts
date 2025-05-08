@@ -14,12 +14,13 @@ import {
 } from 'superstruct';
 import { LovelaceRowConfig } from 'types';
 import { isCustomType } from '../utils/entities-utils';
-import { ActionConfigConfirmationSchema, ActionConfigSchema } from './action-config-schema';
+import { ActionConfigSchema } from './action-config-schema';
 import { customType } from './validators/custom-type';
+import { ConfirmationConfigSchema } from './confirmation-config-schema';
 
-export const TIMESTAMP_RENDERING_FORMATS = ['relative', 'total', 'date', 'time', 'datetime'];
+const TIMESTAMP_RENDERING_FORMATS = ['relative', 'total', 'date', 'time', 'datetime'];
 
-export const EntitiesConfigSchema = union([
+const EntitiesConfigBaseSchema = union([
   object({
     entity: string(),
     name: optional(string()),
@@ -31,12 +32,12 @@ export const EntitiesConfigSchema = union([
     tap_action: optional(ActionConfigSchema),
     hold_action: optional(ActionConfigSchema),
     double_tap_action: optional(ActionConfigSchema),
-    confirmation: optional(ActionConfigConfirmationSchema),
+    confirmation: optional(ConfirmationConfigSchema),
   }),
   string(),
 ]);
 
-export const ButtonEntityConfigSchema = object({
+const ButtonEntityConfigSchema = object({
   entity: string(),
   name: optional(string()),
   icon: optional(string()),
@@ -48,7 +49,7 @@ export const ButtonEntityConfigSchema = object({
   double_tap_action: optional(ActionConfigSchema),
 });
 
-export const ButtonEntitiesRowConfigSchema = object({
+const ButtonEntitiesRowConfigSchema = object({
   type: literal('button'),
   entity: optional(string()),
   name: optional(string()),
@@ -59,7 +60,7 @@ export const ButtonEntitiesRowConfigSchema = object({
   double_tap_action: optional(ActionConfigSchema),
 });
 
-export const CastEntitiesRowConfigSchema = object({
+const CastEntitiesRowConfigSchema = object({
   type: literal('cast'),
   view: optional(union([string(), number()])),
   dashboard: optional(string()),
@@ -68,7 +69,7 @@ export const CastEntitiesRowConfigSchema = object({
   hide_if_unavailable: optional(boolean()),
 });
 
-export const CallServiceEntitiesRowConfigSchema = object({
+const CallServiceEntitiesRowConfigSchema = object({
   type: enums(['call-service', 'perform-action']),
   name: string(),
   service: optional(string()),
@@ -78,35 +79,35 @@ export const CallServiceEntitiesRowConfigSchema = object({
   data: optional(any()),
 });
 
-export const ConditionalEntitiesRowConfigSchema = object({
+const ConditionalEntitiesRowConfigSchema = object({
   type: literal('conditional'),
   row: any(),
   conditions: array(any()),
 });
 
-export const DividerEntitiesRowConfigSchema = object({
+const DividerEntitiesRowConfigSchema = object({
   type: literal('divider'),
   style: optional(any()),
 });
 
-export const SectionEntitiesRowConfigSchema = object({
+const SectionEntitiesRowConfigSchema = object({
   type: literal('section'),
   label: optional(string()),
 });
 
-export const WebLinkEntitiesRowConfigSchema = object({
+const WebLinkEntitiesRowConfigSchema = object({
   type: literal('weblink'),
   url: string(),
   name: optional(string()),
   icon: optional(string()),
 });
 
-export const ButtonsEntitiesRowConfigSchema = object({
+const ButtonsEntitiesRowConfigSchema = object({
   type: literal('buttons'),
   entities: array(ButtonEntityConfigSchema),
 });
 
-export const AttributeEntitiesRowConfigSchema = object({
+const AttributeEntitiesRowConfigSchema = object({
   type: literal('attribute'),
   entity: string(),
   attribute: string(),
@@ -117,18 +118,18 @@ export const AttributeEntitiesRowConfigSchema = object({
   format: optional(enums(['relative', 'total', 'date', 'time', 'datetime'])),
 });
 
-export const TextEntitiesRowConfigSchema = object({
+const TextEntitiesRowConfigSchema = object({
   type: literal('text'),
   name: string(),
   text: string(),
   icon: optional(string()),
 });
 
-export const CustomEntitiesRowConfigSchema = type({
+const CustomEntitiesRowConfigSchema = type({
   type: customType(),
 });
 
-export const EntitiesRowConfigSchema = dynamic<any>((value) => {
+export const EntitiesConfigSchema = dynamic<any>((value) => {
   if (value && typeof value === 'object' && 'type' in value) {
     if (isCustomType((value as LovelaceRowConfig).type!)) {
       return CustomEntitiesRowConfigSchema;
@@ -170,5 +171,5 @@ export const EntitiesRowConfigSchema = dynamic<any>((value) => {
   }
 
   // No "type" property => has to be the default entity row config Schema
-  return EntitiesConfigSchema;
+  return EntitiesConfigBaseSchema;
 });

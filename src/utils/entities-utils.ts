@@ -1,7 +1,14 @@
-import type { EntityConfig, HassEntity, HomeAssistant, LovelaceRowConfig, ServiceCallResponse } from 'types';
+import {
+  EntityConfig,
+  EntityConfigLike,
+  HassEntity,
+  HomeAssistant,
+  LovelaceRowConfig,
+  ServiceCallResponse,
+} from 'types';
 
 /** States that we consider "off". */
-export const STATES_OFF = ["closed", "locked", "off"];
+export const STATES_OFF = ['closed', 'locked', 'off'];
 
 export function isValidEntityId(id: string): boolean {
   return /^(\w+)\.(\w+)$/.test(id);
@@ -76,6 +83,63 @@ export function processEditorEntities(entities: (any | string)[]): EntityConfig[
   });
 }
 
+export interface ProcessEntitiesOpts {
+  domains?: string[] | string;
+  maxLength?: number;
+  validateId?: boolean;
+}
+
+export function processEntities<T extends EntityConfigLike>(entities: (any | string)[], opts: ProcessEntitiesOpts = {}): T[] {
+  const domains = opts.domains ? typeof opts.domains === 'string' ? [opts.domains] : opts.domains : null;
+  const maxLength = opts.maxLength ?? Infinity;
+  const validateId = opts.validateId == null ? true : opts.validateId;
+
+  if (maxLength < entities.length) {
+    throw new Error(`The maximum number of elements is ${maxLength}`);
+  }
+
+  const results = new Array<T>(entities.length);
+  for (let i = 0; i < entities.length; i++) {
+    const entity = entities[i];
+    if (!entity) {
+      throw new Error(`Missing entity in position ${i}, null provided`);
+    }
+
+    let result: T;
+    if (typeof entity === 'string') {
+      result = { entity: entity } as T;
+    } else if (typeof entity === 'object' && !Array.isArray(entity)) {
+      if ('type' in entity || 'entity' in entity) {
+        result = entity as T;
+      } else {
+        throw new Error(`Object at position ${i} is missing entity or type field`);
+      }
+    } else {
+      throw new Error(`Invalid entity at position ${i}`);
+    }
+
+
+    if (domains?.length || validateId) {
+      let regExResult: RegExpExecArray | null = null;
+      if (result.entity) {
+        regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
+
+        if (!regExResult && validateId) {
+          throw new Error(`Invalid entity ID at position ${i}: ${result.entity}`);
+        }
+      }
+
+      if (domains && regExResult && !domains.includes(regExResult[1])) {
+        throw new Error(`Invalid entity domain ${regExResult[1]} at position ${i}. Allowed ${domains.join('. ')}`);
+      }
+    }
+
+    results[i] = result;
+  }
+
+  return results;
+}
+
 export function findEntities(
   hass: HomeAssistant,
   maxEntities: number,
@@ -115,28 +179,28 @@ export function findEntities(
 
 export function turnOnOffEntity(hass: HomeAssistant, entityId: string, turnOn = true): Promise<ServiceCallResponse> {
   const stateDomain = computeDomain(entityId);
-  const serviceDomain = stateDomain === "group" ? "homeassistant" : stateDomain;
+  const serviceDomain = stateDomain === 'group' ? 'homeassistant' : stateDomain;
 
   let service;
   switch (stateDomain) {
-    case "lock":
-      service = turnOn ? "unlock" : "lock";
+    case 'lock':
+      service = turnOn ? 'unlock' : 'lock';
       break;
-    case "cover":
-      service = turnOn ? "open_cover" : "close_cover";
+    case 'cover':
+      service = turnOn ? 'open_cover' : 'close_cover';
       break;
-    case "button":
-    case "input_button":
-      service = "press";
+    case 'button':
+    case 'input_button':
+      service = 'press';
       break;
-    case "scene":
-      service = "turn_on";
+    case 'scene':
+      service = 'turn_on';
       break;
-    case "valve":
-      service = turnOn ? "open_valve" : "close_valve";
+    case 'valve':
+      service = turnOn ? 'open_valve' : 'close_valve';
       break;
     default:
-      service = turnOn ? "turn_on" : "turn_off";
+      service = turnOn ? 'turn_on' : 'turn_off';
   }
 
   return hass.callService(serviceDomain, service, { entity_id: entityId });

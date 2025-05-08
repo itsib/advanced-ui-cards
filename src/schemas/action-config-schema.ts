@@ -1,61 +1,43 @@
 import { array, boolean, dynamic, enums, literal, object, optional, string, type, union } from 'superstruct';
 import { BaseActionConfig } from 'types';
+import { ConfirmationConfigSchema } from './confirmation-config-schema';
+import { TargetConfigSchema } from './target-config-schema';
 
-export const ActionConfigUserSchema = object({
-  user: string(),
-});
-
-export const ActionConfigConfirmationSchema = union([
-  boolean(),
-  object({
-    text: optional(string()),
-    exemptions: optional(array(ActionConfigUserSchema)),
-  }),
-]);
-
-export const ActionConfigServiceSchema = object({
+const ActionConfigServiceSchema = object({
   action: enums(['call-service', 'perform-action']),
   service: optional(string()),
   perform_action: optional(string()),
   service_data: optional(object()),
   data: optional(object()),
-  target: optional(
-    object({
-      entity_id: optional(union([string(), array(string())])),
-      device_id: optional(union([string(), array(string())])),
-      area_id: optional(union([string(), array(string())])),
-      floor_id: optional(union([string(), array(string())])),
-      label_id: optional(union([string(), array(string())])),
-    })
-  ),
-  confirmation: optional(ActionConfigConfirmationSchema),
+  target: optional(TargetConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema),
 });
 
-export const ActionConfigNavigateSchema = object({
+const ActionConfigNavigateSchema = object({
   action: literal("navigate"),
   navigation_path: string(),
   navigation_replace: optional(boolean()),
-  confirmation: optional(ActionConfigConfirmationSchema),
+  confirmation: optional(ConfirmationConfigSchema),
 });
 
-export const ActionConfigUrlSchema = object({
+const ActionConfigUrlSchema = object({
   action: literal("url"),
   url_path: string(),
-  confirmation: optional(ActionConfigConfirmationSchema),
+  confirmation: optional(ConfirmationConfigSchema),
 });
 
-export const ActionConfigAssistSchema = type({
+const ActionConfigAssistSchema = type({
   action: literal("assist"),
   pipeline_id: optional(string()),
   start_listening: optional(boolean()),
 });
 
-export const ActionConfigMoreInfoSchema = type({
+const ActionConfigMoreInfoSchema = type({
   action: literal("more-info"),
   entity: optional(string()),
 });
 
-export const ActionConfigTypeSchema = object({
+const ActionConfigTypeSchema = object({
   action: enums([
     "none",
     "toggle",
@@ -66,7 +48,7 @@ export const ActionConfigTypeSchema = object({
     "navigate",
     "assist",
   ]),
-  confirmation: optional(ActionConfigConfirmationSchema),
+  confirmation: optional(ConfirmationConfigSchema),
 });
 
 export const ActionConfigSchema = dynamic<any>((value) => {

@@ -238,6 +238,10 @@ export type Condition =
   | TriggerCondition;
 
 // Entities
+export interface EntityConfigLike {
+  type?: string;
+  entity?: string;
+}
 
 export interface EntityConfig {
   entity: string;

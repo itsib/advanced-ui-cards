@@ -1,5 +1,17 @@
 :host {
+  --gauge-needle-position: 0deg;
   display: block;
+
+  .gauge {
+
+    .needle-shadow {
+      transition: all 1s ease-in-out;
+    }
+
+    .needle {
+      transition: transform .6s cubic-bezier(.26,0,.78,1.4);
+    }
+  }
 }
 
 .lc-gauge {

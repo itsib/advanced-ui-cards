@@ -15,8 +15,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { processEditorEntities, processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
-import { EntitiesActionsCardConfigSchema, IEntitiesActionsCardConfigSchema } from './entities-actions-card-schema';
-import styles from './entities-actions-card-config.scss';
+import { GaugeActionsCardConfigSchema, IGaugeActionsCardConfigSchema } from './gauge-actions-card-schema';
+import styles from './gauge-actions-card-config.scss';
 
 interface SubElementEditorConfig {
   index?: number;
@@ -34,22 +34,22 @@ interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
 }
 
-@customElement('lc-entities-actions-card-config')
-class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor {
+@customElement('lc-gauge-actions-card-config')
+class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
   static styles = [styles, configElementStyle];
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IEntitiesActionsCardConfigSchema;
+  @state() private _config?: IGaugeActionsCardConfigSchema;
 
   @state() private _configEntities?: LovelaceRowConfig[];
 
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
-  setConfig(config: IEntitiesActionsCardConfigSchema): void {
-    assert(config, EntitiesActionsCardConfigSchema);
+  setConfig(config: IGaugeActionsCardConfigSchema): void {
+    assert(config, GaugeActionsCardConfigSchema);
     this._config = config;
-    this._configEntities = processEntities(config.entities);
+    this._configEntities = processEntities(config.entities, { domains: 'sensor' });
   }
 
   protected async firstUpdated(_changedProperties: PropertyValues) {
@@ -225,6 +225,6 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-entities-actions-card-config': EntitiesActionsCardConfig;
+    'lc-gauge-actions-card-config': GaugeActionsCardConfig;
   }
 }
