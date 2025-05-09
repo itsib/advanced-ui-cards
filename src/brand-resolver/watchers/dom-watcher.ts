@@ -42,7 +42,6 @@ export class DomWatcher {
       return;
     }
 
-    console.log(element.nodeName);
     this[element.nodeName]?.(element);
   }
 
@@ -99,25 +98,29 @@ export class DomWatcher {
   }
 
   private async ['HA-CONFIG-DASHBOARD'](element: HTMLElement) {
-    console.log('HA-CONFIG-DASHBOARD: %s, %o ', element.nodeName, element);
-    const root = await waitShadowRoot(element);
+    const configSection = await waitSelector(element, ':shadow ha-top-app-bar-fixed ha-config-section');
+    if (!configSection) return;
 
-    if (!root) return;
-    this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+    const updates = configSection.querySelector('ha-config-updates');
+    if (updates) {
+      this['HA-CONFIG-UPDATES'](updates as HTMLElement);
+    }
+
+    this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
 
   private async ['HA-CONFIG-UPDATES'](element: HTMLElement) {
-    console.log('HA-CONFIG-UPDATES: %o ', element);
-    const section = await waitSelector(element, ':shadow ha-md-list');
+    const section = await waitSelector(element, ':shadow mwc-list');
     if (!section || section.children.length === 0) return;
 
     for (const child of section.children) {
       const domain = (child as any)?.entity_id?.replace(/^update\./, '')?.replace(/_update$/, '');
-      console.log('domain: %s entity_id: %s', domain, (child as any)?.entity_id);
       const url = this.getImgSrc(domain);
       if (!url) continue;
-      console.log('Founds child: %o ', child);
+
+      const badge = child.querySelector('state-badge');
+      if (!badge) continue;
+      (badge as HTMLElement).style.backgroundImage = `url("${url}")`;
     }
-    console.log('update: %o ', element);
   }
 }

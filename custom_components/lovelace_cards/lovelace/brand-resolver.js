@@ -121,7 +121,6 @@ class DomWatcher {
       }
       return;
     }
-    console.log(element.nodeName);
     (_c = this[element.nodeName]) == null ? void 0 : _c.call(this, element);
   }
   async ["HOME-ASSISTANT-MAIN"](element) {
@@ -163,24 +162,26 @@ class DomWatcher {
     img.src = src;
   }
   async ["HA-CONFIG-DASHBOARD"](element) {
-    console.log("HA-CONFIG-DASHBOARD: %s, %o ", element.nodeName, element);
-    const root = await waitShadowRoot$1(element);
-    if (!root) return;
-    this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+    const configSection = await waitSelector(element, ":shadow ha-top-app-bar-fixed ha-config-section");
+    if (!configSection) return;
+    const updates = configSection.querySelector("ha-config-updates");
+    if (updates) {
+      this["HA-CONFIG-UPDATES"](updates);
+    }
+    this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
   async ["HA-CONFIG-UPDATES"](element) {
     var _a, _b;
-    console.log("HA-CONFIG-UPDATES: %o ", element);
-    const section = await waitSelector(element, ":shadow ha-md-list");
+    const section = await waitSelector(element, ":shadow mwc-list");
     if (!section || section.children.length === 0) return;
     for (const child of section.children) {
       const domain = (_b = (_a = child == null ? void 0 : child.entity_id) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
-      console.log("domain: %s entity_id: %s", domain, child == null ? void 0 : child.entity_id);
       const url = this.getImgSrc(domain);
       if (!url) continue;
-      console.log("Founds child: %o ", child);
+      const badge = child.querySelector("state-badge");
+      if (!badge) continue;
+      badge.style.backgroundImage = `url("${url}")`;
     }
-    console.log("update: %o ", element);
   }
 }
 (async () => {
