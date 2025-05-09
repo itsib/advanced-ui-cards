@@ -19,8 +19,8 @@ import {
   GaugeActionsCardConfigSchema,
   IGaugeActionsCardConfigSchema,
   type IGaugeEntityConfigSchema,
-} from './gauge-actions-card-schema';
-import styles from './gauge-actions-card-config.scss';
+} from './service-card-schema';
+import styles from './service-card-config.scss';
 
 interface SubElementEditorConfig {
   index?: number;
@@ -38,8 +38,8 @@ interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
 }
 
-@customElement('lc-gauge-actions-card-config')
-class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
+@customElement('lc-service-card-config')
+class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
   static styles = [styles, configElementStyle];
 
   @property({ attribute: false }) public hass?: HomeAssistant;
@@ -229,6 +229,6 @@ class GaugeActionsCardConfig extends LitElement implements LovelaceCardEditor {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-gauge-actions-card-config': GaugeActionsCardConfig;
+    'lc-service-card-config': ServiceCardConfig;
   }
 }

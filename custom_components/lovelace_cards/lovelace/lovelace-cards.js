@@ -381,6 +381,26 @@ const styles$a = css`:host {
   border-radius: 50%;
   font-size: var(--lc-button-icon-size);
 }`;
+function formatColors(value, defaultColor = "var(--primary-color)") {
+  if (!value) return defaultColor;
+  switch (value) {
+    case "primary":
+      return "var(--primary-color)";
+    case "accent":
+      return "var(--accent-color)";
+    case "error":
+    case "err":
+      return "var(--error-color)";
+    case "warning":
+    case "warn":
+      return "var(--warning-color)";
+    case "success":
+      return "var(--success-color)";
+    case "info":
+      return "var(--info-color)";
+  }
+  return value;
+}
 var __defProp$b = Object.defineProperty;
 var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
 var __decorateClass$b = (decorators, target, key, kind) => {
@@ -400,26 +420,7 @@ function createComponent(Base) {
       this.icon = "mdi:gesture-tap-button";
     }
     set color(value) {
-      switch (value) {
-        case "default":
-          this.style.setProperty("--lc-button-color", "currentColor");
-          break;
-        case "success":
-          this.style.setProperty("--lc-button-color", "var(--success-color)");
-          break;
-        case "info":
-          this.style.setProperty("--lc-button-color", "var(--info-color)");
-          break;
-        case "warning":
-          this.style.setProperty("--lc-button-color", "var(--warning-color)");
-          break;
-        case "error":
-          this.style.setProperty("--lc-button-color", "var(--error-color)");
-          break;
-        default:
-          this.style.setProperty("--lc-button-color", value);
-          break;
-      }
+      this.style.setProperty("--lc-button-color", formatColors(value, "currentColor"));
     }
     render() {
       return html`
@@ -464,7 +465,7 @@ function createComponent(Base) {
      * @private
      */
     _onMouseenter() {
-      if (this._popoverOff) return;
+      if (this._popoverOff || !this.tooltip) return;
       const rect = this.getClientRects().item(0);
       if (!rect || this.status) return;
       this._popover = document.createElement("lc-popover");
@@ -1032,12 +1033,18 @@ const styles$8 = css`:host {
   width: 100%;
   height: auto;
 }
-:host .lc-gauge .scale {
+:host .lc-gauge .dial-plate {
   stroke: rgb(0, 0, 0);
   stroke-width: 0;
   stroke-linejoin: round;
 }
-:host .lc-gauge .needle {
+:host .lc-gauge .scale {
+  font-weight: 400;
+  font-size: 5px;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--secondary-text-color);
+}
+:host .lc-gauge .pointer {
   transform: rotate(var(--gauge-needle-position));
 }
 :host .lc-gauge .value {
@@ -1050,7 +1057,12 @@ const styles$8 = css`:host {
   font-size: 7px;
   font-weight: 400;
   font-family: Roboto, Noto, sans-serif;
-  fill: var(--text-primary-color);
+  fill: var(--primary-text-color);
+}
+:host .lc-gauge .min-max-value {
+  font-weight: 500;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--secondary-text-color);
 }
 :host .lc-gauge.disabled .gauge {
   filter: grayscale(1) brightness(0.6);
@@ -1140,54 +1152,26 @@ let Gauge = class extends LitElement {
     this.step = 0.1;
     this.value = 0;
     this.disabled = false;
+    this.digits = false;
     this._angleDeg = 0;
   }
-  set levels(levels) {
-    if (!levels) {
+  set levels(_levels) {
+    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
       this._levels = void 0;
     } else {
-      this._levels = levels.map((item) => {
-        let { color = "var(--primary-color)", level = 0 } = item || {};
-        switch (color) {
-          case "primary":
-            color = "var(--primary-color)";
-            break;
-          case "accent":
-            color = "var(--accent-color)";
-            break;
-          case "error":
-          case "err":
-            color = "var(--error-color)";
-            break;
-          case "warning":
-          case "warn":
-            color = "var(--warning-color)";
-            break;
-          case "success":
-            color = "var(--success-color)";
-            break;
-          case "info":
-            color = "var(--info-color)";
-            break;
-        }
-        return { level, color };
-      });
-      this._levels.sort((a2, b2) => a2.level - b2.level);
-      if (this._levels[0].level !== this.min) {
-        this._levels = [{ level: this.min, color: "var(--info-color)" }, ...this._levels];
+      _levels = _levels.map((item) => ({ level: (item == null ? void 0 : item.level) ?? 0, color: formatColors(item == null ? void 0 : item.color) }));
+      _levels.sort((a2, b2) => a2.level - b2.level);
+      if (_levels[0].level !== this.min) {
+        _levels = [{ level: this.min, color: "var(--info-color)" }, ..._levels];
       }
+      this._levels = _levels;
     }
-  }
-  get levels() {
-    if (!this._levels || this._levels.length === 0) {
-      return void 0;
-    }
-    return this._levels;
   }
   connectedCallback() {
     super.connectedCallback();
     this._renderRootElements();
-    this._renderDynamicElements();
+    this._renderScaleElements();
+    this._renderLabelElement();
     this._syncValue();
   }
   disconnectedCallback() {
@@ -1199,19 +1183,22 @@ let Gauge = class extends LitElement {
     }
     (_a = this._svg) == null ? void 0 : _a.remove();
     this._svg = void 0;
-    this._scale = void 0;
+    this._dial = void 0;
   }
   updated(_changed) {
     var _a, _b, _c;
     super.updated(_changed);
-    if (_changed.has("levels") || _changed.has("min") || _changed.has("max")) {
-      this._renderDynamicElements();
+    if (_changed.has("_levels") || _changed.has("isDigitScale") || _changed.has("min") || _changed.has("max")) {
+      this._renderScaleElements();
     }
     if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
       this._syncValue();
     }
     if (_changed.has("disabled")) {
       (_c = (_b = (_a = this._svg) == null ? void 0 : _a.classList) == null ? void 0 : _b[this.disabled ? "add" : "remove"]) == null ? void 0 : _c.call(_b, "disabled");
+    }
+    if (_changed.has("label")) {
+      this._renderLabelElement();
     }
   }
   _syncValue() {
@@ -1250,23 +1237,35 @@ let Gauge = class extends LitElement {
   }
   _renderRootElements() {
     var _a;
-    const insetShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
-    const dropShadowFilterId = "filter-" + Math.random().toString().split(".")[1];
+    const insetShadowFilterId = "inset-filter";
+    const dropShadowFilterId = "drop-shadow-filter";
     this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this._svg.classList.add("lc-gauge");
-    this._svg.setAttribute("viewBox", "-50 -50 100 60");
+    const width = Gauge.sizes.width;
+    const height = Gauge.sizes.width / 2 + Gauge.sizes.labelHeight;
+    const start = width / 2 * -1;
+    this._svg.setAttribute("viewBox", `${start} ${start} ${width} ${height}`);
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     defs.append(this._renderInsetShadow(insetShadowFilterId));
     defs.append(this._renderDropShadow(dropShadowFilterId));
     this._svg.append(defs);
+    this._dial = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._dial.classList.add("dial-plate");
+    this._dial.setAttribute("filter", `url(#${insetShadowFilterId})`);
+    this._svg.append(this._dial);
     this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
     this._scale.classList.add("scale");
-    this._scale.setAttribute("filter", `url(#${insetShadowFilterId})`);
     this._svg.append(this._scale);
-    this._needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._needle.classList.add("needle");
-    this._needle.setAttribute("filter", `url(#${dropShadowFilterId})`);
-    this._svg.append(this._needle);
+    this._pointer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._pointer.classList.add("pointer");
+    this._pointer.setAttribute("filter", `url(#${dropShadowFilterId})`);
+    this._svg.append(this._pointer);
+    const needlePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const tip = Gauge.sizes.scaleRadius;
+    const base = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth - Gauge.sizes.scaleWidth / 2;
+    needlePath.setAttribute("d", `M -${base} -2 L -${tip} 0 L -${base} 2 z`);
+    needlePath.setAttribute("fill", "rgb(200, 200, 200)");
+    this._pointer.append(needlePath);
     this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     this._text.classList.add("value");
     this._text.setAttribute("text-anchor", "middle");
@@ -1281,45 +1280,66 @@ let Gauge = class extends LitElement {
     this._svg.append(this._label);
     (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
   }
-  _renderDynamicElements() {
+  _renderScaleElements() {
     var _a;
-    if (!this._scale || !this._needle || !this._label) return;
+    if (!this._dial || !this._scale) return;
+    for (let i2 = 0; i2 < this._dial.childNodes.length; i2++) {
+      this._dial.childNodes.item(i2).remove();
+    }
     for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
       this._scale.childNodes.item(i2).remove();
     }
-    (_a = this._needle.childNodes.item(0)) == null ? void 0 : _a.remove();
-    if (this.levels) {
-      for (let i2 = 0; i2 < this.levels.length; i2++) {
-        const level = this.levels[i2];
-        const nextLevel = this.levels[i2 + 1];
-        const beginAngle = toRadians(getAngle(...normalize(level.level, this.min, this.max)));
+    const rExt = Gauge.sizes.scaleRadius;
+    const rInt = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth;
+    const renderNumber = (value, angle, anchor) => {
+      if (!this.digits) return;
+      const angleRad = toRadians(angle);
+      const x = round(0 - (rExt + 2) * Math.cos(angleRad));
+      const y2 = round(0 - (rExt + 2) * Math.sin(angleRad));
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", x.toString());
+      text.setAttribute("y", y2.toString());
+      text.setAttribute("text-anchor", anchor);
+      text.setAttribute("transform", `rotate(${angle - 90},${x},${y2})`);
+      text.innerHTML = value.toString();
+      this._scale.append(text);
+    };
+    if (this._levels) {
+      for (let i2 = 0; i2 < this._levels.length; i2++) {
+        const level = this._levels[i2].level;
+        const nextLevel = ((_a = this._levels[i2 + 1]) == null ? void 0 : _a.level) ?? this.max;
+        const color = this._levels[i2].color;
+        const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
+        const beginAngle = toRadians(beginAngleDeg);
         const beginAngleCos = Math.cos(beginAngle);
         const beginAngleSin = Math.sin(beginAngle);
-        const endAngle = toRadians(getAngle(...normalize((nextLevel == null ? void 0 : nextLevel.level) ?? this.max, this.min, this.max)));
+        const endAngle = toRadians(getAngle(...normalize(nextLevel, this.min, this.max)));
         const endAngleCos = Math.cos(endAngle);
         const endAngleSin = Math.sin(endAngle);
         let d2 = "";
-        d2 += `M ${round(0 - 47.5 * beginAngleCos)} ${round(0 - 47.5 * beginAngleSin)} `;
-        d2 += `A 47.5 47.5 0 0 1 ${round(0 - 47.5 * endAngleCos)} ${round(0 - 47.5 * endAngleSin)} `;
-        d2 += `L ${round(0 - 32.5 * endAngleCos)} ${round(0 - 32.5 * endAngleSin)} `;
-        d2 += `A 32.5 32.5 0 0 0 ${round(0 - 32.5 * beginAngleCos)} ${round(0 - 32.5 * beginAngleSin)} `;
+        d2 += `M ${round(0 - rExt * beginAngleCos)} ${round(0 - rExt * beginAngleSin)} `;
+        d2 += `A ${rExt} ${rExt} 0 0 1 ${round(0 - rExt * endAngleCos)} ${round(0 - rExt * endAngleSin)} `;
+        d2 += `L ${round(0 - rInt * endAngleCos)} ${round(0 - rInt * endAngleSin)} `;
+        d2 += `A ${rInt} ${rInt} 0 0 0 ${round(0 - rInt * beginAngleCos)} ${round(0 - rInt * beginAngleSin)} `;
         d2 += "z";
-        const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path2.setAttribute("d", d2);
-        path2.setAttribute("fill", level.color);
-        this._scale.append(path2);
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", d2);
+        path.setAttribute("fill", color);
+        this._dial.append(path);
+        renderNumber(level, beginAngleDeg, i2 === 0 ? "start" : "middle");
       }
     } else {
-      const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path2.setAttribute("d", "M -47.5 0 A 47.5 47.5 0 0 1 47.5 0 L 32.5 0 A 32.5 32.5 0 1 0 -32.5 0 z");
-      path2.setAttribute("fill", "var(--info-color)");
-      this._scale.append(path2);
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
+      path.setAttribute("fill", "var(--info-color)");
+      this._dial.append(path);
+      renderNumber(this.min ?? 0, 0, "start");
     }
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", "M -25 -2 L -47.5 0 L -25 2 z");
-    path.setAttribute("fill", "rgb(200, 200, 200)");
-    this._needle.append(path);
-    this._label.innerHTML = "CPU in use";
+    renderNumber(this.max ?? 100, 180, "end");
+  }
+  _renderLabelElement() {
+    if (!this._label) return;
+    this._label.innerHTML = this.label || "";
   }
   _renderInsetShadow(filterId) {
     const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
@@ -1371,6 +1391,12 @@ let Gauge = class extends LitElement {
   }
 };
 Gauge.styles = styles$8;
+Gauge.sizes = {
+  width: 110,
+  labelHeight: 10,
+  scaleRadius: 47.5,
+  scaleWidth: 15
+};
 __decorateClass$8([
   n2({ type: String })
 ], Gauge.prototype, "label", 2);
@@ -1393,8 +1419,14 @@ __decorateClass$8([
   n2({ type: Boolean, reflect: true })
 ], Gauge.prototype, "disabled", 2);
 __decorateClass$8([
+  n2({ attribute: "digits", type: Boolean, reflect: true })
+], Gauge.prototype, "digits", 2);
+__decorateClass$8([
   n2({ attribute: false })
 ], Gauge.prototype, "levels", 1);
+__decorateClass$8([
+  r()
+], Gauge.prototype, "_levels", 2);
 Gauge = __decorateClass$8([
   t$1("lc-gauge")
 ], Gauge);
@@ -2772,7 +2804,7 @@ var __decorateClass$1 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$1(target, key, result);
   return result;
 };
-let GaugeActionsCardConfig = class extends LitElement {
+let ServiceCardConfig = class extends LitElement {
   setConfig(config) {
     assert(config, GaugeActionsCardConfigSchema);
     this._config = config;
@@ -2920,22 +2952,22 @@ let GaugeActionsCardConfig = class extends LitElement {
     return this._config.theme || "";
   }
 };
-GaugeActionsCardConfig.styles = [styles$1, configElementStyle];
+ServiceCardConfig.styles = [styles$1, configElementStyle];
 __decorateClass$1([
   n2({ attribute: false })
-], GaugeActionsCardConfig.prototype, "hass", 2);
+], ServiceCardConfig.prototype, "hass", 2);
 __decorateClass$1([
   r()
-], GaugeActionsCardConfig.prototype, "_config", 2);
+], ServiceCardConfig.prototype, "_config", 2);
 __decorateClass$1([
   r()
-], GaugeActionsCardConfig.prototype, "_configEntities", 2);
+], ServiceCardConfig.prototype, "_configEntities", 2);
 __decorateClass$1([
   r()
-], GaugeActionsCardConfig.prototype, "_subElementEditorConfig", 2);
-GaugeActionsCardConfig = __decorateClass$1([
-  t$1("lc-gauge-actions-card-config")
-], GaugeActionsCardConfig);
+], ServiceCardConfig.prototype, "_subElementEditorConfig", 2);
+ServiceCardConfig = __decorateClass$1([
+  t$1("lc-service-card-config")
+], ServiceCardConfig);
 const styles = css`ha-card {
   height: 100%;
   display: flex;
@@ -2960,8 +2992,8 @@ const styles = css`ha-card {
 }
 
 .card-content {
-  padding: 16px 6px;
   display: flex;
+  justify-content: space-around;
   gap: 10px;
 }
 .card-content .gauge-wrap {
@@ -2978,11 +3010,11 @@ var __decorateClass = (decorators, target, key, kind) => {
   if (kind && result) __defProp(target, key, result);
   return result;
 };
-let GaugeActionsCard = class extends LitElement {
+let ServiceCard = class extends LitElement {
   static async getConfigElement() {
     const source = await customElements.whenDefined("hui-entities-card");
     await source.getConfigElement();
-    return document.createElement("lc-gauge-actions-card-config");
+    return document.createElement("lc-service-card-config");
   }
   static getStubConfig(hass, entities, entitiesFallback) {
     const maxEntities = 3;
@@ -3064,6 +3096,7 @@ let GaugeActionsCard = class extends LitElement {
           .min="${_entity.min}"
           .max="${_entity.max}"
           .step="${_entity.step}"
+          .digits="${_entity.digits}"
           .levels="${_entity.levels}"
           .value="${valueToDisplay || 0}"
           .disabled=${isNaN(valueToDisplay)}
@@ -3071,23 +3104,23 @@ let GaugeActionsCard = class extends LitElement {
       </div>`;
   }
 };
-GaugeActionsCard.styles = styles;
+ServiceCard.styles = styles;
 __decorateClass([
   n2({ attribute: false })
-], GaugeActionsCard.prototype, "hass", 2);
+], ServiceCard.prototype, "hass", 2);
 __decorateClass([
   r()
-], GaugeActionsCard.prototype, "_config", 2);
-GaugeActionsCard = __decorateClass([
-  t$1("lc-gauge-actions-card")
-], GaugeActionsCard);
+], ServiceCard.prototype, "_config", 2);
+ServiceCard = __decorateClass([
+  t$1("lc-service-card")
+], ServiceCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "lc-gauge-actions-card",
-  name: "Gauge With Actions Card",
-  description: "This map allows you to group three gauge and actions that are triggered by buttons in the footer.",
+  type: "lc-service-card",
+  name: "Service Status Card",
+  description: "The card displays the status of the service or addon. It also allows you to trigger arbitrary actions.",
   preview: true,
-  configurable: false
+  configurable: true
 });
 export {
   Gauge,

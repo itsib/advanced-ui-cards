@@ -1,4 +1,4 @@
 export * from './entities-actions-card/entities-actions-card-config';
 export * from './entities-actions-card/entities-actions-card';
-export * from './gauge-actions-card/gauge-actions-card-config';
-export * from './gauge-actions-card/gauge-actions-card';
+export * from './service-card/service-card-config';
+export * from './service-card/service-card';

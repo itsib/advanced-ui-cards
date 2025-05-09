@@ -6,13 +6,20 @@
     width: 100%;
     height: auto;
 
-    .scale {
+    .dial-plate {
       stroke: rgb(0, 0, 0);
       stroke-width: 0;
       stroke-linejoin: round;
     }
 
-    .needle {
+    .scale {
+      font-weight: 400;
+      font-size: 5px;
+      font-family: Roboto, Noto, sans-serif;
+      fill: var(--secondary-text-color);
+    }
+
+    .pointer {
       transform: rotate(var(--gauge-needle-position));
     }
 
@@ -27,7 +34,13 @@
       font-size: 7px;
       font-weight: 400;
       font-family: Roboto, Noto, sans-serif;
-      fill: var(--text-primary-color);
+      fill: var(--primary-text-color);
+    }
+
+    .min-max-value {
+      font-weight: 500;
+      font-family: Roboto, Noto, sans-serif;
+      fill: var(--secondary-text-color);
     }
 
     &.disabled {

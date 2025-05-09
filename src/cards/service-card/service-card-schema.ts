@@ -18,6 +18,7 @@ export interface IGaugeEntityConfigSchema {
   min?: number;
   max?: number;
   step?: number;
+  digits?: boolean;
   levels?: IGaugeLevelConfigSchema;
 }
 

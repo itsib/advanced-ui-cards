@@ -2,6 +2,7 @@ import { html, TemplateResult } from 'lit';
 import type { HomeAssistant, ElementConstructor, LovelaceConstructor } from 'types';
 import { property } from 'lit/decorators.js';
 import styles from './circle-button.scss';
+import { formatColors } from '../../utils/format-colors';
 
 export type ButtonVariant = 'default' | 'success' | 'info' | 'warning' | 'error' | string;
 
@@ -29,26 +30,7 @@ function createComponent<T extends ElementConstructor>(Base: T) {
 
     @property({ attribute: 'color', reflect: true, type: String })
     set color(value: ButtonVariant) {
-      switch (value) {
-        case 'default':
-          this.style.setProperty('--lc-button-color', 'currentColor');
-          break;
-        case 'success':
-          this.style.setProperty('--lc-button-color', 'var(--success-color)');
-          break;
-        case 'info':
-          this.style.setProperty('--lc-button-color', 'var(--info-color)');
-          break;
-        case 'warning':
-          this.style.setProperty('--lc-button-color', 'var(--warning-color)');
-          break;
-        case 'error':
-          this.style.setProperty('--lc-button-color', 'var(--error-color)');
-          break;
-        default:
-          this.style.setProperty('--lc-button-color', value);
-          break;
-      }
+      this.style.setProperty('--lc-button-color', formatColors(value, 'currentColor'));
     }
 
     @property({ attribute: true })
@@ -121,7 +103,7 @@ function createComponent<T extends ElementConstructor>(Base: T) {
      * @private
      */
     private _onMouseenter() {
-      if (this._popoverOff) return;
+      if (this._popoverOff || !this.tooltip) return;
 
       const rect = this.getClientRects().item(0);
       if (!rect || this.status) return;

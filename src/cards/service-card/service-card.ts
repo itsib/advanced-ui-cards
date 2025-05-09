@@ -2,16 +2,16 @@ import { html, LitElement, TemplateResult } from 'lit';
 import type { HomeAssistant, LovelaceCard, LovelaceCardEditor } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities } from '../../utils/entities-utils';
-import type { IGaugeActionsCardConfigSchema, IGaugeEntityConfigSchema } from './gauge-actions-card-schema';
-import styles from './gauge-actions-card.scss';
+import type { IGaugeActionsCardConfigSchema, IGaugeEntityConfigSchema } from './service-card-schema';
+import styles from './service-card.scss';
 
-@customElement('lc-gauge-actions-card')
-class GaugeActionsCard extends LitElement implements LovelaceCard {
+@customElement('lc-service-card')
+class ServiceCard extends LitElement implements LovelaceCard {
   static async getConfigElement(): Promise<LovelaceCardEditor> {
     const source = await customElements.whenDefined('hui-entities-card') as any;
     await source.getConfigElement();
 
-    return document.createElement('lc-gauge-actions-card-config') as LovelaceCardEditor;
+    return document.createElement('lc-service-card-config') as LovelaceCardEditor;
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {
@@ -114,6 +114,7 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
           .min="${_entity.min}"
           .max="${_entity.max}"
           .step="${_entity.step}"
+          .digits="${_entity.digits}"
           .levels="${_entity.levels}"
           .value="${valueToDisplay || 0}"
           .disabled=${isNaN(valueToDisplay)}
@@ -124,15 +125,15 @@ class GaugeActionsCard extends LitElement implements LovelaceCard {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-gauge-actions-card': GaugeActionsCard;
+    'lc-service-card': ServiceCard;
   }
 }
 
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'lc-gauge-actions-card',
-  name: 'Gauge With Actions Card',
-  description: 'This map allows you to group three gauge and actions that are triggered by buttons in the footer.',
+  type: 'lc-service-card',
+  name: 'Service Status Card',
+  description: 'The card displays the status of the service or addon. It also allows you to trigger arbitrary actions.',
   preview: true,
-  configurable: false,
+  configurable: true,
 });

@@ -1,7 +1,8 @@
 import { LitElement, PropertyValues } from 'lit';
 import styles from './gauge.scss';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { elasticOut } from '../../utils/timing-functions';
+import { formatColors } from '../../utils/format-colors';
 
 function round(value: number, decimals = 2): number {
   const mul = 10 ** decimals;
@@ -49,33 +50,50 @@ function toRadians(deg: number): number {
 @customElement('lc-gauge')
 export class Gauge extends LitElement {
   static styles = styles;
+  static sizes = {
+    width: 110,
+    labelHeight: 10,
+    scaleRadius: 47.5,
+    scaleWidth: 15,
+  };
+
   /**
-   * Gauge label (bottom)
+   * Bottom label
    */
   @property({ type: String })
   label = '';
+
   /**
    * Unit of measurement
    */
   @property({ type: String })
   unit = '';
+
   /**
    * Minimum value bound
    */
   @property({ type: Number, reflect: true })
   min = 0;
+
   /**
    * Maximum value bound
    */
   @property({ type: Number, reflect: true })
   max = 100;
+
+  /**
+   * The step attribute is a number that specifies the
+   * granularity that the value must adhere to.
+   */
   @property({ type: Number, reflect: true })
   step = 0.1;
+
   /**
-   * Displayed value
+   * The value to display
    */
   @property({ type: Number })
   value = 0;
+
   /**
    * Disable gauge
    */
@@ -83,66 +101,51 @@ export class Gauge extends LitElement {
   disabled = false;
 
   /**
+   * Display scale digits
+   */
+  @property({ attribute: 'digits', type: Boolean, reflect: true })
+  digits = false;
+
+  /**
    * Colorized levels
    */
   @property({ attribute: false })
-  set levels(levels: { level: number; color: string }[] | undefined) {
-    if (!levels) {
+  set levels(_levels: { level: number; color: string }[] | undefined) {
+    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
       this._levels = undefined;
-
     } else {
-      this._levels = levels.map(item => {
-        let { color = 'var(--primary-color)', level = 0 } = item || {};
+      _levels = _levels.map(item => ({ level: item?.level ?? 0, color: formatColors(item?.color) }));
+      _levels.sort((a, b) => a.level - b.level);
 
-        switch (color) {
-          case 'primary':
-            color = 'var(--primary-color)';
-            break;
-          case 'accent':
-            color = 'var(--accent-color)';
-            break;
-          case 'error':
-          case 'err':
-            color = 'var(--error-color)';
-            break;
-          case 'warning':
-          case 'warn':
-            color = 'var(--warning-color)';
-            break;
-          case 'success':
-            color = 'var(--success-color)';
-            break;
-          case 'info':
-            color = 'var(--info-color)';
-            break;
-        }
-
-        return { level, color };
-      });
-
-      this._levels.sort((a, b) => a.level - b.level);
-
-      if (this._levels[0].level !== this.min) {
-        this._levels = [{ level: this.min, color: 'var(--info-color)' }, ...this._levels];
+      if (_levels[0].level !== this.min) {
+        _levels = [{ level: this.min, color: 'var(--info-color)' }, ..._levels];
       }
+      this._levels = _levels;
     }
-  }
+  };
 
-  get levels(): ({ level: number; color: string }[] | undefined) {
-    if (!this._levels || this._levels.length === 0) {
-      return undefined;
-    }
-
-    return this._levels;
-  }
-
+  @state()
   private _levels?: { level: number; color: string }[];
-
+  /**
+   * SVG root element
+   * @private
+   */
   private _svg?: SVGSVGElement;
-
+  /**
+   * Dial plate SVG element
+   * @private
+   */
+  private _dial?: SVGGElement;
+  /**
+   * Digit levels of dial plate
+   * @private
+   */
   private _scale?: SVGGElement;
-
-  private _needle?: SVGGElement;
+  /**
+   * Dial plate pointer SVG element
+   * @private
+   */
+  private _pointer?: SVGGElement;
   /**
    * Text value
    * @private
@@ -173,7 +176,8 @@ export class Gauge extends LitElement {
     super.connectedCallback();
 
     this._renderRootElements();
-    this._renderDynamicElements();
+    this._renderScaleElements();
+    this._renderLabelElement();
 
     this._syncValue();
   }
@@ -188,14 +192,14 @@ export class Gauge extends LitElement {
 
     this._svg?.remove();
     this._svg = undefined;
-    this._scale = undefined;
+    this._dial = undefined;
   }
 
   updated(_changed: PropertyValues) {
     super.updated(_changed);
 
-    if (_changed.has('levels') || _changed.has('min') || _changed.has('max')) {
-      this._renderDynamicElements();
+    if (_changed.has('_levels') || _changed.has('isDigitScale') || _changed.has('min') || _changed.has('max')) {
+      this._renderScaleElements();
     }
 
     if (_changed.has('value') || _changed.has('min') || _changed.has('max')) {
@@ -204,6 +208,10 @@ export class Gauge extends LitElement {
 
     if (_changed.has('disabled')) {
       this._svg?.classList?.[this.disabled ? 'add' : 'remove']?.('disabled');
+    }
+
+    if (_changed.has('label')) {
+      this._renderLabelElement();
     }
   }
 
@@ -252,28 +260,46 @@ export class Gauge extends LitElement {
   }
 
   private _renderRootElements(): void {
-    const insetShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
-    const dropShadowFilterId = 'filter-' + Math.random().toString().split('.')[1];
+    const insetShadowFilterId = 'inset-filter';
+    const dropShadowFilterId = 'drop-shadow-filter';
 
     this._svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     this._svg.classList.add('lc-gauge');
-    this._svg.setAttribute('viewBox', '-50 -50 100 60');
+    const width = Gauge.sizes.width;
+    const height = Gauge.sizes.width / 2 + Gauge.sizes.labelHeight;
+    const start = width / 2 * -1;
+    this._svg.setAttribute('viewBox', `${start} ${start} ${width} ${height}`);
 
+    // Scale filter
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     defs.append(this._renderInsetShadow(insetShadowFilterId));
     defs.append(this._renderDropShadow(dropShadowFilterId));
     this._svg.append(defs);
 
+    // Dial plate pointer container
+    this._dial = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this._dial.classList.add('dial-plate');
+    this._dial.setAttribute('filter', `url(#${insetShadowFilterId})`);
+    this._svg.append(this._dial);
+
     this._scale = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     this._scale.classList.add('scale');
-    this._scale.setAttribute('filter', `url(#${insetShadowFilterId})`);
     this._svg.append(this._scale);
 
-    this._needle = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    this._needle.classList.add('needle');
-    this._needle.setAttribute('filter', `url(#${dropShadowFilterId})`);
-    this._svg.append(this._needle);
+    // Create pointer element
+    this._pointer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this._pointer.classList.add('pointer');
+    this._pointer.setAttribute('filter', `url(#${dropShadowFilterId})`);
+    this._svg.append(this._pointer);
 
+    const needlePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const tip = Gauge.sizes.scaleRadius;
+    const base = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth - Gauge.sizes.scaleWidth / 2;
+    needlePath.setAttribute('d', `M -${base} -2 L -${tip} 0 L -${base} 2 z`);
+    needlePath.setAttribute('fill', 'rgb(200, 200, 200)');
+    this._pointer.append(needlePath);
+
+    // Text value
     this._text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     this._text.classList.add('value');
     this._text.setAttribute('text-anchor', 'middle');
@@ -281,6 +307,7 @@ export class Gauge extends LitElement {
     this._text.setAttribute('y', '-2');
     this._svg.append(this._text);
 
+    // label
     this._label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     this._label.classList.add('label');
     this._label.setAttribute('text-anchor', 'middle');
@@ -291,55 +318,82 @@ export class Gauge extends LitElement {
     this.shadowRoot?.append(this._svg);
   }
 
-  private _renderDynamicElements(): void {
-    if (!this._scale || !this._needle || !this._label) return;
+  private _renderScaleElements(): void {
+    if (!this._dial || !this._scale) return;
+
+    for (let i = 0; i < this._dial.childNodes.length; i++) {
+      this._dial.childNodes.item(i).remove();
+    }
 
     for (let i = 0; i < this._scale.childNodes.length; i++) {
       this._scale.childNodes.item(i).remove();
     }
-    this._needle.childNodes.item(0)?.remove();
 
-    // Render scale
-    if (this.levels) {
-      for (let i = 0; i < this.levels.length; i++) {
-        const level = this.levels[i];
-        const nextLevel = this.levels[i + 1];
+    const rExt = Gauge.sizes.scaleRadius;
+    const rInt = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth;
 
+    const renderNumber = (value: number, angle: number, anchor: 'start' | 'end' | 'middle') => {
+      if (!this.digits) return;
 
-        const beginAngle = toRadians(getAngle(...normalize(level.level, this.min, this.max)));
+      const angleRad = toRadians(angle);
+      const x = round(0 - (rExt + 2) * Math.cos(angleRad));
+      const y = round(0 - (rExt + 2) * Math.sin(angleRad));
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', x.toString());
+      text.setAttribute('y', y.toString());
+      text.setAttribute('text-anchor', anchor);
+      text.setAttribute('transform', `rotate(${angle - 90},${x},${y})`);
+      text.innerHTML = value.toString();
+
+      this._scale!.append(text);
+    };
+
+    if (this._levels) {
+      for (let i = 0; i < this._levels.length; i++) {
+        const level = this._levels[i].level;
+        const nextLevel = this._levels[i + 1]?.level ?? this.max;
+        const color = this._levels[i].color;
+
+        const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
+        const beginAngle = toRadians(beginAngleDeg);
         const beginAngleCos = Math.cos(beginAngle);
         const beginAngleSin = Math.sin(beginAngle);
 
-        const endAngle = toRadians(getAngle(...normalize(nextLevel?.level ?? this.max, this.min, this.max)));
+        const endAngle = toRadians(getAngle(...normalize(nextLevel, this.min, this.max)));
         const endAngleCos = Math.cos(endAngle);
         const endAngleSin = Math.sin(endAngle);
 
         let d = '';
-        d += `M ${round(0 - 47.5 * beginAngleCos)} ${round(0 - 47.5 * beginAngleSin)} `;
-        d += `A 47.5 47.5 0 0 1 ${round(0 - 47.5 * endAngleCos)} ${round(0 - 47.5 * endAngleSin)} `;
-        d += `L ${round(0 - 32.5 * endAngleCos)} ${round(0 - 32.5 * endAngleSin)} `;
-        d += `A 32.5 32.5 0 0 0 ${round(0 - 32.5 * beginAngleCos)} ${round(0 - 32.5 * beginAngleSin)} `;
+        d += `M ${round(0 - rExt * beginAngleCos)} ${round(0 - rExt * beginAngleSin)} `;
+        d += `A ${rExt} ${rExt} 0 0 1 ${round(0 - rExt * endAngleCos)} ${round(0 - rExt * endAngleSin)} `;
+        d += `L ${round(0 - rInt * endAngleCos)} ${round(0 - rInt * endAngleSin)} `;
+        d += `A ${rInt} ${rInt} 0 0 0 ${round(0 - rInt * beginAngleCos)} ${round(0 - rInt * beginAngleSin)} `;
         d += 'z';
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', d);
-        path.setAttribute('fill', level.color);
-        this._scale!.append(path);
+        path.setAttribute('fill', color);
+        this._dial!.append(path);
+
+        renderNumber(level, beginAngleDeg, i === 0 ? 'start' : 'middle');
       }
     } else {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', 'M -47.5 0 A 47.5 47.5 0 0 1 47.5 0 L 32.5 0 A 32.5 32.5 0 1 0 -32.5 0 z');
+      path.setAttribute('d', `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
       path.setAttribute('fill', 'var(--info-color)');
-      this._scale.append(path);
+      this._dial.append(path);
+
+      renderNumber(this.min ?? 0, 0, 'start');
     }
 
-    // Render needle
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M -25 -2 L -47.5 0 L -25 2 z');
-    path.setAttribute('fill', 'rgb(200, 200, 200)');
-    this._needle.append(path);
+    renderNumber(this.max ?? 100, 180, 'end');
+  }
 
-    this._label!.innerHTML = 'CPU in use';
+  private _renderLabelElement(): void {
+    if (!this._label) return;
+
+    this._label.innerHTML = this.label || '';
   }
 
   private _renderInsetShadow(filterId: string): SVGFilterElement {
