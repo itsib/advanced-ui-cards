@@ -1,6 +1,4 @@
-import { type WatcherBase, WatcherRoot } from './watchers';
-import { DomWatcher } from './watchers/dom-watcher';
-import { waitShadowRoot } from './utils';
+import { waitSelector, DomWatcher } from './utils';
 
 declare global {
   interface Window {
@@ -17,10 +15,10 @@ declare global {
     throw new Error('No <home-assistant> element');
   }
 
-  const root = await waitShadowRoot(homeAssistant);
+  const root = await waitSelector(homeAssistant, ':shadow');
 
   window.brandResolver = new DomWatcher({
-    root: root,
+    root: root!,
     images: {
       ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
       ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',

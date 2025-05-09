@@ -1,16 +1,3 @@
-async function waitShadowRoot$1(element) {
-  if (element.shadowRoot) {
-    return element.shadowRoot;
-  }
-  return new Promise((resolve) => {
-    const attachShadowFn = element.attachShadow;
-    element.attachShadow = (init) => {
-      const shadow = attachShadowFn.call(element, init);
-      requestAnimationFrame(() => resolve(shadow));
-      return shadow;
-    };
-  });
-}
 function spreadSelector(selector) {
   const selectors = selector.trim().split(/(:shadow)/);
   const spread = [];
@@ -104,10 +91,7 @@ class DomWatcher {
     this._watchers = {};
     this._root = config.root;
     this._images = config.images;
-    const filter = {
-      nodeName: ["HOME-ASSISTANT-MAIN", "DIALOG-ADD-INTEGRATION"]
-    };
-    onElementChange(this._root, filter, this.onChangeCallback.bind(this));
+    onElementChange(this._root, this.onChangeCallback.bind(this));
   }
   getImgSrc(domain) {
     return domain && domain in this._images ? this._images[domain] : null;
@@ -124,12 +108,23 @@ class DomWatcher {
     (_c = this[element.nodeName]) == null ? void 0 : _c.call(this, element);
   }
   async ["HOME-ASSISTANT-MAIN"](element) {
-    const root = await waitShadowRoot$1(element);
+    const root = await waitSelector(element, ":shadow");
+    if (!root) return;
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
   }
   async ["DIALOG-ADD-INTEGRATION"](element) {
-    const root = await waitShadowRoot$1(element);
+    const root = await waitSelector(element, ":shadow");
+    if (!root) return;
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+  }
+  async ["HA-MORE-INFO-DIALOG"](element) {
+    var _a, _b;
+    const domain = (_b = (_a = element == null ? void 0 : element["_entityId"]) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
+    const url = this.getImgSrc(domain);
+    if (!url) return;
+    const badge = await waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge");
+    if (!badge) return;
+    badge.style.backgroundImage = `url("${url}")`;
   }
   async ["HA-INTEGRATION-LIST-ITEM"](element) {
     var _a;
@@ -168,6 +163,10 @@ class DomWatcher {
     if (updates) {
       this["HA-CONFIG-UPDATES"](updates);
     }
+    const repairs = configSection.querySelector("ha-config-repairs");
+    if (repairs) {
+      this["HA-CONFIG-REPAIRS"](repairs);
+    }
     this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
   async ["HA-CONFIG-UPDATES"](element) {
@@ -183,6 +182,19 @@ class DomWatcher {
       badge.style.backgroundImage = `url("${url}")`;
     }
   }
+  async ["HA-CONFIG-REPAIRS"](element) {
+    var _a;
+    const section = await waitSelector(element, ":shadow ha-md-list");
+    if (!section || section.children.length === 0) return;
+    for (const child of section.children) {
+      const domain = (_a = child == null ? void 0 : child.issue) == null ? void 0 : _a.issue_domain;
+      const url = this.getImgSrc(domain);
+      if (!url) continue;
+      const img = child.querySelector("img");
+      if (!img) continue;
+      img.src = url;
+    }
+  }
 }
 (async () => {
   if (window.brandResolver) return;
@@ -191,7 +203,7 @@ class DomWatcher {
   if (!homeAssistant) {
     throw new Error("No <home-assistant> element");
   }
-  const root = await waitShadowRoot$1(homeAssistant);
+  const root = await waitSelector(homeAssistant, ":shadow");
   window.brandResolver = new DomWatcher({
     root,
     images: {

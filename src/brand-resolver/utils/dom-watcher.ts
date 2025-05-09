@@ -1,5 +1,5 @@
-import { waitSelector, waitShadowRoot } from '../utils';
-import { ChangeDisconnect, ChangeType, onElementChange } from '../utils/on-element-change';
+import { waitSelector } from './wait-selector';
+import { ChangeDisconnect, ChangeType, onElementChange } from './on-element-change';
 
 export type ReplacementImages = { [domain: string]: string };
 
@@ -22,11 +22,7 @@ export class DomWatcher {
     this._root = config.root;
     this._images = config.images;
 
-    const filter = {
-      nodeName: ['HOME-ASSISTANT-MAIN', 'DIALOG-ADD-INTEGRATION'],
-    };
-
-    onElementChange(this._root, filter, this.onChangeCallback.bind(this));
+    onElementChange(this._root, this.onChangeCallback.bind(this));
   }
 
   getImgSrc(domain?: string | null): string | null {
@@ -46,15 +42,27 @@ export class DomWatcher {
   }
 
   private async ['HOME-ASSISTANT-MAIN'](element: HTMLElement) {
-    const root = await waitShadowRoot(element);
+    const root = await waitSelector(element, ':shadow');
+    if (!root) return;
 
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
   }
 
   private async ['DIALOG-ADD-INTEGRATION'](element: HTMLElement) {
-    const root = await waitShadowRoot(element);
+    const root = await waitSelector(element, ':shadow');
+    if (!root) return;
 
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+  }
+
+  private async ['HA-MORE-INFO-DIALOG'](element: HTMLElement) {
+    const domain = (element as any)?.['_entityId']?.replace(/^update\./, '')?.replace(/_update$/, '');
+    const url = this.getImgSrc(domain);
+    if (!url) return;
+
+    const badge = await waitSelector(element, ':shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge');
+    if (!badge) return;
+    (badge as HTMLElement).style.backgroundImage = `url("${url}")`;
   }
 
   private async ['HA-INTEGRATION-LIST-ITEM'](element: HTMLElement) {
@@ -106,6 +114,11 @@ export class DomWatcher {
       this['HA-CONFIG-UPDATES'](updates as HTMLElement);
     }
 
+    const repairs = configSection.querySelector('ha-config-repairs');
+    if (repairs) {
+      this['HA-CONFIG-REPAIRS'](repairs as HTMLElement);
+    }
+
     this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
 
@@ -121,6 +134,21 @@ export class DomWatcher {
       const badge = child.querySelector('state-badge');
       if (!badge) continue;
       (badge as HTMLElement).style.backgroundImage = `url("${url}")`;
+    }
+  }
+
+  private async ['HA-CONFIG-REPAIRS'](element: HTMLElement) {
+    const section = await waitSelector(element, ':shadow ha-md-list');
+    if (!section || section.children.length === 0) return;
+
+    for (const child of section.children) {
+      const domain = (child as any)?.issue?.issue_domain;
+      const url = this.getImgSrc(domain);
+      if (!url) continue;
+
+      const img = child.querySelector('img');
+      if (!img) continue;
+      (img as HTMLImageElement).src = url;
     }
   }
 }

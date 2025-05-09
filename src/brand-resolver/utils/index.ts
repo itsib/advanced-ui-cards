@@ -1,5 +1,3 @@
-export * from './resolve-element'
-export * from './wait-shadow-root'
-export * from './select'
-export * from './wait-selector'
-export { waitSelectAll } from './wait-select-all';
+export * from './wait-selector';
+export * from './dom-watcher';
+export * from './on-element-change';
