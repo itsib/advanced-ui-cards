@@ -173,9 +173,17 @@ class DomWatcher {
     this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
   async ["HA-CONFIG-UPDATES"](element) {
-    const section = await waitSelector(element, ":shadow mwc-list");
-    if (!section || section.children.length === 0) return;
-    for (const child of section.children) {
+    const section = await waitSelector(element, ":shadow");
+    if (!section) return;
+    let list = null;
+    for (const item of section.children) {
+      if (/list/i.test(item.nodeName)) {
+        list = item;
+        break;
+      }
+    }
+    if (!list || list.children.length === 0) return;
+    for (const child of list.children) {
       const entityId = child == null ? void 0 : child.entity_id;
       const domain = entityId ? computeDomain(entityId) : void 0;
       const url = this.getImgSrc(domain);
