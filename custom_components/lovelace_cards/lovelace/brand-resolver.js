@@ -9,107 +9,127 @@ function spreadSelector(selector) {
   }
   return spread;
 }
-function waitShadowRoot(element, callback) {
+function waitShadowRoot(element, callback, signal) {
   if (element.shadowRoot) {
     return callback(element.shadowRoot);
   }
+  let rafId = null;
   const attachShadowFn = element.attachShadow;
+  const disconnect = () => {
+    element.attachShadow = attachShadowFn;
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+  };
+  signal.addEventListener("abort", disconnect, { once: true });
   element.attachShadow = (init) => {
     const shadow = attachShadowFn.call(element, init);
     element.attachShadow = attachShadowFn;
-    requestAnimationFrame(() => callback(shadow));
+    rafId = requestAnimationFrame(() => {
+      signal.removeEventListener("abort", disconnect);
+      callback(shadow);
+    });
     return shadow;
   };
 }
-function waitQuerySelector(element, selector, callback) {
-  const foundElement = element.querySelector(selector);
-  if (foundElement) {
-    return callback(foundElement);
+function waitQuerySelector(root, selector, callback, signal) {
+  const element = root.querySelector(selector);
+  if (element) {
+    return callback(element);
   }
-  const observer = new MutationObserver((mutations) => {
-    const idAddNode = mutations.some((mutation) => mutation.addedNodes.length > 0);
-    if (idAddNode) {
-      const foundElement2 = element.querySelector(selector);
-      if (foundElement2) {
-        observer.disconnect();
-        return callback(foundElement2);
-      }
-    }
-  });
-  observer.observe(element, { childList: true, subtree: true });
+  let observer;
+  const disconnect = () => observer.disconnect();
+  signal.addEventListener("abort", disconnect, { once: true });
+  const onMutate = (mutations) => {
+    const isAddNode = mutations.some((mutation) => mutation.addedNodes.length > 0);
+    if (!isAddNode) return;
+    const element2 = root.querySelector(selector);
+    if (!element2) return;
+    signal.removeEventListener("abort", disconnect);
+    disconnect();
+    callback(element2);
+  };
+  observer = new MutationObserver(onMutate);
+  observer.observe(root, { childList: true, subtree: true });
 }
-function waitSubtree(root, subtree, resolve) {
+function waitSubtree(root, subtree, resolve, signal) {
   const [selector, ...innerSubtree] = subtree;
   if (!selector) {
     return resolve(root);
   }
   if (selector === ":shadow") {
     return waitShadowRoot(root, (shadow) => {
-      waitSubtree(shadow, innerSubtree, resolve);
-    });
+      waitSubtree(shadow, innerSubtree, resolve, signal);
+    }, signal);
   } else {
     return waitQuerySelector(root, selector, (element) => {
-      waitSubtree(element, innerSubtree, resolve);
-    });
+      waitSubtree(element, innerSubtree, resolve, signal);
+    }, signal);
   }
 }
 function waitSelector(element, selector) {
   const subtree = spreadSelector(selector);
-  return new Promise((resolve) => {
-    waitSubtree(element, subtree, resolve);
+  const abort = new AbortController();
+  const promise = new Promise((resolve, reject) => {
+    abort.signal.addEventListener("abort", reject, { once: true });
+    waitSubtree(element, subtree, resolve, abort.signal);
   });
+  promise.abort = () => {
+    abort.abort();
+  };
+  return promise;
 }
-function onElementChange(element, ...rest) {
-  const callback = typeof rest[0] === "function" ? rest[0] : rest[1];
-  const filter = (typeof rest[0] === "function" ? {} : rest[0]) || {};
-  const nodeType = filter.nodeType ?? Node["ELEMENT_NODE"];
-  const nodeName = filter.nodeName;
+function onElementChange(observable, callbacks) {
+  const { onAdd, onRemove } = callbacks;
   const observer = new MutationObserver((mutations) => {
     for (let i = 0; i < mutations.length; i++) {
-      const { addedNodes, removedNodes } = mutations[i];
+      const { addedNodes, removedNodes, target } = mutations[i];
       for (let j = 0; j < removedNodes.length; j++) {
         const node = removedNodes.item(j);
-        if (node && node.nodeType === nodeType && (!nodeName || nodeName && nodeName.includes(node.nodeName))) {
-          callback("remove", node);
+        if (node && node.nodeType === Node.ELEMENT_NODE) {
+          onRemove == null ? void 0 : onRemove(target, node);
         }
       }
       for (let j = 0; j < addedNodes.length; j++) {
         const node = addedNodes.item(j);
-        if (node && node.nodeType === nodeType && (!nodeName || nodeName && nodeName.includes(node.nodeName))) {
-          callback("add", node);
+        if (node && node.nodeType === Node.ELEMENT_NODE) {
+          onAdd == null ? void 0 : onAdd(target, node);
         }
       }
     }
   });
-  observer.observe(element, { childList: true, subtree: true });
+  observer.observe(observable, { childList: true, subtree: true });
   return () => {
     observer.disconnect();
   };
 }
-function computeDomain(entityId) {
-  return entityId.substring(0, entityId.indexOf("."));
-}
+const FORMATS = {
+  subscribe: "color: #999999;",
+  new_node_call: "color: #66FF66;",
+  new_node_skip: "color: #448844; text-decoration: line-through;",
+  rm_node_call: "color: #FF6666;",
+  rm_node_skip: "color: #884444; text-decoration: line-through;",
+  default: "color: #EAEAEA;"
+};
 class DomWatcher {
   constructor(config) {
-    this._watchers = {};
+    this._watchers = /* @__PURE__ */ new WeakMap();
     this._root = config.root;
     this._images = config.images;
     this._domains = Object.keys(this._images);
-    onElementChange(this._root, this.onChangeCallback.bind(this));
+    this._debug = config.debug || false;
+    this.subscribe(this._root);
+  }
+  log(type, ...objects) {
+    if (!this._debug) return;
+    const color = FORMATS[type] || FORMATS.default;
+    const label = type.replace(/_/g, " ").replace("skip", "🗴").replace("call", "✔").replace(/(^\w)/, (c) => c.toUpperCase());
+    const template = "%c%s%c%s" + "%O".repeat(objects.length);
+    const space = ":" + " ".repeat(14 - label.length);
+    console.log(template, color, label, "", space, ...objects);
   }
   getImgSrc(domain) {
     return domain && domain in this._images ? this._images[domain] : null;
-  }
-  onChangeCallback(type, element) {
-    var _a, _b, _c;
-    if (type === "remove") {
-      if (element.nodeName in this._watchers) {
-        (_b = (_a = this._watchers)[element.nodeName]) == null ? void 0 : _b.call(_a);
-        Reflect.deleteProperty(this._watchers, element.nodeName);
-      }
-      return;
-    }
-    (_c = this[element.nodeName]) == null ? void 0 : _c.call(this, element);
   }
   getDomainByEntityId(entityId) {
     var _a, _b, _c, _d;
@@ -126,27 +146,58 @@ class DomWatcher {
     }
     return null;
   }
-  async ["HOME-ASSISTANT-MAIN"](element) {
+  onRemoveCallback(target, element) {
+    var _a;
+    const methodRm = `RM-${element.nodeName}`;
+    if (this._watchers.has(element)) {
+      (_a = this._watchers.get(element)) == null ? void 0 : _a();
+      this._watchers.delete(element);
+    }
+    if (methodRm in this) {
+      this.log("rm_node_call", element, target);
+      this[methodRm](target, element);
+    } else {
+      this.log("rm_node_skip", element, target);
+    }
+  }
+  onAddCallback(target, element) {
+    const methodNew = `NEW-${element.nodeName}`;
+    if (methodNew in this) {
+      this.log("new_node_call", element, target);
+      this[methodNew](target, element);
+    } else {
+      this.log("new_node_skip", element, target);
+    }
+  }
+  subscribe(observable) {
+    this.log("subscribe", observable);
+    const disconnect = onElementChange(observable, {
+      onAdd: this.onAddCallback.bind(this),
+      onRemove: this.onRemoveCallback.bind(this)
+    });
+    this._watchers.set(observable, disconnect);
+  }
+  async ["NEW-HOME-ASSISTANT-MAIN"](_target, element) {
     this._hass = element.hass;
-    const root = await waitSelector(element, ":shadow");
-    if (!root) return;
-    this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+    const observable = await waitSelector(element, ":shadow");
+    if (!observable) return;
+    this.subscribe(observable);
   }
-  async ["DIALOG-ADD-INTEGRATION"](element) {
-    const root = await waitSelector(element, ":shadow");
-    if (!root) return;
-    this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
+  async ["NEW-DIALOG-ADD-INTEGRATION"](_target, element) {
+    const observable = await waitSelector(element, ":shadow");
+    if (!observable) return;
+    this.subscribe(observable);
   }
-  async ["HA-MORE-INFO-DIALOG"](element) {
+  async ["NEW-HA-MORE-INFO-DIALOG"](_target, element) {
     const entityId = element == null ? void 0 : element["_entityId"];
-    const domain = entityId ? computeDomain(entityId) : entityId;
+    const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
     if (!url) return;
     const badge = await waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge");
     if (!badge) return;
     badge.style.backgroundImage = `url("${url}")`;
   }
-  async ["HA-INTEGRATION-LIST-ITEM"](element) {
+  async ["NEW-HA-INTEGRATION-LIST-ITEM"](_target, element) {
     var _a;
     if (!((_a = element == null ? void 0 : element.integration) == null ? void 0 : _a.domain)) return;
     const domain = element.integration.domain;
@@ -156,7 +207,7 @@ class DomWatcher {
     if (!img) return;
     img.src = src;
   }
-  async ["HA-CONFIG-INTEGRATIONS-DASHBOARD"](element) {
+  async ["NEW-HA-CONFIG-INTEGRATIONS-DASHBOARD"](_target, element) {
     const container = await waitSelector(element, ":shadow hass-tabs-subpage .container");
     if (!container) return;
     for (const child of container.children) {
@@ -168,7 +219,7 @@ class DomWatcher {
       img.src = src;
     }
   }
-  async ["HA-CONFIG-INTEGRATION-PAGE"](element) {
+  async ["NEW-HA-CONFIG-INTEGRATION-PAGE"](_target, element) {
     const domain = element == null ? void 0 : element.domain;
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
@@ -176,20 +227,21 @@ class DomWatcher {
     if (!img) return;
     img.src = src;
   }
-  async ["HA-CONFIG-DASHBOARD"](element) {
-    const configSection = await waitSelector(element, ":shadow ha-top-app-bar-fixed ha-config-section");
-    if (!configSection) return;
-    const updates = configSection.querySelector("ha-config-updates");
-    if (updates) {
-      this["HA-CONFIG-UPDATES"](updates);
+  async ["NEW-HA-CONFIG-DASHBOARD"](_target, element) {
+    const observable = await waitSelector(element, ":shadow ha-top-app-bar-fixed");
+    if (!observable) return;
+    const repairs = await waitSelector(observable, "ha-config-repairs");
+    const updates = await waitSelector(observable, "ha-config-updates");
+    if (repairs && repairs.nodeName === "HA-CONFIG-REPAIRS") {
+      this.onAddCallback(observable, repairs);
     }
-    const repairs = configSection.querySelector("ha-config-repairs");
-    if (repairs) {
-      this["HA-CONFIG-REPAIRS"](repairs);
+    if (updates && updates.nodeName === "HA-CONFIG-UPDATES") {
+      this.onAddCallback(observable, updates);
     }
-    this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
+    this.subscribe(repairs);
+    this.subscribe(updates);
   }
-  async ["HA-CONFIG-UPDATES"](element) {
+  async ["NEW-HA-CONFIG-UPDATES"](_target, element) {
     const section = await waitSelector(element, ":shadow");
     if (!section) return;
     let list = null;
@@ -209,10 +261,12 @@ class DomWatcher {
       if (!badge) continue;
       badge.style.backgroundImage = `url("${url}")`;
     }
+    this.subscribe(list);
   }
-  async ["HA-CONFIG-REPAIRS"](element) {
+  async ["NEW-HA-CONFIG-REPAIRS"](_target, element) {
     var _a;
     const section = await waitSelector(element, ":shadow ha-md-list");
+    if (!section) return;
     if (!section || section.children.length === 0) return;
     for (const child of section.children) {
       const domain = (_a = child == null ? void 0 : child.issue) == null ? void 0 : _a.issue_domain;
@@ -222,6 +276,7 @@ class DomWatcher {
       if (!img) continue;
       img.src = url;
     }
+    this.subscribe(section);
   }
 }
 (async () => {
@@ -234,9 +289,11 @@ class DomWatcher {
   const root = await waitSelector(homeAssistant, ":shadow");
   window.brandResolver = new DomWatcher({
     root,
+    debug: true,
     images: {
       ["lovelace_cards"]: "/lovelace_cards_files/lovelace-cards.svg",
-      ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg"
+      ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg",
+      ["homeconnect_ws"]: "/lovelace_cards_files/yandex-music.svg"
     }
   });
 })();

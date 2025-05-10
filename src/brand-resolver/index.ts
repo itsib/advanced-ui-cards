@@ -19,9 +19,11 @@ declare global {
 
   window.brandResolver = new DomWatcher({
     root: root!,
+    debug: true,
     images: {
       ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
       ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
+      ['homeconnect_ws']: '/lovelace_cards_files/yandex-music.svg',
     },
   });
 })();
