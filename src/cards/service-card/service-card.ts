@@ -1,8 +1,12 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import type { HomeAssistant, LovelaceCard, LovelaceCardEditor } from 'types';
+import { type EntityConfig, HomeAssistant, LovelaceCard, LovelaceCardEditor, LovelaceRowConfig } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities } from '../../utils/entities-utils';
-import type { IGaugeActionsCardConfigSchema, IGaugeEntityConfigSchema } from './service-card-schema';
+import type { IServiceCardConfigSchema, IGaugeConfigSchema } from './service-card-schema';
+import { IButtonConfigSchema } from '../../schemas/button-config-schema';
+import { getNumberValueWithUnit } from '../../utils/format-number-value';
+import { formatEntityName } from '../../utils/format-entity-name';
+import { mainWindow } from '../../utils/get-main-window';
 import styles from './service-card.scss';
 
 @customElement('lc-service-card')
@@ -15,10 +19,9 @@ class ServiceCard extends LitElement implements LovelaceCard {
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {
-    const maxEntities = 3;
-    const foundEntities = findEntities(
+    const gaugesEntities = findEntities(
       hass,
-      maxEntities,
+      2,
       entities,
       entitiesFallback,
       ['sensor'],
@@ -26,7 +29,10 @@ class ServiceCard extends LitElement implements LovelaceCard {
     );
 
     return {
-      entities: foundEntities,
+      gauges: gaugesEntities.map(entity => ({
+        entity: entity,
+      })),
+      entities: findEntities(hass, 1, entities, entitiesFallback),
       buttons: [
         { color: 'info', icon: 'mdi:reload', action: 'homeassistant.reload_all' },
       ],
@@ -37,17 +43,28 @@ class ServiceCard extends LitElement implements LovelaceCard {
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IGaugeActionsCardConfigSchema;
+  @state() private _config?: IServiceCardConfigSchema;
 
-  private _configEntities?: IGaugeEntityConfigSchema[];
+  @state() private _createRowElement?: (config: LovelaceRowConfig) => HTMLElement;
 
-  async setConfig(config: IGaugeActionsCardConfigSchema) {
-    if (!config.entities || !Array.isArray(config.entities)) {
-      throw new Error('Entities must be specified');
-    }
+  private _configEntities?: LovelaceRowConfig[];
 
+  private _configGauges?: IGaugeConfigSchema[];
+
+  private _configButtons?: IButtonConfigSchema[];
+
+  async setConfig(config: IServiceCardConfigSchema) {
     this._config = config;
-    this._configEntities = processEntities<IGaugeEntityConfigSchema>(config.entities, { validateId: false });
+    this._configEntities = processEntities<LovelaceRowConfig>(config.entities, { validateMode: 'skip' });
+
+    this._configGauges = processEntities<IGaugeConfigSchema>(config.gauges, { validateMode: 'skip' });
+
+    this._configButtons = config.buttons;
+
+    if (!this._createRowElement) {
+      const utils = await mainWindow.loadCardHelpers();
+      this._createRowElement = utils.createRowElement;
+    }
   }
 
   getCardSize(): number {
@@ -55,7 +72,7 @@ class ServiceCard extends LitElement implements LovelaceCard {
       return 0;
     }
 
-    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1);
+    return (this._config.title ? 2 : 0) + (this._config.entities?.length || 1);
   }
 
   render(): TemplateResult {
@@ -66,11 +83,9 @@ class ServiceCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         ${this._renderHeader()}
+        ${this._renderGauges()}
         ${this._renderEntities()}
-        <lc-footer-buttons
-          .hass=${this.hass}
-          .buttons=${this._config.buttons}
-        ></lc-footer-buttons>
+        ${this._renderButtons()}
       </ha-card>
     `;
   }
@@ -84,42 +99,92 @@ class ServiceCard extends LitElement implements LovelaceCard {
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
+          ${this._config.icon ? html`
+            <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
           <span>${this._config.title}</span>
         </div>
       </h1>
     `;
   }
 
-  private _renderEntities(): TemplateResult {
-    if (!this._configEntities) {
+  private _renderGauges(): TemplateResult {
+    if (!this._configGauges) {
       return html``;
     }
-    const entities = this._configEntities.map(entity => this._renderEntity(entity));
+    const entities = this._configGauges.map(entity => this._renderGauge(entity));
 
     return html`
-      <div class="card-content">${entities}</div>`;
+      <div class="card-gauges">${entities}</div>`;
   }
 
-  private _renderEntity(_entity: IGaugeEntityConfigSchema): TemplateResult {
-    const stateObj = this.hass?.states?.[_entity.entity];
-    const valueToDisplay = Number(_entity.attribute ? stateObj?.attributes[_entity.attribute] : stateObj?.state);
+  private _renderGauge(_entity: IGaugeConfigSchema): TemplateResult {
+    const entityObj = this.hass!.entities[_entity.entity];
+    const { value, unit } = getNumberValueWithUnit(_entity, this.hass!);
+    const step = _entity.step == null && entityObj.display_precision != null && (1 / (10 ** entityObj.display_precision)) || undefined;
 
     return html`
       <div class="gauge-wrap">
         <lc-gauge
-          .hass="${this.hass}"
-          .label="${_entity.name}"
-          .unit="${_entity.unit}"
+          .label="${_entity.name || formatEntityName(_entity.entity, this.hass!)}"
+          .unit="${_entity.unit || unit}"
           .min="${_entity.min}"
           .max="${_entity.max}"
-          .step="${_entity.step}"
+          .step="${_entity.step || step}"
           .digits="${_entity.digits}"
           .levels="${_entity.levels}"
-          .value="${valueToDisplay || 0}"
-          .disabled=${isNaN(valueToDisplay)}
+          .value="${value || 0}"
+          .disabled=${value == null}
         ></lc-gauge>
       </div>`;
+  }
+
+  private _renderEntities(): TemplateResult {
+    if (!this._configEntities) {
+      return html``;
+    }
+    const entities = this._configEntities.map((entityConf) => this._renderEntity(entityConf));
+
+    return html`
+      <div id="states" class="card-entities">${entities}</div>`;
+  }
+
+  private _renderEntity(entityConf: LovelaceRowConfig): TemplateResult {
+    if (!this._createRowElement) return html``;
+    let config: EntityConfig;
+
+    // Conditional entity state
+    if ((!('type' in entityConf) || entityConf.type === 'conditional') && 'state_color' in this._config!) {
+      config = { state_color: this._config.state_color, ...(entityConf as EntityConfig) } as EntityConfig;
+    }
+    // Entity is action
+    else if (entityConf.type === 'perform-action') {
+      config = { ...entityConf, type: 'call-service' } as EntityConfig;
+    }
+    // Simple entity
+    else {
+      config = { ...entityConf } as EntityConfig;
+    }
+
+    const element = this._createRowElement?.(config);
+    if (this.hass) {
+      (element as any).hass = this.hass;
+    }
+
+    return html`
+      <div>${element}</div>`;
+  }
+
+  private _renderButtons(): TemplateResult {
+    if (!this._configButtons) {
+      return html``;
+    }
+
+    return html`
+      <lc-footer-buttons
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+      ></lc-footer-buttons>
+    `;
   }
 }
 

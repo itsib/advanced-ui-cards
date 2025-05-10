@@ -10,6 +10,10 @@ const LC_ICONS = {
   "maria-db": {
     path: "M23.157 4.412c-.676.284-.79.31-1.673.372c-.65.045-.757.057-1.212.209c-.75.246-1.395.75-2.02 1.59c-.296.398-1.249 1.913-1.249 1.988c0 .057-.65.998-.915 1.32c-.574.713-1.08 1.079-2.14 1.59c-.77.36-1.224.524-4.102 1.477c-1.073.353-2.133.738-2.367.864c-.852.449-1.515 1.036-2.203 1.938c-1.003 1.32-.972 1.313-3.042.947a12 12 0 0 0-.675-.063c-.644-.05-1.023.044-1.332.334L0 17.193l.177.088c.094.05.353.234.561.398c.215.17.461.347.55.391c.088.044.17.088.183.101s-.089.17-.228.353c-.435.581-.593.871-.574 1.048c.019.164.032.17.43.17c.517-.006.826-.056 1.261-.208c.65-.233 2.058-.94 2.784-1.4c.776-.5 1.717-.998 1.956-1.042c.082-.02.354-.07.594-.114c.58-.107 1.464-.095 2.587.05c.108.013.373.045.6.064c.227.025.43.057.454.076c.026.012.474.037.998.056c.934.026 1.104.007 1.3-.189c.126-.133.385-.631.498-.985c.209-.643.417-.921.366-.492c-.113.966-.322 1.692-.713 2.411c-.259.499-.663 1.092-.934 1.395c-.322.347-.315.36.088.315c.619-.063 1.471-.397 2.096-.82c.827-.562 1.647-1.691 2.19-3.03c.107-.27.22-.22.183.083c-.013.094-.038.315-.057.498l-.031.328l.353-.202c.833-.48 1.414-1.262 2.127-2.884c.227-.518.877-2.922 1.073-3.976a10 10 0 0 1 .271-1.042c.127-.429.196-.555.48-.858c.183-.19.625-.555.978-.808c.72-.505.953-.75 1.187-1.205c.208-.417.284-1.13.132-1.357c-.132-.202-.284-.196-.763.006",
     keywords: ["database", "sql", "maria", "db"]
+  },
+  mosquitto: {
+    path: "m2.9 18s-0.85-0.98-1.5-1.9c-2.7-4.8-1.6-11 2.6-15l5.1 4.5c-0.63 0.39-1.2 0.92-1.6 1.6-0.49 0.78-0.79 1.7-0.79 2.7 0 2.2 1.5 4 3.4 4.8l0.17 2.4c-3.3-0.66-5.8-3.5-5.8-7 0-1.6 0.49-3 1.4-4.1l-1.6-1.5-0.0061-0.0049c-2.7 3.5-2.5 8.4 0.36 12zm11-2.9c2-0.66 3.4-2.6 3.4-4.8 0-0.98-0.29-2-0.79-2.7-0.4-0.63-0.93-1.2-1.6-1.6l3.3-3-1.6e-4 -1.7e-4 1.9-1.6c4.1 3.6 5.1 9.7 2.6 15l-1.5 2-1.7-1.6c2.9-3.3 3-8.3 0.36-12l-0.0061 0.0049-1.6 1.5c0.84 1.2 1.4 2.6 1.4 4.1 0 3.4-2.5 6.4-5.8 7zm-1.6 8 0.84-8.3 0.25-1.9c0.98-0.41 1.7-1.5 1.7-2.6 0-1.6-1.2-2.9-2.9-2.9-1.6 0-2.9 1.2-2.9 2.9 0 1.2 0.7 2.1 1.7 2.6l0.22 1.7z",
+    keywords: ["database", "mqtt", "db", "mosquitto", "broker"]
   }
 };
 const LC_ICONS_MAP = Object.entries(LC_ICONS).map(([icon, content]) => ({ name: icon, keywords: content.keywords }));
@@ -560,16 +564,21 @@ function arrayFilter(array2, conditions, maxSize) {
 }
 function processEntities(entities, opts = {}) {
   const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
-  const maxLength = opts.maxLength ?? Infinity;
-  const validateId = opts.validateId == null ? true : opts.validateId;
+  const maxCount = opts.maxCount ?? Infinity;
+  const validateMode = opts.validateMode == null ? "throw" : opts.validateMode;
   const callback = opts.callback || ((entity) => entity);
-  if (maxLength < entities.length) {
-    throw new Error(`The maximum number of elements is ${maxLength}`);
+  if (!entities) {
+    if (validateMode === "skip") return [];
+    throw new Error(`No entities provided`);
   }
-  const results = new Array(entities.length);
+  if (maxCount < entities.length && validateMode !== "skip") {
+    throw new Error(`The maximum number of elements is ${maxCount}`);
+  }
+  const results = [];
   for (let i2 = 0; i2 < entities.length; i2++) {
     const entity = entities[i2];
     if (!entity) {
+      if (validateMode === "skip") continue;
       throw new Error(`Missing entity in position ${i2}, null provided`);
     }
     let result;
@@ -577,26 +586,36 @@ function processEntities(entities, opts = {}) {
       result = { entity };
     } else if (typeof entity === "object" && !Array.isArray(entity)) {
       if ("type" in entity || "entity" in entity) {
-        result = entity;
+        result = { ...entity };
       } else {
+        if (validateMode === "skip") continue;
         throw new Error(`Object at position ${i2} is missing entity or type field`);
       }
     } else {
+      if (validateMode === "skip") continue;
       throw new Error(`Invalid entity at position ${i2}`);
     }
-    if ((domains == null ? void 0 : domains.length) || validateId) {
-      let regExResult = null;
-      if (result.entity) {
-        regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
-        if (!regExResult && validateId) {
-          throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
-        }
-      }
-      if (domains && regExResult && !domains.includes(regExResult[1])) {
-        throw new Error(`Invalid entity domain ${regExResult[1]} at position ${i2}. Allowed ${domains.join(". ")}`);
+    let domain = null;
+    if (result.entity) {
+      const regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
+      if (regExResult) {
+        domain = regExResult[1];
+      } else {
+        if (validateMode === "skip") continue;
+        throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
       }
     }
-    results[i2] = callback(result);
+    if (domains == null ? void 0 : domains.length) {
+      if (!domain) continue;
+      if (!domains.includes(domain)) {
+        if (validateMode === "skip") continue;
+        throw new Error(`Invalid entity domain ${domain} at position ${i2}. Allowed ${domains.join(". ")}`);
+      }
+    }
+    result = callback(result);
+    if (!result) continue;
+    results.push(result);
+    if (results.length >= maxCount) break;
   }
   return results;
 }
@@ -1591,7 +1610,7 @@ var __decorateClass$4 = (decorators, target, key, kind) => {
   return result;
 };
 function isSupported(stateObj) {
-  const domain = stateObj.entity_id.split(".")[0];
+  const domain = computeDomain(stateObj.entity_id);
   return domain === "button" || domain === "input_button";
 }
 let ActionButtonFeature = class extends LitElement {
@@ -2767,11 +2786,7 @@ window.customCards.push({
   description: "This map allows you to group entities and actions that are triggered by buttons in the footer.",
   documentationURL: "https://github.com/itsib/lovelace-cards/blob/main/README.md"
 });
-const GaugeLevel = object({
-  level: number(),
-  color: string()
-});
-const GaugeEntitySchema = object({
+const GaugeConfigSchema = object({
   entity: string(),
   attribute: optional(string()),
   name: optional(string()),
@@ -2781,15 +2796,19 @@ const GaugeEntitySchema = object({
   min: optional(number()),
   max: optional(number()),
   step: optional(number()),
-  levels: array(GaugeLevel)
+  levels: optional(array(object({
+    level: number(),
+    color: string()
+  })))
 });
-const GaugeActionsCardConfigSchema = assign(
+const ServiceCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),
     icon: optional(string()),
     theme: optional(string()),
-    entities: array(union([string(), GaugeEntitySchema])),
+    gauges: optional(array(GaugeConfigSchema)),
+    entities: optional(array(EntitiesConfigSchema)),
     buttons: optional(array(ButtonConfigSchema))
   })
 );
@@ -2806,7 +2825,7 @@ var __decorateClass$1 = (decorators, target, key, kind) => {
 };
 let ServiceCardConfig = class extends LitElement {
   setConfig(config) {
-    assert(config, GaugeActionsCardConfigSchema);
+    assert(config, ServiceCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities, { domains: ["sensor"] });
   }
@@ -2968,6 +2987,24 @@ __decorateClass$1([
 ServiceCardConfig = __decorateClass$1([
   t$1("lc-service-card-config")
 ], ServiceCardConfig);
+function getNumberValueWithUnit(entity, hass) {
+  if (!entity.entity) return {};
+  const stateObj = hass.states[entity.entity];
+  const stateRaw = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj == null ? void 0 : stateObj.state;
+  const state = hass.formatEntityState(stateObj, stateRaw);
+  const [valueRaw, unit] = state.split(/^(\d+(?:\.\d+)?)/).map((item) => item.trim()).filter(Boolean);
+  const value = parseFloat(valueRaw) || void 0;
+  return { value, unit };
+}
+function formatEntityName(entityId, hass) {
+  const entity = hass.entities[entityId];
+  const domain = computeDomain(entityId);
+  let name = null;
+  if (entity.platform && domain && entity.translation_key) {
+    name = hass.localize(`component.${entity.platform}.entity.${domain}.${entity.translation_key}.name`);
+  }
+  return name || entity.name;
+}
 const styles = css`ha-card {
   height: 100%;
   display: flex;
@@ -2991,14 +3028,35 @@ const styles = css`ha-card {
   position: relative;
 }
 
-.card-content {
+.card-gauges {
+  padding: 16px 16px 0;
   display: flex;
   justify-content: space-around;
   gap: 10px;
 }
-.card-content .gauge-wrap {
+.card-gauges .gauge-wrap {
   width: 50%;
   flex-shrink: 1;
+}
+
+.card-entities {
+  padding: 0 16px;
+  flex: 1;
+}
+.card-entities > * {
+  margin: 8px 0;
+}
+.card-entities > * div {
+  position: relative;
+}
+.card-entities > * div * {
+  overflow: clip visible;
+}
+.card-entities:first-child {
+  margin-top: 0;
+}
+.card-entities:last-child {
+  margin-bottom: 0;
 }`;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -3017,34 +3075,40 @@ let ServiceCard = class extends LitElement {
     return document.createElement("lc-service-card-config");
   }
   static getStubConfig(hass, entities, entitiesFallback) {
-    const maxEntities = 3;
-    const foundEntities = findEntities(
+    const gaugesEntities = findEntities(
       hass,
-      maxEntities,
+      2,
       entities,
       entitiesFallback,
       ["sensor"],
       (entity) => /^\d+(:?\.\d+)?$/.test(entity.state)
     );
     return {
-      entities: foundEntities,
+      gauges: gaugesEntities.map((entity) => ({
+        entity
+      })),
+      entities: findEntities(hass, 1, entities, entitiesFallback),
       buttons: [
         { color: "info", icon: "mdi:reload", action: "homeassistant.reload_all" }
       ]
     };
   }
   async setConfig(config) {
-    if (!config.entities || !Array.isArray(config.entities)) {
-      throw new Error("Entities must be specified");
-    }
     this._config = config;
-    this._configEntities = processEntities(config.entities, { validateId: false });
+    this._configEntities = processEntities(config.entities, { validateMode: "skip" });
+    this._configGauges = processEntities(config.gauges, { validateMode: "skip" });
+    this._configButtons = config.buttons;
+    if (!this._createRowElement) {
+      const utils = await mainWindow.loadCardHelpers();
+      this._createRowElement = utils.createRowElement;
+    }
   }
   getCardSize() {
+    var _a;
     if (!this._config) {
       return 0;
     }
-    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1);
+    return (this._config.title ? 2 : 0) + (((_a = this._config.entities) == null ? void 0 : _a.length) || 1);
   }
   render() {
     if (!this._config || !this.hass) {
@@ -3053,11 +3117,9 @@ let ServiceCard = class extends LitElement {
     return html`
       <ha-card>
         ${this._renderHeader()}
+        ${this._renderGauges()}
         ${this._renderEntities()}
-        <lc-footer-buttons
-          .hass=${this.hass}
-          .buttons=${this._config.buttons}
-        ></lc-footer-buttons>
+        ${this._renderButtons()}
       </ha-card>
     `;
   }
@@ -3069,39 +3131,76 @@ let ServiceCard = class extends LitElement {
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
+          ${this._config.icon ? html`
+            <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : null}
           <span>${this._config.title}</span>
         </div>
       </h1>
     `;
   }
+  _renderGauges() {
+    if (!this._configGauges) {
+      return html``;
+    }
+    const entities = this._configGauges.map((entity) => this._renderGauge(entity));
+    return html`
+      <div class="card-gauges">${entities}</div>`;
+  }
+  _renderGauge(_entity) {
+    const entityObj = this.hass.entities[_entity.entity];
+    const { value, unit } = getNumberValueWithUnit(_entity, this.hass);
+    const step = _entity.step == null && entityObj.display_precision != null && 1 / 10 ** entityObj.display_precision || void 0;
+    return html`
+      <div class="gauge-wrap">
+        <lc-gauge
+          .label="${_entity.name || formatEntityName(_entity.entity, this.hass)}"
+          .unit="${_entity.unit || unit}"
+          .min="${_entity.min}"
+          .max="${_entity.max}"
+          .step="${_entity.step || step}"
+          .digits="${_entity.digits}"
+          .levels="${_entity.levels}"
+          .value="${value || 0}"
+          .disabled=${value == null}
+        ></lc-gauge>
+      </div>`;
+  }
   _renderEntities() {
     if (!this._configEntities) {
       return html``;
     }
-    const entities = this._configEntities.map((entity) => this._renderEntity(entity));
+    const entities = this._configEntities.map((entityConf) => this._renderEntity(entityConf));
     return html`
-      <div class="card-content">${entities}</div>`;
+      <div id="states" class="card-entities">${entities}</div>`;
   }
-  _renderEntity(_entity) {
-    var _a, _b;
-    const stateObj = (_b = (_a = this.hass) == null ? void 0 : _a.states) == null ? void 0 : _b[_entity.entity];
-    const valueToDisplay = Number(_entity.attribute ? stateObj == null ? void 0 : stateObj.attributes[_entity.attribute] : stateObj == null ? void 0 : stateObj.state);
+  _renderEntity(entityConf) {
+    var _a;
+    if (!this._createRowElement) return html``;
+    let config;
+    if ((!("type" in entityConf) || entityConf.type === "conditional") && "state_color" in this._config) {
+      config = { state_color: this._config.state_color, ...entityConf };
+    } else if (entityConf.type === "perform-action") {
+      config = { ...entityConf, type: "call-service" };
+    } else {
+      config = { ...entityConf };
+    }
+    const element = (_a = this._createRowElement) == null ? void 0 : _a.call(this, config);
+    if (this.hass) {
+      element.hass = this.hass;
+    }
     return html`
-      <div class="gauge-wrap">
-        <lc-gauge
-          .hass="${this.hass}"
-          .label="${_entity.name}"
-          .unit="${_entity.unit}"
-          .min="${_entity.min}"
-          .max="${_entity.max}"
-          .step="${_entity.step}"
-          .digits="${_entity.digits}"
-          .levels="${_entity.levels}"
-          .value="${valueToDisplay || 0}"
-          .disabled=${isNaN(valueToDisplay)}
-        ></lc-gauge>
-      </div>`;
+      <div>${element}</div>`;
+  }
+  _renderButtons() {
+    if (!this._configButtons) {
+      return html``;
+    }
+    return html`
+      <lc-footer-buttons
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+      ></lc-footer-buttons>
+    `;
   }
 };
 ServiceCard.styles = styles;
@@ -3111,6 +3210,9 @@ __decorateClass([
 __decorateClass([
   r()
 ], ServiceCard.prototype, "_config", 2);
+__decorateClass([
+  r()
+], ServiceCard.prototype, "_createRowElement", 2);
 ServiceCard = __decorateClass([
   t$1("lc-service-card")
 ], ServiceCard);

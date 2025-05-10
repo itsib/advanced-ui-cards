@@ -23,7 +23,8 @@ ha-card {
   }
 }
 
-.card-content {
+.card-gauges {
+  padding: 16px 16px 0;
   display: flex;
   justify-content: space-around;
   gap: 10px;
@@ -32,4 +33,29 @@ ha-card {
     width: 50%;
     flex-shrink: 1;
   }
+}
+
+.card-entities {
+  padding: 0 16px;
+  flex: 1;
+
+  > * {
+    margin: 8px 0;
+
+    div {
+      position: relative;
+
+      * {
+        overflow: clip visible;
+      }
+    }
+  }
+
+  &:first-child {
+      margin-top: 0;
+    }
+
+  &:last-child {
+      margin-bottom: 0;
+    }
 }

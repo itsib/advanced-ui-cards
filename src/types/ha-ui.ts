@@ -239,8 +239,9 @@ export type Condition =
 
 // Entities
 export interface EntityConfigLike {
-  type?: string;
   entity?: string;
+  type?: string;
+  attribute?: string;
 }
 
 export interface EntityConfig {

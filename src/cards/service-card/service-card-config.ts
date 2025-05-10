@@ -16,9 +16,9 @@ import { processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
 import {
-  GaugeActionsCardConfigSchema,
-  IGaugeActionsCardConfigSchema,
-  type IGaugeEntityConfigSchema,
+  ServiceCardConfigSchema,
+  IServiceCardConfigSchema,
+  type IGaugeConfigSchema,
 } from './service-card-schema';
 import styles from './service-card-config.scss';
 
@@ -44,14 +44,14 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IGaugeActionsCardConfigSchema;
+  @state() private _config?: IServiceCardConfigSchema;
 
-  @state() private _configEntities?: IGaugeEntityConfigSchema[];
+  @state() private _configEntities?: IGaugeConfigSchema[];
 
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
-  setConfig(config: IGaugeActionsCardConfigSchema): void {
-    assert(config, GaugeActionsCardConfigSchema);
+  setConfig(config: IServiceCardConfigSchema): void {
+    assert(config, ServiceCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities, { domains: ['sensor'] });
   }

@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HassEntity, HomeAssistant } from 'types';
+import { computeDomain } from '../../utils/entities-utils';
 import styles from './action-button-feature.scss';
 
 export interface CircleButtonFeatureConfig {
@@ -11,7 +12,7 @@ export interface CircleButtonFeatureConfig {
 }
 
 function isSupported(stateObj: { entity_id: string }) {
-  const domain = stateObj.entity_id.split('.')[0];
+  const domain = computeDomain(stateObj.entity_id);
   return domain === 'button' || domain === 'input_button';
 }
 

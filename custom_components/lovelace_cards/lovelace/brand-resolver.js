@@ -86,6 +86,9 @@ function onElementChange(element, ...rest) {
     observer.disconnect();
   };
 }
+function computeDomain(entityId) {
+  return entityId.substring(0, entityId.indexOf("."));
+}
 class DomWatcher {
   constructor(config) {
     this._watchers = {};
@@ -118,8 +121,8 @@ class DomWatcher {
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
   }
   async ["HA-MORE-INFO-DIALOG"](element) {
-    var _a, _b;
-    const domain = (_b = (_a = element == null ? void 0 : element["_entityId"]) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
+    const entityId = element == null ? void 0 : element["_entityId"];
+    const domain = entityId ? computeDomain(entityId) : entityId;
     const url = this.getImgSrc(domain);
     if (!url) return;
     const badge = await waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge");
@@ -170,11 +173,11 @@ class DomWatcher {
     this._watchers[element.nodeName] = onElementChange(configSection, this.onChangeCallback.bind(this));
   }
   async ["HA-CONFIG-UPDATES"](element) {
-    var _a, _b;
     const section = await waitSelector(element, ":shadow mwc-list");
     if (!section || section.children.length === 0) return;
     for (const child of section.children) {
-      const domain = (_b = (_a = child == null ? void 0 : child.entity_id) == null ? void 0 : _a.replace(/^update\./, "")) == null ? void 0 : _b.replace(/_update$/, "");
+      const entityId = child == null ? void 0 : child.entity_id;
+      const domain = entityId ? computeDomain(entityId) : void 0;
       const url = this.getImgSrc(domain);
       if (!url) continue;
       const badge = child.querySelector("state-badge");

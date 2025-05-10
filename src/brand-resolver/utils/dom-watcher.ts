@@ -1,5 +1,6 @@
 import { waitSelector } from './wait-selector';
 import { ChangeDisconnect, ChangeType, onElementChange } from './on-element-change';
+import { computeDomain } from './compute-domain';
 
 export type ReplacementImages = { [domain: string]: string };
 
@@ -56,7 +57,8 @@ export class DomWatcher {
   }
 
   private async ['HA-MORE-INFO-DIALOG'](element: HTMLElement) {
-    const domain = (element as any)?.['_entityId']?.replace(/^update\./, '')?.replace(/_update$/, '');
+    const entityId = (element as any)?.['_entityId'];
+    const domain = entityId ? computeDomain(entityId) : entityId;
     const url = this.getImgSrc(domain);
     if (!url) return;
 
@@ -127,7 +129,8 @@ export class DomWatcher {
     if (!section || section.children.length === 0) return;
 
     for (const child of section.children) {
-      const domain = (child as any)?.entity_id?.replace(/^update\./, '')?.replace(/_update$/, '');
+      const entityId = (child as any)?.entity_id;
+      const domain = entityId ? computeDomain(entityId) : undefined;
       const url = this.getImgSrc(domain);
       if (!url) continue;
 
