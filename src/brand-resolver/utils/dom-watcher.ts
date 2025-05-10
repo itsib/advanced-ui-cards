@@ -125,10 +125,19 @@ export class DomWatcher {
   }
 
   private async ['HA-CONFIG-UPDATES'](element: HTMLElement) {
-    const section = await waitSelector(element, ':shadow mwc-list');
-    if (!section || section.children.length === 0) return;
+    const section = await waitSelector(element, ':shadow');
+    if (!section) return;
+    let list: HTMLElement | null = null;
+    for (const item of section.children) {
+      if (/list/i.test(item.nodeName)) {
+        list = item as HTMLElement;
+        break;
+      }
+    }
 
-    for (const child of section.children) {
+    if (!list || list.children.length === 0) return;
+
+    for (const child of list.children) {
       const entityId = (child as any)?.entity_id;
       const domain = entityId ? computeDomain(entityId) : undefined;
       const url = this.getImgSrc(domain);
