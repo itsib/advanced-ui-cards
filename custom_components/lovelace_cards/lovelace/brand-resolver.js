@@ -185,7 +185,7 @@ class DomWatcher {
     if (!list || list.children.length === 0) return;
     for (const child of list.children) {
       const entityId = child == null ? void 0 : child.entity_id;
-      const domain = entityId ? computeDomain(entityId) : void 0;
+      const domain = entityId ? entityId.replace(/^update\./, "").replace(/_update$/, "") : void 0;
       const url = this.getImgSrc(domain);
       if (!url) continue;
       const badge = child.querySelector("state-badge");

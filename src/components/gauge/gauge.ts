@@ -52,7 +52,7 @@ export class Gauge extends LitElement {
   static styles = styles;
   static sizes = {
     width: 110,
-    labelHeight: 10,
+    labelHeight: 14,
     scaleRadius: 47.5,
     scaleWidth: 15,
   };
@@ -296,7 +296,6 @@ export class Gauge extends LitElement {
     const tip = Gauge.sizes.scaleRadius;
     const base = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth - Gauge.sizes.scaleWidth / 2;
     needlePath.setAttribute('d', `M -${base} -2 L -${tip} 0 L -${base} 2 z`);
-    needlePath.setAttribute('fill', 'rgb(200, 200, 200)');
     this._pointer.append(needlePath);
 
     // Text value
@@ -409,7 +408,7 @@ export class Gauge extends LitElement {
 
     // Shadow blur
     const feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-    feGaussianBlur.setAttribute('stdDeviation', '1');
+    feGaussianBlur.setAttribute('stdDeviation', '1.5');
     feGaussianBlur.setAttribute('result', 'offset-blur');
     filter.append(feGaussianBlur);
 
@@ -424,7 +423,7 @@ export class Gauge extends LitElement {
     // Cut color inside shadow
     const feFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
     feFlood.setAttribute('flood-color', 'rgb(0, 0, 0)');
-    feFlood.setAttribute('flood-opacity', '.95');
+    feFlood.setAttribute('flood-opacity', '.35');
     filter.append(feFlood);
 
     const feCompositeIn = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');

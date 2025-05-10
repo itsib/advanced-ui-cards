@@ -139,7 +139,7 @@ export class DomWatcher {
 
     for (const child of list.children) {
       const entityId = (child as any)?.entity_id as string;
-      const domain = entityId ? entityId.replace(/^update\./, '').replace(/_update$/, ''); : undefined;
+      const domain = entityId ? entityId.replace(/^update\./, '').replace(/_update$/, '') : undefined;
       const url = this.getImgSrc(domain);
       if (!url) continue;
 

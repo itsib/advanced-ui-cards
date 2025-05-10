@@ -21,13 +21,17 @@
 
     .pointer {
       transform: rotate(var(--gauge-needle-position));
+
+      path {
+        fill: var(--primary-text-color);
+      }
     }
 
     .value {
       font-size: 14px;
       font-weight: 400;
       font-family: Roboto, Noto, sans-serif;
-      fill: var(--text-primary-color);
+      fill: var(--primary-text-color);
     }
 
     .label {
@@ -35,12 +39,6 @@
       font-weight: 400;
       font-family: Roboto, Noto, sans-serif;
       fill: var(--primary-text-color);
-    }
-
-    .min-max-value {
-      font-weight: 500;
-      font-family: Roboto, Noto, sans-serif;
-      fill: var(--secondary-text-color);
     }
 
     &.disabled {
