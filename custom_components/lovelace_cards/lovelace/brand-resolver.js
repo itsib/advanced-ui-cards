@@ -94,6 +94,7 @@ class DomWatcher {
     this._watchers = {};
     this._root = config.root;
     this._images = config.images;
+    this._domains = Object.keys(this._images);
     onElementChange(this._root, this.onChangeCallback.bind(this));
   }
   getImgSrc(domain) {
@@ -110,7 +111,23 @@ class DomWatcher {
     }
     (_c = this[element.nodeName]) == null ? void 0 : _c.call(this, element);
   }
+  getDomainByEntityId(entityId) {
+    var _a, _b, _c, _d;
+    for (let i = 0; i < this._domains.length; i++) {
+      const domain = this._domains[i];
+      const state = (_b = (_a = this._hass) == null ? void 0 : _a.states) == null ? void 0 : _b[entityId];
+      if (state && ((_d = (_c = state.attributes) == null ? void 0 : _c.entity_picture) == null ? void 0 : _d.includes(domain))) {
+        return domain;
+      }
+      const name = entityId.split(".", 2)[1];
+      if (name && name.includes(domain)) {
+        return domain;
+      }
+    }
+    return null;
+  }
   async ["HOME-ASSISTANT-MAIN"](element) {
+    this._hass = element.hass;
     const root = await waitSelector(element, ":shadow");
     if (!root) return;
     this._watchers[element.nodeName] = onElementChange(root, this.onChangeCallback.bind(this));
@@ -185,7 +202,7 @@ class DomWatcher {
     if (!list || list.children.length === 0) return;
     for (const child of list.children) {
       const entityId = child == null ? void 0 : child.entity_id;
-      const domain = entityId ? entityId.replace(/^update\./, "").replace(/_update$/, "") : void 0;
+      const domain = this.getDomainByEntityId(entityId);
       const url = this.getImgSrc(domain);
       if (!url) continue;
       const badge = child.querySelector("state-badge");

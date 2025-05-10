@@ -1,6 +1,7 @@
 import { waitSelector } from './wait-selector';
 import { ChangeDisconnect, ChangeType, onElementChange } from './on-element-change';
 import { computeDomain } from './compute-domain';
+import { HomeAssistant } from 'types';
 
 export type ReplacementImages = { [domain: string]: string };
 
@@ -13,15 +14,20 @@ export interface DomWatcherConfig {
 
 export class DomWatcher {
 
-  private _root: DomWatcherRootElement;
+  private _hass?: HomeAssistant;
 
-  private _images: ReplacementImages;
+  private readonly _root: DomWatcherRootElement;
+
+  private readonly _images: ReplacementImages;
+
+  private readonly _domains: string[]
 
   private _watchers: Record<string, ChangeDisconnect> = {};
 
   constructor(config: DomWatcherConfig) {
     this._root = config.root;
     this._images = config.images;
+    this._domains = Object.keys(this._images);
 
     onElementChange(this._root, this.onChangeCallback.bind(this));
   }
@@ -42,7 +48,24 @@ export class DomWatcher {
     this[element.nodeName]?.(element);
   }
 
+  getDomainByEntityId(entityId: string): string | null {
+    for (let i = 0; i < this._domains.length; i ++) {
+      const domain = this._domains[i];
+      const state = this._hass?.states?.[entityId];
+      if (state && state.attributes?.entity_picture?.includes(domain)) {
+        return domain;
+      }
+      const name = entityId.split('.', 2)[1];
+      if (name && name.includes(domain)) {
+        return domain;
+      }
+    }
+    return null;
+  }
+
   private async ['HOME-ASSISTANT-MAIN'](element: HTMLElement) {
+    this._hass = (element as any).hass;
+
     const root = await waitSelector(element, ':shadow');
     if (!root) return;
 
@@ -139,7 +162,7 @@ export class DomWatcher {
 
     for (const child of list.children) {
       const entityId = (child as any)?.entity_id as string;
-      const domain = entityId ? entityId.replace(/^update\./, '').replace(/_update$/, '') : undefined;
+      const domain = this.getDomainByEntityId(entityId);
       const url = this.getImgSrc(domain);
       if (!url) continue;
 
