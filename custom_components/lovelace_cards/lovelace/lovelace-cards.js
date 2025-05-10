@@ -658,9 +658,9 @@ function formatColors(value, defaultColor = "var(--primary-color)") {
   return value;
 }
 var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
 var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
@@ -923,9 +923,9 @@ const style = css`.footer {
   padding: 0 6px;
 }`;
 var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
 var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
@@ -1156,12 +1156,13 @@ const styles$9 = css`:host {
   opacity: 0;
 }`;
 var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
 var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = void 0;
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
-      result = decorator(target, key, result) || result;
-  if (result) __defProp$9(target, key, result);
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 const _Popover = class _Popover extends LitElement {
@@ -1169,10 +1170,21 @@ const _Popover = class _Popover extends LitElement {
     super();
     this._hiddenInProcess = false;
     this.placement = "bottom";
-    this.rect = { x: 0, y: 0, width: 40, height: 40 };
+    this._rect = { x: 0, y: 0, width: 40, height: 40 };
     this.arrow = 8;
     this.offset = 0;
     this.maxWidth = 280;
+  }
+  set rect(_rect) {
+    this._rect = {
+      x: _rect.x + window.scrollX,
+      y: _rect.y + window.scrollY,
+      width: _rect.width,
+      height: _rect.height
+    };
+  }
+  get rect() {
+    return this._rect;
   }
   hide() {
     if (this._hiddenInProcess) return;
@@ -1211,6 +1223,7 @@ const _Popover = class _Popover extends LitElement {
     let placement = this.placement;
     height = Math.max(height, sizeMin);
     width = Math.min(Math.max(width, sizeMin), this.maxWidth);
+    const rect = this.rect;
     const popover = this.shadowRoot.firstElementChild;
     const xMin = this.offset;
     const xMax = window.innerWidth - width - this.offset;
@@ -1218,46 +1231,46 @@ const _Popover = class _Popover extends LitElement {
     const yMax = window.innerHeight - height - this.offset;
     switch (placement) {
       case "top":
-        y2 = Math.round(this.rect.y - height - this.arrow - this.offset);
-        x = Math.round(this.rect.x + this.rect.width / 2 - width / 2);
+        y2 = Math.round(rect.y - height - this.arrow - this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
         if (y2 < yMin) {
-          y2 = Math.round(this.rect.y + this.rect.height + this.arrow + this.offset);
+          y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
           placement = "bottom";
         }
         x = Math.max(Math.min(x, xMax), xMin);
         break;
       case "bottom":
-        y2 = Math.round(this.rect.y + this.rect.height + this.arrow + this.offset);
-        x = Math.round(this.rect.x + this.rect.width / 2 - width / 2);
+        y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
         if (y2 > yMax) {
-          y2 = Math.round(this.rect.y - height - this.arrow - this.offset);
+          y2 = Math.round(rect.y - height - this.arrow - this.offset);
           placement = "top";
         }
         x = Math.max(Math.min(x, xMax), xMin);
         break;
       case "left":
-        y2 = Math.round(this.rect.y + this.rect.height / 2 - height / 2);
-        x = Math.round(this.rect.x - width - this.arrow - this.offset);
+        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x - width - this.arrow - this.offset);
         if (x < xMin) {
-          x = Math.round(this.rect.x + this.rect.width + this.arrow + this.offset);
+          x = Math.round(rect.x + rect.width + this.arrow + this.offset);
           placement = "right";
         }
         y2 = Math.max(Math.min(y2, yMax), yMin);
         break;
       case "right":
-        y2 = Math.round(this.rect.y + this.rect.height / 2 - height / 2);
-        x = Math.round(this.rect.x + this.rect.width + this.arrow + this.offset);
+        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x + rect.width + this.arrow + this.offset);
         if (x > xMax) {
-          x = Math.round(this.rect.x - width - this.arrow - this.offset);
+          x = Math.round(rect.x - width - this.arrow - this.offset);
           placement = "left";
         }
         y2 = Math.max(Math.min(y2, yMax), yMin);
         break;
     }
     if (placement === "top" || placement === "bottom") {
-      arrowPosition = this.rect.x - x + this.rect.width / 2 - this.arrow;
+      arrowPosition = rect.x - x + rect.width / 2 - this.arrow;
     } else {
-      arrowPosition = this.rect.y - y2 + this.rect.height / 2 - this.arrow;
+      arrowPosition = rect.y - y2 + rect.height / 2 - this.arrow;
     }
     for (const className of popover.classList.values()) {
       if (/^popover-(:?top|bottom|left|right)$/.test(className)) {
@@ -1279,22 +1292,22 @@ _Popover.styles = styles$9;
 let Popover = _Popover;
 __decorateClass$9([
   n2()
-], Popover.prototype, "text");
+], Popover.prototype, "text", 2);
 __decorateClass$9([
   n2()
-], Popover.prototype, "placement");
+], Popover.prototype, "placement", 2);
 __decorateClass$9([
   n2({ hasChanged: compareRects })
-], Popover.prototype, "rect");
+], Popover.prototype, "rect", 1);
 __decorateClass$9([
   n2()
-], Popover.prototype, "arrow");
+], Popover.prototype, "arrow", 2);
 __decorateClass$9([
   n2()
-], Popover.prototype, "offset");
+], Popover.prototype, "offset", 2);
 __decorateClass$9([
   n2({ attribute: "max-width" })
-], Popover.prototype, "maxWidth");
+], Popover.prototype, "maxWidth", 2);
 customElements.define("lc-popover", Popover, { extends: "div" });
 const styles$8 = css`:host {
   --gauge-needle-position: 0deg;

@@ -14,8 +14,22 @@ class Popover extends LitElement {
   @property()
   placement: Placement;
 
+  _rect?: Pick<DOMRect, 'x' | 'y' | 'width' | 'height'>;
+
   @property({ hasChanged: compareRects })
-  rect: Pick<DOMRect, 'x' | 'y' | 'width' | 'height'>;
+  set rect(_rect: Pick<DOMRect, 'x' | 'y' | 'width' | 'height'>) {
+    this._rect = {
+      x: _rect.x + window.scrollX,
+      y: _rect.y + window.scrollY,
+      width: _rect.width,
+      height: _rect.height,
+    };
+  };
+
+  get rect(): Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | undefined {
+    return this._rect;
+  }
+
 
   @property()
   arrow: number;
@@ -32,7 +46,7 @@ class Popover extends LitElement {
     super();
 
     this.placement = 'bottom';
-    this.rect = { x: 0, y: 0, width: 40, height: 40 };
+    this._rect = { x: 0, y: 0, width: 40, height: 40 };
     this.arrow = 8;
     this.offset = 0;
     this.maxWidth = 280;
@@ -84,6 +98,7 @@ class Popover extends LitElement {
     height = Math.max(height, sizeMin);
     width = Math.min(Math.max(width, sizeMin), this.maxWidth);
 
+    const rect = this.rect!;
     const popover = this.shadowRoot!.firstElementChild as HTMLDivElement;
     const xMin = this.offset;
     const xMax = window.innerWidth - width - this.offset;
@@ -92,37 +107,37 @@ class Popover extends LitElement {
 
     switch (placement) {
       case 'top':
-        y = Math.round(this.rect.y - height - this.arrow - this.offset);
-        x = Math.round(this.rect.x + this.rect.width / 2 - width / 2);
+        y = Math.round(rect.y - height - this.arrow - this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
         if (y < yMin) {
-           y = Math.round(this.rect.y + this.rect.height + this.arrow + this.offset);
+           y = Math.round(rect.y + rect.height + this.arrow + this.offset);
            placement = 'bottom';
         }
         x = Math.max(Math.min(x, xMax), xMin);
         break;
       case 'bottom':
-        y = Math.round(this.rect.y + this.rect.height + this.arrow + this.offset);
-        x = Math.round(this.rect.x + this.rect.width / 2 - width / 2);
+        y = Math.round(rect.y + rect.height + this.arrow + this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
         if (y > yMax) {
-          y = Math.round(this.rect.y - height - this.arrow - this.offset);
+          y = Math.round(rect.y - height - this.arrow - this.offset);
           placement = 'top';
         }
         x = Math.max(Math.min(x, xMax), xMin);
         break;
       case 'left':
-        y = Math.round(this.rect.y + this.rect.height / 2 - height / 2);
-        x = Math.round(this.rect.x - width - this.arrow - this.offset);
+        y = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x - width - this.arrow - this.offset);
         if (x < xMin) {
-          x = Math.round(this.rect.x + this.rect.width + this.arrow + this.offset);
+          x = Math.round(rect.x + rect.width + this.arrow + this.offset);
           placement = 'right';
         }
         y = Math.max(Math.min(y, yMax), yMin);
         break;
       case 'right':
-        y = Math.round(this.rect.y + this.rect.height / 2 - height / 2);
-        x = Math.round(this.rect.x + this.rect.width + this.arrow + this.offset);
+        y = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x + rect.width + this.arrow + this.offset);
         if (x > xMax) {
-          x = Math.round(this.rect.x - width - this.arrow - this.offset);
+          x = Math.round(rect.x - width - this.arrow - this.offset);
           placement = 'left';
         }
         y = Math.max(Math.min(y, yMax), yMin);
@@ -130,9 +145,9 @@ class Popover extends LitElement {
     }
 
     if (placement === 'top' || placement === 'bottom') {
-      arrowPosition = this.rect.x - x + this.rect.width / 2 - this.arrow;
+      arrowPosition = rect.x - x + rect.width / 2 - this.arrow;
     } else {
-      arrowPosition = this.rect.y - y + this.rect.height / 2 - this.arrow;
+      arrowPosition = rect.y - y + rect.height / 2 - this.arrow;
     }
 
     for (const className of popover.classList.values()) {
