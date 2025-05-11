@@ -67,9 +67,15 @@ function waitSubtree(root, subtree, resolve, signal) {
     }, signal);
   }
 }
-function waitSelector(element, selector) {
+function waitSelector(element, selector, cb) {
   const subtree = spreadSelector(selector);
   const abort = new AbortController();
+  if (cb) {
+    waitSubtree(element, subtree, cb, abort.signal);
+    return () => {
+      abort.abort();
+    };
+  }
   const promise = new Promise((resolve, reject) => {
     abort.signal.addEventListener("abort", reject, { once: true });
     waitSubtree(element, subtree, resolve, abort.signal);
@@ -80,25 +86,35 @@ function waitSelector(element, selector) {
   return promise;
 }
 function onElementChange(observable, callbacks) {
-  const { onAdd, onRemove } = callbacks;
+  const { onAdd, onRemove, onAttribute } = callbacks;
   const observer = new MutationObserver((mutations) => {
     for (let i = 0; i < mutations.length; i++) {
-      const { addedNodes, removedNodes, target } = mutations[i];
-      for (let j = 0; j < removedNodes.length; j++) {
-        const node = removedNodes.item(j);
-        if (node && node.nodeType === Node.ELEMENT_NODE) {
-          onRemove == null ? void 0 : onRemove(target, node);
+      const { addedNodes, removedNodes, target, attributeName, type, oldValue } = mutations[i];
+      if (type === "childList") {
+        for (let j = 0; j < removedNodes.length; j++) {
+          const node = removedNodes.item(j);
+          if (node && node.nodeType === Node.ELEMENT_NODE) {
+            onRemove == null ? void 0 : onRemove(target, node);
+          }
         }
-      }
-      for (let j = 0; j < addedNodes.length; j++) {
-        const node = addedNodes.item(j);
-        if (node && node.nodeType === Node.ELEMENT_NODE) {
-          onAdd == null ? void 0 : onAdd(target, node);
+        for (let j = 0; j < addedNodes.length; j++) {
+          const node = addedNodes.item(j);
+          if (node && node.nodeType === Node.ELEMENT_NODE) {
+            onAdd == null ? void 0 : onAdd(target, node);
+          }
+        }
+      } else if (type === "attributes") {
+        if (attributeName) {
+          onAttribute == null ? void 0 : onAttribute(observable, attributeName, oldValue);
         }
       }
     }
   });
-  observer.observe(observable, { childList: true, subtree: true });
+  observer.observe(observable, {
+    childList: true,
+    subtree: true,
+    attributes: !!onAttribute
+  });
   return () => {
     observer.disconnect();
   };
@@ -109,6 +125,7 @@ const FORMATS = {
   new_node_skip: "color: #448844; text-decoration: line-through;",
   rm_node_call: "color: #FF6666;",
   rm_node_skip: "color: #884444; text-decoration: line-through;",
+  attr_call: "",
   default: "color: #EAEAEA;"
 };
 class DomWatcher {
@@ -124,7 +141,15 @@ class DomWatcher {
     if (!this._debug) return;
     const color = FORMATS[type] || FORMATS.default;
     const label = type.replace(/_/g, " ").replace("skip", "🗴").replace("call", "✔").replace(/(^\w)/, (c) => c.toUpperCase());
-    const template = "%c%s%c%s" + "%O".repeat(objects.length);
+    let template = "%c%s%c%s";
+    for (let i = 0; i < objects.length; i++) {
+      const object = objects[i];
+      if (typeof object === "string") {
+        template += " %s";
+      } else if (object && typeof object === "object") {
+        template += " %O";
+      }
+    }
     const space = ":" + " ".repeat(14 - label.length);
     console.log(template, color, label, "", space, ...objects);
   }
@@ -148,56 +173,81 @@ class DomWatcher {
   }
   onRemoveCallback(target, element) {
     var _a;
-    const methodRm = `RM-${element.nodeName}`;
+    const methodId = `RM-${element.nodeName}`;
     if (this._watchers.has(element)) {
       (_a = this._watchers.get(element)) == null ? void 0 : _a();
       this._watchers.delete(element);
     }
-    if (methodRm in this) {
+    if (methodId in this) {
       this.log("rm_node_call", element, target);
-      this[methodRm](target, element);
+      this[methodId](target, element);
     } else {
       this.log("rm_node_skip", element, target);
     }
   }
   onAddCallback(target, element) {
-    const methodNew = `NEW-${element.nodeName}`;
-    if (methodNew in this) {
+    const methodId = `NEW:${element.nodeName}`;
+    if (methodId in this) {
       this.log("new_node_call", element, target);
-      this[methodNew](target, element);
+      this[methodId](target, element);
     } else {
       this.log("new_node_skip", element, target);
     }
   }
-  subscribe(observable) {
+  onAttributeCallback(target, attributeName, oldValue) {
+    const methodId = `ATTR:${target.nodeName}[${attributeName.toUpperCase()}]`;
+    if (methodId in this) {
+      this.log("attr_call", attributeName, target);
+      this[methodId](target, attributeName, oldValue);
+    } else {
+      this.log("attr_skip", attributeName, target);
+    }
+  }
+  subscribe(observable, watchAttrs = false) {
     this.log("subscribe", observable);
-    const disconnect = onElementChange(observable, {
+    const callbacks = {
       onAdd: this.onAddCallback.bind(this),
-      onRemove: this.onRemoveCallback.bind(this)
-    });
+      onRemove: this.onRemoveCallback.bind(this),
+      ...watchAttrs ? { onAttribute: this.onAttributeCallback.bind(this) } : {}
+    };
+    const disconnect = onElementChange(observable, callbacks);
     this._watchers.set(observable, disconnect);
   }
-  async ["NEW-HOME-ASSISTANT-MAIN"](_target, element) {
+  async ["ATTR:STATE-BADGE[STYLE]"](target, attributeName, _oldValue) {
+    if (attributeName === "style" && "stateObj" in target) {
+      const entityId = target.stateObj.entity_id;
+      const domain = this.getDomainByEntityId(entityId);
+      const src = this.getImgSrc(domain);
+      if (src) {
+        target.style.backgroundImage = `url(${src})`;
+      }
+    }
+  }
+  async ["ATTR:IMG[src]"](target, attributeName, _oldValue) {
+    console.log(target);
+  }
+  async ["NEW:HOME-ASSISTANT-MAIN"](_target, element) {
     this._hass = element.hass;
     const observable = await waitSelector(element, ":shadow");
     if (!observable) return;
     this.subscribe(observable);
   }
-  async ["NEW-DIALOG-ADD-INTEGRATION"](_target, element) {
+  async ["NEW:DIALOG-ADD-INTEGRATION"](_target, element) {
     const observable = await waitSelector(element, ":shadow");
     if (!observable) return;
     this.subscribe(observable);
   }
-  async ["NEW-HA-MORE-INFO-DIALOG"](_target, element) {
+  async ["NEW:HA-MORE-INFO-DIALOG"](_target, element) {
     const entityId = element == null ? void 0 : element["_entityId"];
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
     if (!url) return;
     const badge = await waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge");
     if (!badge) return;
-    badge.style.backgroundImage = `url("${url}")`;
+    badge.style.backgroundImage = `url(${url})`;
+    this.subscribe(badge, true);
   }
-  async ["NEW-HA-INTEGRATION-LIST-ITEM"](_target, element) {
+  async ["NEW:HA-INTEGRATION-LIST-ITEM"](_target, element) {
     var _a;
     if (!((_a = element == null ? void 0 : element.integration) == null ? void 0 : _a.domain)) return;
     const domain = element.integration.domain;
@@ -207,7 +257,7 @@ class DomWatcher {
     if (!img) return;
     img.src = src;
   }
-  async ["NEW-HA-CONFIG-INTEGRATIONS-DASHBOARD"](_target, element) {
+  async ["NEW:HA-CONFIG-INTEGRATIONS-DASHBOARD"](_target, element) {
     const container = await waitSelector(element, ":shadow hass-tabs-subpage .container");
     if (!container) return;
     for (const child of container.children) {
@@ -219,7 +269,7 @@ class DomWatcher {
       img.src = src;
     }
   }
-  async ["NEW-HA-CONFIG-INTEGRATION-PAGE"](_target, element) {
+  async ["NEW:HA-CONFIG-INTEGRATION-PAGE"](_target, element) {
     const domain = element == null ? void 0 : element.domain;
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
@@ -227,56 +277,81 @@ class DomWatcher {
     if (!img) return;
     img.src = src;
   }
-  async ["NEW-HA-CONFIG-DASHBOARD"](_target, element) {
+  async ["NEW:HA-CONFIG-DASHBOARD"](_target, element) {
     const observable = await waitSelector(element, ":shadow ha-top-app-bar-fixed");
-    if (!observable) return;
-    const repairs = await waitSelector(observable, "ha-config-repairs");
-    const updates = await waitSelector(observable, "ha-config-updates");
-    if (repairs && repairs.nodeName === "HA-CONFIG-REPAIRS") {
-      this.onAddCallback(observable, repairs);
-    }
-    if (updates && updates.nodeName === "HA-CONFIG-UPDATES") {
-      this.onAddCallback(observable, updates);
-    }
-    this.subscribe(repairs);
-    this.subscribe(updates);
+    this.onAddCallback(observable.parentNode, observable);
+    this.subscribe(observable.parentNode);
   }
-  async ["NEW-HA-CONFIG-UPDATES"](_target, element) {
-    const section = await waitSelector(element, ":shadow");
-    if (!section) return;
-    let list = null;
-    for (const item of section.children) {
-      if (/list/i.test(item.nodeName)) {
-        list = item;
-        break;
+  async ["NEW:HA-TOP-APP-BAR-FIXED"](_target, element) {
+    waitSelector(element, "ha-config-repairs", (repairs) => {
+      if (repairs && repairs.nodeName === "HA-CONFIG-REPAIRS") {
+        this.onAddCallback(element, repairs);
       }
-    }
+      this.subscribe(repairs);
+    });
+    waitSelector(element, "ha-config-updates", (updates) => {
+      if (updates && updates.nodeName === "HA-CONFIG-UPDATES") {
+        this.onAddCallback(element, updates);
+      }
+      this.subscribe(updates);
+    });
+  }
+  async ["NEW:HA-CONFIG-UPDATES"](_target, element) {
+    waitSelector(element, ":shadow", (shadowRoot) => {
+      let list = null;
+      for (const child of shadowRoot.children) {
+        if (/list/i.test(child.nodeName)) {
+          list = child;
+          break;
+        }
+      }
+      if (!list) return;
+      let isUpdatesList = false;
+      for (const item of list.children) {
+        const entityId = item == null ? void 0 : item.entity_id;
+        const domain = this.getDomainByEntityId(entityId);
+        const url = this.getImgSrc(domain);
+        if (url) {
+          isUpdatesList = true;
+          this.onAddCallback(list, item);
+        }
+      }
+      if (!isUpdatesList) return;
+      this.subscribe(list);
+    });
+  }
+  async ["NEW:HA-LIST-ITEM"](_target, element) {
+    const entityId = element == null ? void 0 : element.entity_id;
+    const domain = this.getDomainByEntityId(entityId);
+    const url = this.getImgSrc(domain);
+    if (!url) return;
+    const badge = element.querySelector("state-badge");
+    if (!badge) return;
+    badge.style.backgroundImage = `url(${url})`;
+    this.subscribe(badge, true);
+  }
+  async ["NEW:HA-CONFIG-REPAIRS"](_target, element) {
+    var _a;
+    const list = await waitSelector(element, ":shadow ha-md-list");
+    if (!list) return;
     if (!list || list.children.length === 0) return;
-    for (const child of list.children) {
-      const entityId = child == null ? void 0 : child.entity_id;
-      const domain = this.getDomainByEntityId(entityId);
+    for (const item of list.children) {
+      const domain = (_a = item == null ? void 0 : item.issue) == null ? void 0 : _a.issue_domain;
       const url = this.getImgSrc(domain);
       if (!url) continue;
-      const badge = child.querySelector("state-badge");
-      if (!badge) continue;
-      badge.style.backgroundImage = `url("${url}")`;
+      this.onAddCallback(list, item);
     }
     this.subscribe(list);
   }
-  async ["NEW-HA-CONFIG-REPAIRS"](_target, element) {
+  async ["NEW:HA-MD-LIST-ITEM"](_target, element) {
     var _a;
-    const section = await waitSelector(element, ":shadow ha-md-list");
-    if (!section) return;
-    if (!section || section.children.length === 0) return;
-    for (const child of section.children) {
-      const domain = (_a = child == null ? void 0 : child.issue) == null ? void 0 : _a.issue_domain;
-      const url = this.getImgSrc(domain);
-      if (!url) continue;
-      const img = child.querySelector("img");
-      if (!img) continue;
-      img.src = url;
-    }
-    this.subscribe(section);
+    const domain = (_a = element.issue) == null ? void 0 : _a.issue_domain;
+    const url = this.getImgSrc(domain);
+    if (!url) return;
+    const img = element.querySelector("img");
+    if (!img) return;
+    img.src = url;
+    this.subscribe(img, true);
   }
 }
 (async () => {

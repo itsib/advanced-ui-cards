@@ -102,10 +102,22 @@ function waitSubtree<TReturn extends HTMLElement | ShadowRoot>(root: HTMLElement
  * @example `:shadow .class-name div:shadow`
  * @param element
  * @param selector
+ * @param cb
  */
-export function waitSelector<TReturn extends HTMLElement | ShadowRoot = HTMLElement>(element: HTMLElement | ShadowRoot, selector: string): AbortablePromise<TReturn> {
+export function waitSelector<TReturn extends HTMLElement | ShadowRoot = HTMLElement>(element: HTMLElement | ShadowRoot, selector: string, cb: (el: TReturn) => void): () => void;
+export function waitSelector<TReturn extends HTMLElement | ShadowRoot = HTMLElement>(element: HTMLElement | ShadowRoot, selector: string): AbortablePromise<TReturn>;
+export function waitSelector<TReturn extends HTMLElement | ShadowRoot = HTMLElement>(element: HTMLElement | ShadowRoot, selector: string, cb?: (el: TReturn) => void): AbortablePromise<TReturn> | (() => void) {
   const subtree = spreadSelector(selector);
   const abort = new AbortController();
+
+  if (cb) {
+    waitSubtree(element, subtree, cb, abort.signal);
+
+    return () => {
+      abort.abort();
+    }
+  }
+
   const promise = new Promise<TReturn>((resolve: (value: TReturn) => void, reject) => {
 
     abort.signal.addEventListener('abort', reject, { once: true });
