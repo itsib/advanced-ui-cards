@@ -1,13 +1,14 @@
-import { waitSelector, DomWatcher } from './utils';
+import { waitSelector } from './utils';
+import { BrandResolver } from './brand-resolver';
 
 declare global {
   interface Window {
-    brandResolver?: DomWatcher;
+    domWatcher?: Promise<BrandResolver>;
   }
 }
 
 (async () => {
-  if (window.brandResolver) return;
+  if (window.domWatcher) return;
 
   const elements = document.body.getElementsByTagName('home-assistant') as HTMLCollection;
   const homeAssistant = elements.item(0) as HTMLElement;
@@ -15,15 +16,25 @@ declare global {
     throw new Error('No <home-assistant> element');
   }
 
-  const root = await waitSelector(homeAssistant, ':shadow');
+  window.domWatcher = new Promise(resolve => {
+    waitSelector<HTMLElement>(homeAssistant, ':shadow home-assistant-main', main => {
+      const hass = (main as any).hass;
+      if (!hass) {
+        throw new Error('Home Assistant not found');
+      }
 
-  window.brandResolver = new DomWatcher({
-    root: root!,
-    debug: true,
-    images: {
-      ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
-      ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
-      ['homeconnect_ws']: '/lovelace_cards_files/yandex-music.svg',
-    },
+      const watcher = new BrandResolver({
+        hass,
+        root: homeAssistant.shadowRoot!,
+        debug: true,
+        images: {
+          ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
+          ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
+          ['sun']: '/lovelace_cards_files/sun-logo.svg',
+        },
+      });
+
+      resolve(watcher);
+    });
   });
 })();

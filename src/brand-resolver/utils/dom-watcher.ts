@@ -1,156 +1,148 @@
-import { waitSelector } from './wait-selector';
 import { ChangeCallbacks, ChangeDisconnect, onElementChange } from './on-element-change';
-import { HomeAssistant } from 'types';
+import { getElementName } from './get-element-name';
 
-export type ReplacementImages = { [domain: string]: string };
-
-export type DomWatcherRootElement = HTMLElement | ShadowRoot;
-
-export interface DomWatcherConfig {
-  root: DomWatcherRootElement;
-  images: ReplacementImages;
-  debug?: boolean;
-}
-
-export interface Connection {
-
-}
+export type LogType = 'create' | 'remove' | 'attribute' | 'subscribe';
 
 const FORMATS = {
-  subscribe: 'color: #999999;',
-  new_node_call: 'color: #66FF66;',
-  new_node_skip: 'color: #448844; text-decoration: line-through;',
-  rm_node_call: 'color: #FF6666;',
-  rm_node_skip: 'color: #884444; text-decoration: line-through;',
-  attr_call: '',
-  default: 'color: #EAEAEA;',
+  subscribe: 'color: #ffcc00; font-weight: 700;',
+  create: 'color: #37c871; font-weight: 700;',
+  remove: 'color: #c83737; font-weight: 700;',
+  attribute: 'color: #37abc8; font-weight: 700;',
+  default: 'color: #b3b3b3; font-weight: 400;',
 };
 
-export class DomWatcher {
-
-  private _hass?: HomeAssistant;
-
-  private readonly _root: DomWatcherRootElement;
-
-  private readonly _images: ReplacementImages;
-
-  private readonly _domains: string[];
+/**
+ * DOM Watcher - Tracks the appearance of HTML elements through the Shadow DOM.
+ *
+ *
+ */
+export abstract class DomWatcher {
 
   private readonly _debug: boolean;
 
   private readonly _watchers = new WeakMap<HTMLElement | ShadowRoot, ChangeDisconnect>();
 
-  constructor(config: DomWatcherConfig) {
-    this._root = config.root;
-    this._images = config.images;
-    this._domains = Object.keys(this._images);
-    this._debug = config.debug || false;
-
-    this.subscribe(this._root);
+  protected constructor(debug = false) {
+    this._debug = debug;
   }
 
-  log(type: string, ...objects: any[]): void {
+  protected log(type: LogType, ...objects: any[]): void {
     if (!this._debug) return;
 
-    const color = FORMATS[type] || FORMATS.default;
-    const label = type
-      .replace(/_/g, ' ')
-      .replace('skip', '🗴')
-      .replace('call', '✔')
-      .replace(/(^\w)/, c => c.toUpperCase());
-
-    let template = '%c%s%c%s';
-
-    for (let i = 0; i < objects.length; i++) {
-      const object = objects[i];
-      if (typeof object === 'string') {
-        template += ' %s';
-      } else if (object && typeof object === 'object') {
-        template += ' %O';
-      }
+    switch (type) {
+      case 'create':
+        console.log('%cNEW %c%s %O', FORMATS.create, FORMATS.default, objects[0], objects[1]);
+        break;
+      case 'remove':
+        console.log('%cREM %c%s %O', FORMATS.remove, FORMATS.default, objects[0], objects[1]);
+        break;
+      case 'subscribe':
+        console.log('%cSUB %c%s %O', FORMATS.subscribe, FORMATS.default, objects[0], objects[1]);
+        break;
+      case 'attribute':
+        console.log('%cATR %c%s %O', FORMATS.attribute, FORMATS.default, objects[0], objects[1]);
+        break;
     }
-
-    const space = ':' + ' '.repeat(14 - label.length);
-
-    console.log(template, color, label, '', space, ...objects);
   }
 
-  getImgSrc(domain?: string | null): string | null {
-    return domain && domain in this._images ? this._images[domain] : null;
-  }
+  /**
+   * Handler for the new DOM element.
+   *
+   * @description
+   * All DOM elements are processed here, then distributed to the appropriate
+   * handlers. To process a specific HTML element, you need to create an event
+   * handler as in the example
+   *
+   * @examle
+   * ```typescript
+   * class MyWatcher extends DomWatcher {
+   *
+   *    // Handle new <img /> element in <observable-node-name />
+   *    ['NEW:OBSERVABLE-NODE-NAME:IMG'](created: HTMLImgElement): void {
+   *      console.log(created);
+   *    }
+   *
+   *    // Handle all new <img /> element all observed HTML elements
+   *    ['NEW:*:IMG'](created: HTMLImgElement): void {
+   *      console.log(created);
+   *    }
+   *
+   *    // Handle all new elements inside <observable-node-name />
+   *    ['NEW:OBSERVABLE-NODE-NAME:*'](created: HTMLImgElement): void {
+   *        console.log(created);
+   *    }
+   * }
+   * ```
+   *
+   * @param observable - The observed HTML element.
+   * @param created - New element in DOM
+   * @private
+   */
+  private _onCreate(observable: HTMLElement | ShadowRoot, created: HTMLElement): void {
+    const observableName = getElementName(observable);
+    const createdName = getElementName(created);
 
-  getDomainByEntityId(entityId: string): string | null {
-    for (let i = 0; i < this._domains.length; i++) {
-      const domain = this._domains[i];
-      const state = this._hass?.states?.[entityId];
-      if (state && state.attributes?.entity_picture?.includes(domain)) {
-        return domain;
-      }
-      const name = entityId.split('.', 2)[1];
-      if (name && name.includes(domain)) {
-        return domain;
+    const eventNames: [string, string][] = [
+      [observableName, createdName],
+      [observableName, '*'],
+      ['*', createdName],
+    ];
+
+    for (const [targetName, elementName] of eventNames) {
+      const eventName = `NEW:${targetName}:${elementName}`;
+      if (eventName in this) {
+        this.log('create', eventName, created);
+        this[eventName](created);
       }
     }
-    return null;
   }
 
-  getDomainBySrc(src: string): string | null {
-    for (let i = 0; i < this._domains.length; i++) {
-      const domain = this._domains[i];
-      if (src.includes(`/${domain}/`)) {
-        return domain;
+  /**
+   * Handler for the removed DOM element
+   * @param observable
+   * @param removed
+   * @private
+   */
+  private _onRemove(observable: HTMLElement | ShadowRoot, removed: HTMLElement) {
+    if (this._watchers.has(removed)) {
+      this._watchers.get(removed)?.();
+      this._watchers.delete(removed);
+    }
+
+    const observableName = getElementName(observable);
+    const createdName = getElementName(removed);
+
+    const eventNames: [string, string][] = [
+      [observableName, createdName],
+      [observableName, '*'],
+      ['*', createdName],
+    ];
+
+    for (const [targetName, elementName] of eventNames) {
+      const eventName = `REM:${targetName}:${elementName}`;
+      if (eventName in this) {
+        this.log('remove', eventName, removed);
+        this[eventName](removed);
       }
     }
-    return null;
   }
 
-  onRemoveCallback(target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const methodId = `RM-${element.nodeName}`;
-
-    if (this._watchers.has(element)) {
-      this._watchers.get(element)?.();
-      this._watchers.delete(element);
-    }
+  private _onAttribute(observable: HTMLElement | ShadowRoot, attributeName: string): void {
+    const methodId = `ATR:${observable.nodeName}[${attributeName.toUpperCase()}]`;
 
     if (methodId in this) {
-      this.log('rm_node_call', element, target);
-      this[methodId](target, element);
-    } else {
-      this.log('rm_node_skip', element, target);
-    }
-  }
-
-  onAddCallback(target: HTMLElement | ShadowRoot, element: HTMLElement): void {
-    const methodId = `NEW:${element.nodeName}`;
-
-    if (methodId in this) {
-      this.log('new_node_call', element, target);
-
-      this[methodId](target, element);
-    } else {
-      this.log('new_node_skip', element, target);
-    }
-  }
-
-  onAttributeCallback(target: HTMLElement | ShadowRoot, attributeName: string, oldValue: string | null): void {
-    const methodId = `ATTR:${target.nodeName}[${attributeName.toUpperCase()}]`;
-
-    if (methodId in this) {
-      this.log('attr_call', attributeName, target);
-
-      this[methodId](target, attributeName, oldValue);
-    } else {
-      this.log('attr_skip', attributeName, target);
+      this.log('attribute', methodId, observable);
+      this[methodId](observable, attributeName);
     }
   }
 
   subscribe(observable: HTMLElement | ShadowRoot, watchAttrs = false) {
-    this.log('subscribe', observable);
+    this.log('subscribe', getElementName(observable), observable);
 
     const callbacks: ChangeCallbacks = {
-      onAdd: this.onAddCallback.bind(this),
-      onRemove: this.onRemoveCallback.bind(this),
-      ...(watchAttrs ? { onAttribute: this.onAttributeCallback.bind(this) } : {}),
+      onAdd: this._onCreate.bind(this),
+      onRemove: this._onRemove.bind(this),
+      ...(watchAttrs ? { onAttribute: this._onAttribute.bind(this) } : {}),
     };
 
     const disconnect = onElementChange(observable, callbacks);
@@ -158,177 +150,7 @@ export class DomWatcher {
     this._watchers.set(observable, disconnect);
   }
 
-  private async ['ATTR:STATE-BADGE[STYLE]'](target: HTMLElement | ShadowRoot, attributeName: string, _oldValue: string | null) {
-    if (attributeName === 'style' && 'stateObj' in target) {
-      const entityId = (target.stateObj as any)!.entity_id;
-      const domain = this.getDomainByEntityId(entityId);
-      const src = this.getImgSrc(domain);
-      if (src) {
-        (target as HTMLElement).style.backgroundImage = `url(${src})`;
-      }
-    }
-  }
-
-  private async ['ATTR:IMG[src]'](target: HTMLImageElement, attr: string, _oldValue: string | null) {
-    if (attr !== 'src') return;
-
-    const domain = this.getDomainBySrc(target.src);
-    const src = this.getImgSrc(domain);
-    if (src) {
-      target.src = src;
-    }
-  }
-
-  private async ['NEW:HOME-ASSISTANT-MAIN'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    this._hass = (element as any).hass;
-
-    waitSelector<ShadowRoot>(element, ':shadow', shadowRoot => this.subscribe(shadowRoot));
-  }
-
-  private async ['NEW:DIALOG-ADD-INTEGRATION'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    waitSelector<ShadowRoot>(element, ':shadow', shadowRoot => this.subscribe(shadowRoot));
-  }
-
-  private async ['NEW:HA-MORE-INFO-DIALOG'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const entityId = (element as any)?.['_entityId'];
-    const domain = this.getDomainByEntityId(entityId);
-    const url = this.getImgSrc(domain);
-    if (!url) return;
-
-    waitSelector(element, ':shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge', badge => {
-      badge.style.backgroundImage = `url(${url})`;
-
-      this.subscribe(badge, true);
-    });
-  }
-
-  private async ['NEW:HA-INTEGRATION-LIST-ITEM'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    if (!(element as any)?.integration?.domain) return;
-
-    const domain = (element as any).integration.domain as string;
-    const src = this.getImgSrc(domain);
-    if (!src) return;
-
-    waitSelector<HTMLImageElement>(element, ':shadow .material-icons img', img => {
-      (img as HTMLImageElement).src = src;
-      this.subscribe(img, true);
-    });
-  }
-
-  private async ['NEW:HA-CONFIG-INTEGRATIONS-DASHBOARD'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const getCallbackFn = (src: string) => {
-      return (img: HTMLImageElement) => {
-        (img as HTMLImageElement).src = src;
-      };
-    };
-
-    waitSelector(element, ':shadow hass-tabs-subpage .container', container => {
-      for (const child of container.children) {
-        const domain = child.getAttribute('data-domain');
-        const src = this.getImgSrc(domain);
-        if (!src) continue;
-
-        waitSelector(child as HTMLElement, ':shadow ha-integration-header :shadow img', getCallbackFn(src));
-      }
-    });
-  }
-
-  private async ['NEW:HA-CONFIG-INTEGRATION-PAGE'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const domain = (element as any)?.domain as string;
-    const src = this.getImgSrc(domain);
-    if (!src || !domain) return;
-
-    waitSelector<HTMLImageElement>(element, ':shadow hass-subpage .container .logo-container img', img => {
-      img.src = src;
-    });
-  }
-
-  private async ['NEW:HA-CONFIG-DASHBOARD'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    waitSelector<HTMLElement>(element, ':shadow ha-top-app-bar-fixed', appBar => {
-      this.onAddCallback(appBar.parentNode as ShadowRoot, appBar);
-
-      this.subscribe(appBar.parentNode as ShadowRoot);
-    });
-  }
-
-  private async ['NEW:HA-TOP-APP-BAR-FIXED'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    waitSelector(element, 'ha-config-repairs', repairs => {
-      this.onAddCallback(element, repairs);
-      this.subscribe(repairs);
-    });
-
-    waitSelector(element, 'ha-config-updates', updates => {
-      this.onAddCallback(element, updates);
-      this.subscribe(updates);
-    });
-  }
-
-  private async ['NEW:HA-CONFIG-UPDATES'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    waitSelector<ShadowRoot>(element, ':shadow', shadowRoot => {
-      let list: HTMLElement | null = null;
-      for (const child of shadowRoot.children) {
-        if (/list/i.test(child.nodeName)) {
-          list = child as HTMLElement;
-          break;
-        }
-      }
-      if (!list) return;
-
-      let isUpdatesList = false;
-      for (const item of list.children) {
-        const entityId = (item as any)?.entity_id as string;
-        const domain = this.getDomainByEntityId(entityId);
-        const url = this.getImgSrc(domain);
-        if (url) {
-          isUpdatesList = true;
-          this.onAddCallback(list, item as HTMLElement);
-        }
-      }
-
-      if (!isUpdatesList) return;
-
-      this.subscribe(list);
-    });
-  }
-
-  private async ['NEW:HA-LIST-ITEM'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const entityId = (element as any)?.entity_id as string;
-    const domain = this.getDomainByEntityId(entityId);
-    const url = this.getImgSrc(domain);
-    if (!url) return;
-
-    const badge = element.querySelector('state-badge') as HTMLElement | null;
-    if (!badge) return;
-
-    badge.style.backgroundImage = `url(${url})`;
-    this.subscribe(badge, true);
-  }
-
-  private async ['NEW:HA-CONFIG-REPAIRS'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    waitSelector(element, ':shadow ha-md-list', list => {
-      for (const item of list.children) {
-        const domain = (item as any)?.issue?.issue_domain;
-        const url = this.getImgSrc(domain);
-        if (!url) continue;
-
-        this.onAddCallback(list, item as HTMLElement);
-      }
-
-      this.subscribe(list);
-    });
-  }
-
-  private async ['NEW:HA-MD-LIST-ITEM'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const domain = (element as any).issue?.issue_domain as string;
-    const url = this.getImgSrc(domain);
-    if (!url) return;
-
-    for (const child of element.children) {
-      if (child.nodeName === 'IMG') {
-        (child as HTMLImageElement).src = url;
-        this.subscribe(child as HTMLElement, true);
-        return;
-      }
-    }
+  emitCreate(observable: HTMLElement | ShadowRoot, created: HTMLElement) {
+    this._onCreate(observable, created);
   }
 }

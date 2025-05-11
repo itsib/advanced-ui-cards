@@ -89,23 +89,23 @@ function onElementChange(observable, callbacks) {
   const { onAdd, onRemove, onAttribute } = callbacks;
   const observer = new MutationObserver((mutations) => {
     for (let i = 0; i < mutations.length; i++) {
-      const { addedNodes, removedNodes, target, attributeName, type, oldValue } = mutations[i];
+      const { addedNodes, removedNodes, attributeName, type } = mutations[i];
       if (type === "childList") {
         for (let j = 0; j < removedNodes.length; j++) {
           const node = removedNodes.item(j);
           if (node && node.nodeType === Node.ELEMENT_NODE) {
-            onRemove == null ? void 0 : onRemove(target, node);
+            onRemove == null ? void 0 : onRemove(observable, node);
           }
         }
         for (let j = 0; j < addedNodes.length; j++) {
           const node = addedNodes.item(j);
           if (node && node.nodeType === Node.ELEMENT_NODE) {
-            onAdd == null ? void 0 : onAdd(target, node);
+            onAdd == null ? void 0 : onAdd(observable, node);
           }
         }
       } else if (type === "attributes") {
         if (attributeName) {
-          onAttribute == null ? void 0 : onAttribute(observable, attributeName, oldValue);
+          onAttribute == null ? void 0 : onAttribute(observable, attributeName);
         }
       }
     }
@@ -119,39 +119,146 @@ function onElementChange(observable, callbacks) {
     observer.disconnect();
   };
 }
+function getElementName(element) {
+  return element instanceof ShadowRoot ? "SHADOW" : element.nodeName;
+}
 const FORMATS = {
-  subscribe: "color: #999999;",
-  new_node_call: "color: #66FF66;",
-  new_node_skip: "color: #448844; text-decoration: line-through;",
-  rm_node_call: "color: #FF6666;",
-  rm_node_skip: "color: #884444; text-decoration: line-through;",
-  attr_call: "",
-  default: "color: #EAEAEA;"
+  subscribe: "color: #ffcc00; font-weight: 700;",
+  create: "color: #37c871; font-weight: 700;",
+  remove: "color: #c83737; font-weight: 700;",
+  attribute: "color: #37abc8; font-weight: 700;",
+  default: "color: #b3b3b3; font-weight: 400;"
 };
 class DomWatcher {
-  constructor(config) {
+  constructor(debug = false) {
     this._watchers = /* @__PURE__ */ new WeakMap();
-    this._root = config.root;
-    this._images = config.images;
-    this._domains = Object.keys(this._images);
-    this._debug = config.debug || false;
-    this.subscribe(this._root);
+    this._debug = debug;
   }
   log(type, ...objects) {
     if (!this._debug) return;
-    const color = FORMATS[type] || FORMATS.default;
-    const label = type.replace(/_/g, " ").replace("skip", "🗴").replace("call", "✔").replace(/(^\w)/, (c) => c.toUpperCase());
-    let template = "%c%s%c%s";
-    for (let i = 0; i < objects.length; i++) {
-      const object = objects[i];
-      if (typeof object === "string") {
-        template += " %s";
-      } else if (object && typeof object === "object") {
-        template += " %O";
+    switch (type) {
+      case "create":
+        console.log("%cNEW %c%s %O", FORMATS.create, FORMATS.default, objects[0], objects[1]);
+        break;
+      case "remove":
+        console.log("%cREM %c%s %O", FORMATS.remove, FORMATS.default, objects[0], objects[1]);
+        break;
+      case "subscribe":
+        console.log("%cSUB %c%s %O", FORMATS.subscribe, FORMATS.default, objects[0], objects[1]);
+        break;
+      case "attribute":
+        console.log("%cATR %c%s %O", FORMATS.attribute, FORMATS.default, objects[0], objects[1]);
+        break;
+    }
+  }
+  /**
+   * Handler for the new DOM element.
+   *
+   * @description
+   * All DOM elements are processed here, then distributed to the appropriate
+   * handlers. To process a specific HTML element, you need to create an event
+   * handler as in the example
+   *
+   * @examle
+   * ```typescript
+   * class MyWatcher extends DomWatcher {
+   *
+   *    // Handle new <img /> element in <observable-node-name />
+   *    ['NEW:OBSERVABLE-NODE-NAME:IMG'](created: HTMLImgElement): void {
+   *      console.log(created);
+   *    }
+   *
+   *    // Handle all new <img /> element all observed HTML elements
+   *    ['NEW:*:IMG'](created: HTMLImgElement): void {
+   *      console.log(created);
+   *    }
+   *
+   *    // Handle all new elements inside <observable-node-name />
+   *    ['NEW:OBSERVABLE-NODE-NAME:*'](created: HTMLImgElement): void {
+   *        console.log(created);
+   *    }
+   * }
+   * ```
+   *
+   * @param observable - The observed HTML element.
+   * @param created - New element in DOM
+   * @private
+   */
+  _onCreate(observable, created) {
+    const observableName = getElementName(observable);
+    const createdName = getElementName(created);
+    const eventNames = [
+      [observableName, createdName],
+      [observableName, "*"],
+      ["*", createdName]
+    ];
+    for (const [targetName, elementName] of eventNames) {
+      const eventName = `NEW:${targetName}:${elementName}`;
+      if (eventName in this) {
+        this.log("create", eventName, created);
+        this[eventName](created);
       }
     }
-    const space = ":" + " ".repeat(14 - label.length);
-    console.log(template, color, label, "", space, ...objects);
+  }
+  /**
+   * Handler for the removed DOM element
+   * @param observable
+   * @param removed
+   * @private
+   */
+  _onRemove(observable, removed) {
+    var _a;
+    if (this._watchers.has(removed)) {
+      (_a = this._watchers.get(removed)) == null ? void 0 : _a();
+      this._watchers.delete(removed);
+    }
+    const observableName = getElementName(observable);
+    const createdName = getElementName(removed);
+    const eventNames = [
+      [observableName, createdName],
+      [observableName, "*"],
+      ["*", createdName]
+    ];
+    for (const [targetName, elementName] of eventNames) {
+      const eventName = `REM:${targetName}:${elementName}`;
+      if (eventName in this) {
+        this.log("remove", eventName, removed);
+        this[eventName](removed);
+      }
+    }
+  }
+  _onAttribute(observable, attributeName) {
+    const methodId = `ATR:${observable.nodeName}[${attributeName.toUpperCase()}]`;
+    if (methodId in this) {
+      this.log("attribute", methodId, observable);
+      this[methodId](observable, attributeName);
+    }
+  }
+  subscribe(observable, watchAttrs = false) {
+    this.log("subscribe", getElementName(observable), observable);
+    const callbacks = {
+      onAdd: this._onCreate.bind(this),
+      onRemove: this._onRemove.bind(this),
+      ...watchAttrs ? { onAttribute: this._onAttribute.bind(this) } : {}
+    };
+    const disconnect = onElementChange(observable, callbacks);
+    this._watchers.set(observable, disconnect);
+  }
+  emitCreate(observable, created) {
+    this._onCreate(observable, created);
+  }
+}
+class BrandResolver extends DomWatcher {
+  constructor(config) {
+    super(config.debug);
+    this._root = config.root;
+    this._hass = config.hass;
+    this._images = config.images;
+    this._domains = Object.keys(this._images);
+    this.subscribe(this._root);
+    if (this._root.firstElementChild) {
+      this.emitCreate(this._root, this._root.firstElementChild);
+    }
   }
   getImgSrc(domain) {
     return domain && domain in this._images ? this._images[domain] : null;
@@ -180,49 +287,7 @@ class DomWatcher {
     }
     return null;
   }
-  onRemoveCallback(target, element) {
-    var _a;
-    const methodId = `RM-${element.nodeName}`;
-    if (this._watchers.has(element)) {
-      (_a = this._watchers.get(element)) == null ? void 0 : _a();
-      this._watchers.delete(element);
-    }
-    if (methodId in this) {
-      this.log("rm_node_call", element, target);
-      this[methodId](target, element);
-    } else {
-      this.log("rm_node_skip", element, target);
-    }
-  }
-  onAddCallback(target, element) {
-    const methodId = `NEW:${element.nodeName}`;
-    if (methodId in this) {
-      this.log("new_node_call", element, target);
-      this[methodId](target, element);
-    } else {
-      this.log("new_node_skip", element, target);
-    }
-  }
-  onAttributeCallback(target, attributeName, oldValue) {
-    const methodId = `ATTR:${target.nodeName}[${attributeName.toUpperCase()}]`;
-    if (methodId in this) {
-      this.log("attr_call", attributeName, target);
-      this[methodId](target, attributeName, oldValue);
-    } else {
-      this.log("attr_skip", attributeName, target);
-    }
-  }
-  subscribe(observable, watchAttrs = false) {
-    this.log("subscribe", observable);
-    const callbacks = {
-      onAdd: this.onAddCallback.bind(this),
-      onRemove: this.onRemoveCallback.bind(this),
-      ...watchAttrs ? { onAttribute: this.onAttributeCallback.bind(this) } : {}
-    };
-    const disconnect = onElementChange(observable, callbacks);
-    this._watchers.set(observable, disconnect);
-  }
-  async ["ATTR:STATE-BADGE[STYLE]"](target, attributeName, _oldValue) {
+  ["ATTR:STATE-BADGE[STYLE]"](target, attributeName, _oldValue) {
     if (attributeName === "style" && "stateObj" in target) {
       const entityId = target.stateObj.entity_id;
       const domain = this.getDomainByEntityId(entityId);
@@ -232,7 +297,7 @@ class DomWatcher {
       }
     }
   }
-  async ["ATTR:IMG[src]"](target, attr, _oldValue) {
+  ["ATTR:IMG[SRC]"](target, attr) {
     if (attr !== "src") return;
     const domain = this.getDomainBySrc(target.src);
     const src = this.getImgSrc(domain);
@@ -240,14 +305,13 @@ class DomWatcher {
       target.src = src;
     }
   }
-  async ["NEW:HOME-ASSISTANT-MAIN"](_target, element) {
-    this._hass = element.hass;
+  ["NEW:SHADOW:HOME-ASSISTANT-MAIN"](element) {
+    waitSelector(element, ":shadow partial-panel-resolver", (shadow) => this.subscribe(shadow));
+  }
+  ["NEW:SHADOW:DIALOG-ADD-INTEGRATION"](element) {
     waitSelector(element, ":shadow", (shadowRoot) => this.subscribe(shadowRoot));
   }
-  async ["NEW:DIALOG-ADD-INTEGRATION"](_target, element) {
-    waitSelector(element, ":shadow", (shadowRoot) => this.subscribe(shadowRoot));
-  }
-  async ["NEW:HA-MORE-INFO-DIALOG"](_target, element) {
+  ["NEW:SHADOW:HA-MORE-INFO-DIALOG"](element) {
     const entityId = element == null ? void 0 : element["_entityId"];
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
@@ -257,7 +321,7 @@ class DomWatcher {
       this.subscribe(badge, true);
     });
   }
-  async ["NEW:HA-INTEGRATION-LIST-ITEM"](_target, element) {
+  ["NEW:SHADOW:HA-INTEGRATION-LIST-ITEM"](element) {
     var _a;
     if (!((_a = element == null ? void 0 : element.integration) == null ? void 0 : _a.domain)) return;
     const domain = element.integration.domain;
@@ -268,7 +332,7 @@ class DomWatcher {
       this.subscribe(img, true);
     });
   }
-  async ["NEW:HA-CONFIG-INTEGRATIONS-DASHBOARD"](_target, element) {
+  ["NEW:*:HA-CONFIG-INTEGRATIONS-DASHBOARD"](element) {
     const getCallbackFn = (src) => {
       return (img) => {
         img.src = src;
@@ -283,7 +347,7 @@ class DomWatcher {
       }
     });
   }
-  async ["NEW:HA-CONFIG-INTEGRATION-PAGE"](_target, element) {
+  ["NEW:*:HA-CONFIG-INTEGRATION-PAGE"](element) {
     const domain = element == null ? void 0 : element.domain;
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
@@ -291,23 +355,23 @@ class DomWatcher {
       img.src = src;
     });
   }
-  async ["NEW:HA-CONFIG-DASHBOARD"](_target, element) {
+  ["NEW:*:HA-CONFIG-DASHBOARD"](element) {
     waitSelector(element, ":shadow ha-top-app-bar-fixed", (appBar) => {
-      this.onAddCallback(appBar.parentNode, appBar);
+      this.emitCreate(appBar.parentNode, appBar);
       this.subscribe(appBar.parentNode);
     });
   }
-  async ["NEW:HA-TOP-APP-BAR-FIXED"](_target, element) {
+  ["NEW:*:HA-TOP-APP-BAR-FIXED"](element) {
     waitSelector(element, "ha-config-repairs", (repairs) => {
-      this.onAddCallback(element, repairs);
+      this.emitCreate(element, repairs);
       this.subscribe(repairs);
     });
     waitSelector(element, "ha-config-updates", (updates) => {
-      this.onAddCallback(element, updates);
+      this.emitCreate(element, updates);
       this.subscribe(updates);
     });
   }
-  async ["NEW:HA-CONFIG-UPDATES"](_target, element) {
+  ["NEW:*:HA-CONFIG-UPDATES"](element) {
     waitSelector(element, ":shadow", (shadowRoot) => {
       let list = null;
       for (const child of shadowRoot.children) {
@@ -324,14 +388,14 @@ class DomWatcher {
         const url = this.getImgSrc(domain);
         if (url) {
           isUpdatesList = true;
-          this.onAddCallback(list, item);
+          this.emitCreate(list, item);
         }
       }
       if (!isUpdatesList) return;
       this.subscribe(list);
     });
   }
-  async ["NEW:HA-LIST-ITEM"](_target, element) {
+  ["NEW:*:HA-LIST-ITEM"](element) {
     const entityId = element == null ? void 0 : element.entity_id;
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
@@ -341,19 +405,19 @@ class DomWatcher {
     badge.style.backgroundImage = `url(${url})`;
     this.subscribe(badge, true);
   }
-  async ["NEW:HA-CONFIG-REPAIRS"](_target, element) {
+  ["NEW:*:HA-CONFIG-REPAIRS"](element) {
     waitSelector(element, ":shadow ha-md-list", (list) => {
       var _a;
       for (const item of list.children) {
         const domain = (_a = item == null ? void 0 : item.issue) == null ? void 0 : _a.issue_domain;
         const url = this.getImgSrc(domain);
         if (!url) continue;
-        this.onAddCallback(list, item);
+        this.emitCreate(list, item);
       }
       this.subscribe(list);
     });
   }
-  async ["NEW:HA-MD-LIST-ITEM"](_target, element) {
+  ["NEW:*:HA-MD-LIST-ITEM"](element) {
     var _a;
     const domain = (_a = element.issue) == null ? void 0 : _a.issue_domain;
     const url = this.getImgSrc(domain);
@@ -366,22 +430,59 @@ class DomWatcher {
       }
     }
   }
+  ["NEW:*:HA-CONFIG-DEVICE-PAGE"](element) {
+    waitSelector(element, ":shadow .container ha-device-info-card ha-list-item img", (img) => {
+      const domain = this.getDomainBySrc(img.src);
+      const src = this.getImgSrc(domain);
+      if (!src) return;
+      img.src = src;
+      this.subscribe(img, true);
+    });
+    waitSelector(element, ":shadow .container .header-right img", (img) => {
+      const domain = this.getDomainBySrc(img.src);
+      const src = this.getImgSrc(domain);
+      if (!src) return;
+      img.src = src;
+      this.subscribe(img, true);
+    });
+  }
+  ["NEW:*:HA-CONFIG-DEVICES-DASHBOARD"](element) {
+    waitSelector(element, ":shadow hass-tabs-subpage-data-table :shadow ha-data-table :shadow lit-virtualizer", (virtualizer) => {
+      this.subscribe(virtualizer);
+    });
+  }
+  ["NEW:*:IMG"](element) {
+    const domain = this.getDomainBySrc(element.src);
+    const src = this.getImgSrc(domain);
+    if (src) {
+      element.src = src;
+    }
+  }
 }
 (async () => {
-  if (window.brandResolver) return;
+  if (window.domWatcher) return;
   const elements = document.body.getElementsByTagName("home-assistant");
   const homeAssistant = elements.item(0);
   if (!homeAssistant) {
     throw new Error("No <home-assistant> element");
   }
-  const root = await waitSelector(homeAssistant, ":shadow");
-  window.brandResolver = new DomWatcher({
-    root,
-    debug: true,
-    images: {
-      ["lovelace_cards"]: "/lovelace_cards_files/lovelace-cards.svg",
-      ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg",
-      ["homeconnect_ws"]: "/lovelace_cards_files/yandex-music.svg"
-    }
+  window.domWatcher = new Promise((resolve) => {
+    waitSelector(homeAssistant, ":shadow home-assistant-main", (main) => {
+      const hass = main.hass;
+      if (!hass) {
+        throw new Error("Home Assistant not found");
+      }
+      const watcher = new BrandResolver({
+        hass,
+        root: homeAssistant.shadowRoot,
+        debug: true,
+        images: {
+          ["lovelace_cards"]: "/lovelace_cards_files/lovelace-cards.svg",
+          ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg",
+          ["sun"]: "/lovelace_cards_files/sun-logo.svg"
+        }
+      });
+      resolve(watcher);
+    });
   });
 })();
