@@ -223,7 +223,7 @@ class DomWatcher {
       }
     }
   }
-  async ["ATTR:IMG[src]"](target, attributeName, _oldValue) {
+  async ["ATTR:IMG[src]"](target, _attributeName, _oldValue) {
     console.log(target);
   }
   async ["NEW:HOME-ASSISTANT-MAIN"](_target, element) {
