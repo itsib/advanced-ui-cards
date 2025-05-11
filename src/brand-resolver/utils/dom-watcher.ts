@@ -94,6 +94,16 @@ export class DomWatcher {
     return null;
   }
 
+  getDomainBySrc(src: string): string | null {
+    for (let i = 0; i < this._domains.length; i++) {
+      const domain = this._domains[i];
+      if (src.includes(`/${domain}/`)) {
+        return domain;
+      }
+    }
+    return null;
+  }
+
   onRemoveCallback(target: HTMLElement | ShadowRoot, element: HTMLElement) {
     const methodId = `RM-${element.nodeName}`;
 
@@ -159,8 +169,14 @@ export class DomWatcher {
     }
   }
 
-  private async ['ATTR:IMG[src]'](target: HTMLElement | ShadowRoot, _attributeName: string, _oldValue: string | null) {
-    console.log(target);
+  private async ['ATTR:IMG[src]'](target: HTMLImageElement, attr: string, _oldValue: string | null) {
+    if (attr !== 'src') return;
+
+    const domain = this.getDomainBySrc(target.src);
+    const src = this.getImgSrc(domain);
+    if (src) {
+       target.src = src;
+    }
   }
 
   private async ['NEW:HOME-ASSISTANT-MAIN'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
@@ -321,10 +337,12 @@ export class DomWatcher {
     const url = this.getImgSrc(domain);
     if (!url) return;
 
-    const img = element.querySelector('img');
-    if (!img) return;
-    (img as HTMLImageElement).src = url;
-
-    this.subscribe(img, true);
+    for (const child of element.children) {
+      if (child.nodeName === 'IMG') {
+        (child as HTMLImageElement).src = url;
+        this.subscribe(child as HTMLElement, true);
+        return;
+      }
+    }
   }
 }
