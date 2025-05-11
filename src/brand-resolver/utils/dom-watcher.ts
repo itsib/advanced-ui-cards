@@ -175,24 +175,18 @@ export class DomWatcher {
     const domain = this.getDomainBySrc(target.src);
     const src = this.getImgSrc(domain);
     if (src) {
-       target.src = src;
+      target.src = src;
     }
   }
 
   private async ['NEW:HOME-ASSISTANT-MAIN'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
     this._hass = (element as any).hass;
 
-    const observable = await waitSelector(element, ':shadow');
-    if (!observable) return;
-
-    this.subscribe(observable);
+    waitSelector<ShadowRoot>(element, ':shadow', shadowRoot => this.subscribe(shadowRoot));
   }
 
   private async ['NEW:DIALOG-ADD-INTEGRATION'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const observable = await waitSelector(element, ':shadow');
-    if (!observable) return;
-
-    this.subscribe(observable);
+    waitSelector<ShadowRoot>(element, ':shadow', shadowRoot => this.subscribe(shadowRoot));
   }
 
   private async ['NEW:HA-MORE-INFO-DIALOG'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
@@ -201,12 +195,11 @@ export class DomWatcher {
     const url = this.getImgSrc(domain);
     if (!url) return;
 
-    const badge = await waitSelector(element, ':shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge');
-    if (!badge) return;
+    waitSelector(element, ':shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge', badge => {
+      badge.style.backgroundImage = `url(${url})`;
 
-    badge.style.backgroundImage = `url(${url})`;
-
-    this.subscribe(badge, true);
+      this.subscribe(badge, true);
+    });
   }
 
   private async ['NEW:HA-INTEGRATION-LIST-ITEM'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
@@ -216,26 +209,28 @@ export class DomWatcher {
     const src = this.getImgSrc(domain);
     if (!src) return;
 
-    const img = await waitSelector(element, ':shadow .material-icons img');
-    if (!img) return;
-
-    (img as HTMLImageElement).src = src;
+    waitSelector<HTMLImageElement>(element, ':shadow .material-icons img', img => {
+      (img as HTMLImageElement).src = src;
+      this.subscribe(img, true);
+    });
   }
 
   private async ['NEW:HA-CONFIG-INTEGRATIONS-DASHBOARD'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const container = await waitSelector(element, ':shadow hass-tabs-subpage .container');
-    if (!container) return;
+    const getCallbackFn = (src: string) => {
+      return (img: HTMLImageElement) => {
+        (img as HTMLImageElement).src = src;
+      };
+    };
 
-    for (const child of container.children) {
-      const domain = child.getAttribute('data-domain');
-      const src = this.getImgSrc(domain);
-      if (!src) continue;
+    waitSelector(element, ':shadow hass-tabs-subpage .container', container => {
+      for (const child of container.children) {
+        const domain = child.getAttribute('data-domain');
+        const src = this.getImgSrc(domain);
+        if (!src) continue;
 
-      const img = await waitSelector(child as HTMLElement, ':shadow ha-integration-header :shadow img');
-      if (!img) continue;
-
-      (img as HTMLImageElement).src = src;
-    }
+        waitSelector(child as HTMLElement, ':shadow ha-integration-header :shadow img', getCallbackFn(src));
+      }
+    });
   }
 
   private async ['NEW:HA-CONFIG-INTEGRATION-PAGE'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
@@ -243,33 +238,27 @@ export class DomWatcher {
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
 
-    const img = await waitSelector(element, ':shadow hass-subpage .container .logo-container img');
-    if (!img) return;
-
-    (img as HTMLImageElement).src = src;
+    waitSelector<HTMLImageElement>(element, ':shadow hass-subpage .container .logo-container img', img => {
+      img.src = src;
+    });
   }
 
   private async ['NEW:HA-CONFIG-DASHBOARD'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const observable = await waitSelector<HTMLElement>(element, ':shadow ha-top-app-bar-fixed');
+    waitSelector<HTMLElement>(element, ':shadow ha-top-app-bar-fixed', appBar => {
+      this.onAddCallback(appBar.parentNode as ShadowRoot, appBar);
 
-    this.onAddCallback(observable.parentNode as ShadowRoot, observable);
-
-    this.subscribe(observable.parentNode as ShadowRoot);
+      this.subscribe(appBar.parentNode as ShadowRoot);
+    });
   }
 
   private async ['NEW:HA-TOP-APP-BAR-FIXED'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
     waitSelector(element, 'ha-config-repairs', repairs => {
-      if (repairs && repairs.nodeName === 'HA-CONFIG-REPAIRS') {
-        this.onAddCallback(element, repairs);
-      }
-
+      this.onAddCallback(element, repairs);
       this.subscribe(repairs);
     });
 
     waitSelector(element, 'ha-config-updates', updates => {
-      if (updates && updates.nodeName === 'HA-CONFIG-UPDATES') {
-        this.onAddCallback(element, updates);
-      }
+      this.onAddCallback(element, updates);
       this.subscribe(updates);
     });
   }
@@ -316,20 +305,17 @@ export class DomWatcher {
   }
 
   private async ['NEW:HA-CONFIG-REPAIRS'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {
-    const list = await waitSelector(element, ':shadow ha-md-list');
-    if (!list) return;
+    waitSelector(element, ':shadow ha-md-list', list => {
+      for (const item of list.children) {
+        const domain = (item as any)?.issue?.issue_domain;
+        const url = this.getImgSrc(domain);
+        if (!url) continue;
 
-    if (!list || list.children.length === 0) return;
+        this.onAddCallback(list, item as HTMLElement);
+      }
 
-    for (const item of list.children) {
-      const domain = (item as any)?.issue?.issue_domain;
-      const url = this.getImgSrc(domain);
-      if (!url) continue;
-
-      this.onAddCallback(list, item as HTMLElement);
-    }
-
-    this.subscribe(list);
+      this.subscribe(list);
+    });
   }
 
   private async ['NEW:HA-MD-LIST-ITEM'](_target: HTMLElement | ShadowRoot, element: HTMLElement) {

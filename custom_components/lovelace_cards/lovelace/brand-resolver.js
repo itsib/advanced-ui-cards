@@ -242,24 +242,20 @@ class DomWatcher {
   }
   async ["NEW:HOME-ASSISTANT-MAIN"](_target, element) {
     this._hass = element.hass;
-    const observable = await waitSelector(element, ":shadow");
-    if (!observable) return;
-    this.subscribe(observable);
+    waitSelector(element, ":shadow", (shadowRoot) => this.subscribe(shadowRoot));
   }
   async ["NEW:DIALOG-ADD-INTEGRATION"](_target, element) {
-    const observable = await waitSelector(element, ":shadow");
-    if (!observable) return;
-    this.subscribe(observable);
+    waitSelector(element, ":shadow", (shadowRoot) => this.subscribe(shadowRoot));
   }
   async ["NEW:HA-MORE-INFO-DIALOG"](_target, element) {
     const entityId = element == null ? void 0 : element["_entityId"];
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
     if (!url) return;
-    const badge = await waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge");
-    if (!badge) return;
-    badge.style.backgroundImage = `url(${url})`;
-    this.subscribe(badge, true);
+    waitSelector(element, ":shadow ha-more-info-info :shadow state-card-content :shadow state-card-update :shadow state-info :shadow state-badge", (badge) => {
+      badge.style.backgroundImage = `url(${url})`;
+      this.subscribe(badge, true);
+    });
   }
   async ["NEW:HA-INTEGRATION-LIST-ITEM"](_target, element) {
     var _a;
@@ -267,46 +263,47 @@ class DomWatcher {
     const domain = element.integration.domain;
     const src = this.getImgSrc(domain);
     if (!src) return;
-    const img = await waitSelector(element, ":shadow .material-icons img");
-    if (!img) return;
-    img.src = src;
+    waitSelector(element, ":shadow .material-icons img", (img) => {
+      img.src = src;
+      this.subscribe(img, true);
+    });
   }
   async ["NEW:HA-CONFIG-INTEGRATIONS-DASHBOARD"](_target, element) {
-    const container = await waitSelector(element, ":shadow hass-tabs-subpage .container");
-    if (!container) return;
-    for (const child of container.children) {
-      const domain = child.getAttribute("data-domain");
-      const src = this.getImgSrc(domain);
-      if (!src) continue;
-      const img = await waitSelector(child, ":shadow ha-integration-header :shadow img");
-      if (!img) continue;
-      img.src = src;
-    }
+    const getCallbackFn = (src) => {
+      return (img) => {
+        img.src = src;
+      };
+    };
+    waitSelector(element, ":shadow hass-tabs-subpage .container", (container) => {
+      for (const child of container.children) {
+        const domain = child.getAttribute("data-domain");
+        const src = this.getImgSrc(domain);
+        if (!src) continue;
+        waitSelector(child, ":shadow ha-integration-header :shadow img", getCallbackFn(src));
+      }
+    });
   }
   async ["NEW:HA-CONFIG-INTEGRATION-PAGE"](_target, element) {
     const domain = element == null ? void 0 : element.domain;
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
-    const img = await waitSelector(element, ":shadow hass-subpage .container .logo-container img");
-    if (!img) return;
-    img.src = src;
+    waitSelector(element, ":shadow hass-subpage .container .logo-container img", (img) => {
+      img.src = src;
+    });
   }
   async ["NEW:HA-CONFIG-DASHBOARD"](_target, element) {
-    const observable = await waitSelector(element, ":shadow ha-top-app-bar-fixed");
-    this.onAddCallback(observable.parentNode, observable);
-    this.subscribe(observable.parentNode);
+    waitSelector(element, ":shadow ha-top-app-bar-fixed", (appBar) => {
+      this.onAddCallback(appBar.parentNode, appBar);
+      this.subscribe(appBar.parentNode);
+    });
   }
   async ["NEW:HA-TOP-APP-BAR-FIXED"](_target, element) {
     waitSelector(element, "ha-config-repairs", (repairs) => {
-      if (repairs && repairs.nodeName === "HA-CONFIG-REPAIRS") {
-        this.onAddCallback(element, repairs);
-      }
+      this.onAddCallback(element, repairs);
       this.subscribe(repairs);
     });
     waitSelector(element, "ha-config-updates", (updates) => {
-      if (updates && updates.nodeName === "HA-CONFIG-UPDATES") {
-        this.onAddCallback(element, updates);
-      }
+      this.onAddCallback(element, updates);
       this.subscribe(updates);
     });
   }
@@ -345,17 +342,16 @@ class DomWatcher {
     this.subscribe(badge, true);
   }
   async ["NEW:HA-CONFIG-REPAIRS"](_target, element) {
-    var _a;
-    const list = await waitSelector(element, ":shadow ha-md-list");
-    if (!list) return;
-    if (!list || list.children.length === 0) return;
-    for (const item of list.children) {
-      const domain = (_a = item == null ? void 0 : item.issue) == null ? void 0 : _a.issue_domain;
-      const url = this.getImgSrc(domain);
-      if (!url) continue;
-      this.onAddCallback(list, item);
-    }
-    this.subscribe(list);
+    waitSelector(element, ":shadow ha-md-list", (list) => {
+      var _a;
+      for (const item of list.children) {
+        const domain = (_a = item == null ? void 0 : item.issue) == null ? void 0 : _a.issue_domain;
+        const url = this.getImgSrc(domain);
+        if (!url) continue;
+        this.onAddCallback(list, item);
+      }
+      this.subscribe(list);
+    });
   }
   async ["NEW:HA-MD-LIST-ITEM"](_target, element) {
     var _a;
