@@ -1,0 +1,60 @@
+:host {
+
+}
+
+.radio {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .checkbox {
+    height: calc(1rem + 2px);
+    width: auto;
+    margin: 0.25rem 0.75rem;
+    aspect-ratio: 1/1;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+
+    .marker {
+      left: 2px;
+      top: 2px;
+      height: calc(1rem - 2px);
+      width: auto;
+      aspect-ratio: 1/1;
+      background-color: currentColor;
+      border-radius: 50%;
+      opacity: 1;
+      transform: scale(0, 0);
+      transition: all .4s cubic-bezier(.45, 1.8, .5, .75);
+      position: absolute;
+      z-index: 1;
+    }
+  }
+
+}
+
+:host([checked]) {
+
+  .radio {
+
+    .checkbox {
+
+      .marker {
+        opacity: 1;
+        transform: scale(1, 1);
+      }
+    }
+  }
+}
+
+:host([disabled]) {
+  opacity: 0.6;
+  pointer-events: none;
+}

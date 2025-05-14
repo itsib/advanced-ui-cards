@@ -1,35 +1,24 @@
 import { html, LitElement, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { compareRects } from '../../utils/comparators';
+import { getElementRect } from '../../utils/get-element-rect';
 import styles from './popover.scss';
 
 export type Placement = 'top' | 'bottom' | 'left' | 'right';
+
+export interface PopoverOptions {
+  offset?: number;
+  placement?: Placement;
+  maxWidth?: number;
+}
 
 class Popover extends LitElement {
   static styles = styles;
 
   @property()
-  text?: string;
+  content?: string;
 
-  @property()
+  @property({ attribute: 'placement', reflect: true })
   placement: Placement;
-
-  _rect?: Pick<DOMRect, 'x' | 'y' | 'width' | 'height'>;
-
-  @property({ hasChanged: compareRects })
-  set rect(_rect: Pick<DOMRect, 'x' | 'y' | 'width' | 'height'>) {
-    this._rect = {
-      x: _rect.x + window.scrollX,
-      y: _rect.y + window.scrollY,
-      width: _rect.width,
-      height: _rect.height,
-    };
-  };
-
-  get rect(): Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | undefined {
-    return this._rect;
-  }
-
 
   @property()
   arrow: number;
@@ -40,15 +29,16 @@ class Popover extends LitElement {
   @property({ attribute: 'max-width' })
   maxWidth: number;
 
-  _hiddenInProcess = false;
+  private _hiddenInProcess = false;
+
+  private _reference?: HTMLElement;
 
   constructor() {
     super();
 
-    this.placement = 'bottom';
-    this._rect = { x: 0, y: 0, width: 40, height: 40 };
+    this.placement = 'top';
     this.arrow = 8;
-    this.offset = 0;
+    this.offset = 2;
     this.maxWidth = 280;
   }
 
@@ -58,7 +48,27 @@ class Popover extends LitElement {
 
     const popup = this.shadowRoot!.firstElementChild as HTMLDivElement;
     popup.classList.add('out');
-    setTimeout(() => this.remove(), 200);
+    setTimeout(() => {
+      this._reference = undefined;
+      this.remove()
+    }, 200);
+  }
+
+  attach(element: HTMLElement, content: string, opts?: PopoverOptions) {
+    this._reference = element;
+    this.content = content;
+
+    if (opts?.offset) {
+      this.offset = opts.offset
+    }
+    if (opts?.placement) {
+      this.placement = opts.placement
+    }
+    if (opts?.maxWidth) {
+      this.maxWidth = opts.maxWidth
+    }
+
+    document.body.append(this);
   }
 
   connectedCallback() {
@@ -79,7 +89,7 @@ class Popover extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div class="popover">
-        <div class="text">${this.text}</div>
+        <div class="text">${this.content}</div>
         <div class="arrow" />
       </div>
     `;
@@ -98,20 +108,23 @@ class Popover extends LitElement {
     height = Math.max(height, sizeMin);
     width = Math.min(Math.max(width, sizeMin), this.maxWidth);
 
-    const rect = this.rect!;
+    const _rect = getElementRect(this._reference!);
+    const rect = { ..._rect, x: _rect.x + window.scrollX, y: _rect.y + window.scrollY };
+    const windowWidth = window.visualViewport?.width || window.innerWidth;
+    const windowHeight = window.visualViewport?.height || window.innerHeight;
     const popover = this.shadowRoot!.firstElementChild as HTMLDivElement;
     const xMin = this.offset;
-    const xMax = window.innerWidth - width - this.offset;
+    const xMax = windowWidth - width - this.offset;
     const yMin = this.offset;
-    const yMax = window.innerHeight - height - this.offset;
+    const yMax = windowHeight - height - this.offset;
 
     switch (placement) {
       case 'top':
         y = Math.round(rect.y - height - this.arrow - this.offset);
         x = Math.round(rect.x + rect.width / 2 - width / 2);
         if (y < yMin) {
-           y = Math.round(rect.y + rect.height + this.arrow + this.offset);
-           placement = 'bottom';
+          y = Math.round(rect.y + rect.height + this.arrow + this.offset);
+          placement = 'bottom';
         }
         x = Math.max(Math.min(x, xMax), xMin);
         break;

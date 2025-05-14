@@ -4,5 +4,20 @@
     "abort": {
       "single_instance_allowed": "Уже настроен. Возможна только одна конфигурация."
     }
+  },
+  "entity_component": {
+    "_": {
+      "button_action": "Конфигурация Кнопки",
+      "confirm_text": "Текст Подтверждения",
+      "button_color": "Цвет Кнопки",
+      "show_confirmation_dialog": "Запросить подтверждение перед выполнением действия.",
+      "color_primary": "Основной Цвет",
+      "color_accent": "Цвет Акцента",
+      "color_danger": "Цвет Опасности",
+      "color_warning": "Цвет Предупреждения",
+      "color_success": "Цвет Пезопастности",
+      "color_info": "Информационный цвет",
+      "color_custom": "Использоать Свой Цвет"
+    }
   }
 }

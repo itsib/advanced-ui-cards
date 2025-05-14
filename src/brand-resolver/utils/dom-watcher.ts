@@ -1,7 +1,6 @@
 import { ChangeCallbacks, ChangeDisconnect, onElementChange } from './on-element-change';
 import { getElementName } from './get-element-name';
-
-export type LogType = 'create' | 'remove' | 'attribute' | 'subscribe';
+import { LogType } from '../types';
 
 const FORMATS = {
   subscribe: 'color: #ffcc00; font-weight: 700;',

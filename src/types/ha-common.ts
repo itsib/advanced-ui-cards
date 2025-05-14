@@ -6,6 +6,7 @@ import type { LitElement } from 'lit';
 import type { ActionConfig, HassServiceTarget } from './ha-actions';
 import { CustomCardHelpers } from './ha-helper';
 import { ShowToastParams } from '../utils/show-toast';
+import { IButtonConfigSchema } from '../schemas/button-config-schema';
 
 declare global {
   /* eslint-disable no-var, no-redeclare */
@@ -66,7 +67,7 @@ declare global {
     'value-changed': {
       value: unknown;
     };
-    change: undefined;
+    change: any;
     'hass-logout': undefined;
     'config-refresh': undefined;
     'config-changed': ConfigChangedEvent;
@@ -80,6 +81,9 @@ declare global {
     'll-custom': ActionConfig;
     haptic: HapticType;
     'hass-notification': ShowToastParams;
+    'buttons-changed': {
+      buttons: IButtonConfigSchema[];
+    }
   }
 
   interface FrontendUserData {

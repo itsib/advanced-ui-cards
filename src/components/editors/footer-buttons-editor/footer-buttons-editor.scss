@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+.buttons {
+
+  .button-config {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+
+    .handle {
+      padding-right: 8px;
+      cursor: grab;
+      padding-inline-end: 8px;
+    }
+
+    .edit-button {
+      flex-grow: 1;
+    }
+
+    .action-button {
+      --lc-button-size: 36px;
+      color: var(--secondary-text-color);
+    }
+  }
+}
+
+.add-entity {
+  margin-top: 8px;
+  display: block;
+  margin-left: 31px;
+  margin-right: 71px;
+  margin-inline-start: 31px;
+  margin-inline-end: 71px;
+  direction: var(--direction);
+}

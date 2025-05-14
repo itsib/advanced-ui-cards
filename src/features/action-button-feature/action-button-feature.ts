@@ -22,7 +22,7 @@ class ActionButtonFeature extends LitElement {
 
   static getStubConfig(): CircleButtonFeatureConfig {
     return {
-      type: 'custom:lc-circle-button-feature',
+      type: 'custom:lc-button-circle-feature',
       label: 'Circle Button Feature',
       icon: 'mdi:gesture-tap-button',
       color: 'success',
@@ -52,7 +52,7 @@ class ActionButtonFeature extends LitElement {
     }
 
     return html`
-      <lc-circle-button class="button" .icon=${this._config.icon} .tooltip=${this._config.label} .color=${this._config.color} @click=${this._press} />
+      <lc-button-circle class="button" .icon=${this._config.icon} .tooltip=${this._config.label} .color=${this._config.color} @click=${this._press} />
     `;
   }
 

@@ -266,6 +266,18 @@ const ICONS = {
   lab: {
     "keywords": [],
     "path": "m19.861 18.111c-2.4994-6.2419-5.4169-7.887-5.4169-11v-3.6667h0.61111a0.61111 0.61111 0 0 0 0.61111-0.61111v-1.2222a0.61111 0.61111 0 0 0-0.61111-0.61111h-6.1111a0.61111 0.61111 0 0 0-0.61111 0.61111v1.2222a0.61111 0.61111 0 0 0 0.61111 0.61111h0.61111v3.6667c0 3.113-2.9174 4.7581-5.4169 11-0.79567 1.9861-2.8392 4.8889 7.8613 4.8889 10.701 0 8.657-2.9028 7.8613-4.8889m-1.9763 2.1401c-0.858 0.25667-2.5654 0.54878-5.885 0.54878-3.3196 0-5.027-0.29211-5.885-0.54878-0.30433-0.09044-0.42289-0.44367-0.31533-0.76756 0.26889-0.81889 0.77611-2.2342 1.7246-3.8146 2.3173-3.861 4.7214 0.60744 6.7222 0.60744 2.0008 0 1.452-1.9079 2.2293-0.60744a18.822 18.822 0 0 1 1.7246 3.8146c0.10756 0.32389-0.011 0.67589-0.31533 0.76756"
+  },
+  placeholder: {
+    keywords: ["placeholder", "empty", "icon"],
+    path: "M10.5 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM7.25 3c-.648 0-1.59 0-2.34.381a3.52 3.52 0 0 0-1.53 1.53c-.382.75-.382 1.69-.381 2.34V7.5a.5.5 0 0 0 1 0v-.2c0-.711.01-1.42.272-1.93a2.5 2.5 0 0 1 1.09-1.09c.515-.262 1.22-.272 1.93-.272h.2a.5.5 0 0 0 0-1h-.249zm9.45 0h-.249a.5.5 0 0 0 0 1h.2c.711 0 1.42.01 1.94.272c.47.24.853.622 1.09 1.09c.262.515.272 1.22.272 1.93v.2a.5.5 0 0 0 1 0v-.249c0-.648 0-1.59-.382-2.34a3.52 3.52 0 0 0-1.53-1.53c-.75-.382-1.69-.382-2.34-.381zM7.25 21c-.648 0-1.59 0-2.34-.382a3.52 3.52 0 0 1-1.53-1.53c-.382-.75-.382-1.69-.381-2.34v-.249a.5.5 0 0 1 1 0v.2c0 .711.01 1.42.272 1.94c.24.47.622.853 1.09 1.09c.515.262 1.22.272 1.93.272h.2a.5.5 0 0 1 0 1h-.249zm2.75-.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m6.7.5c.648 0 1.59 0 2.34-.382a3.52 3.52 0 0 0 1.53-1.53c.382-.75.382-1.69.382-2.34v-.249a.5.5 0 0 0-1 0v.2c0 .711-.01 1.42-.272 1.94a2.5 2.5 0 0 1-1.09 1.09c-.515.262-1.22.272-1.94.272h-.2a.5.5 0 0 0 0 1zM3.5 10a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5m17.5.5a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0z"
+  },
+  back: {
+    keywords: ["arrow", "back", "left"],
+    path: "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"
+  },
+  play: {
+    keywords: ["play", "tape", "pause"],
+    path: "M 8.779912,4.2126853 C 7.9852701,3.7620011 6.9998542,4.3360939 7,5.249643 v 13.501904 c -1.461e-4,0.91355 0.98527,1.487643 1.779912,1.036959 l 11.916671,-6.752542 c 0.805648,-0.45658 0.805648,-1.617337 0,-2.073917 z M 5,4.9209624 C 5,2.6869116 7.4090417,1.2819845 9.3539409,2.3827607 l 12.4968521,7.077133 c 1.972398,1.1166083 1.973231,3.9581293 8.32e-4,5.0747373 L 9.3547741,21.617596 C 7.409875,22.71754 5,21.313446 5,19.078562 Z"
   }
 };
 const ICONS_MAP = Object.entries(ICONS).map(([icon, content]) => ({ name: icon, keywords: content.keywords }));
@@ -304,7 +316,7 @@ const t$1 = (t2) => (e2, o2) => {
     customElements.define(t2, e2);
   }) : customElements.define(t2, e2);
 };
-const t = globalThis, e$1 = t.ShadowRoot && (void 0 === t.ShadyCSS || t.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s = Symbol(), o$2 = /* @__PURE__ */ new WeakMap();
+const t = globalThis, e$3 = t.ShadowRoot && (void 0 === t.ShadyCSS || t.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s = Symbol(), o$2 = /* @__PURE__ */ new WeakMap();
 let n$2 = class n {
   constructor(t2, e2, o2) {
     if (this._$cssResult$ = true, o2 !== s) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -313,7 +325,7 @@ let n$2 = class n {
   get styleSheet() {
     let t2 = this.o;
     const s2 = this.t;
-    if (e$1 && void 0 === t2) {
+    if (e$3 && void 0 === t2) {
       const e2 = void 0 !== s2 && 1 === s2.length;
       e2 && (t2 = o$2.get(s2)), void 0 === t2 && ((this.o = t2 = new CSSStyleSheet()).replaceSync(this.cssText), e2 && o$2.set(s2, t2));
     }
@@ -324,17 +336,17 @@ let n$2 = class n {
   }
 };
 const r$3 = (t2) => new n$2("string" == typeof t2 ? t2 : t2 + "", void 0, s), S = (s2, o2) => {
-  if (e$1) s2.adoptedStyleSheets = o2.map((t2) => t2 instanceof CSSStyleSheet ? t2 : t2.styleSheet);
+  if (e$3) s2.adoptedStyleSheets = o2.map((t2) => t2 instanceof CSSStyleSheet ? t2 : t2.styleSheet);
   else for (const e2 of o2) {
     const o3 = document.createElement("style"), n3 = t.litNonce;
     void 0 !== n3 && o3.setAttribute("nonce", n3), o3.textContent = e2.cssText, s2.appendChild(o3);
   }
-}, c$1 = e$1 ? (t2) => t2 : (t2) => t2 instanceof CSSStyleSheet ? ((t3) => {
+}, c$1 = e$3 ? (t2) => t2 : (t2) => t2 instanceof CSSStyleSheet ? ((t3) => {
   let e2 = "";
   for (const s2 of t3.cssRules) e2 += s2.cssText;
   return r$3(e2);
 })(t2) : t2;
-const { is: i, defineProperty: e, getOwnPropertyDescriptor: h, getOwnPropertyNames: r$2, getOwnPropertySymbols: o$1, getPrototypeOf: n$1 } = Object, a = globalThis, c = a.trustedTypes, l = c ? c.emptyScript : "", p = a.reactiveElementPolyfillSupport, d = (t2, s2) => t2, u = { toAttribute(t2, s2) {
+const { is: i, defineProperty: e$2, getOwnPropertyDescriptor: h, getOwnPropertyNames: r$2, getOwnPropertySymbols: o$1, getPrototypeOf: n$1 } = Object, a = globalThis, c = a.trustedTypes, l = c ? c.emptyScript : "", p = a.reactiveElementPolyfillSupport, d = (t2, s2) => t2, u = { toAttribute(t2, s2) {
   switch (s2) {
     case Boolean:
       t2 = t2 ? l : null;
@@ -374,7 +386,7 @@ class y extends HTMLElement {
   static createProperty(t2, s2 = b) {
     if (s2.state && (s2.attribute = false), this._$Ei(), this.prototype.hasOwnProperty(t2) && ((s2 = Object.create(s2)).wrapped = true), this.elementProperties.set(t2, s2), !s2.noAccessor) {
       const i2 = Symbol(), h2 = this.getPropertyDescriptor(t2, i2, s2);
-      void 0 !== h2 && e(this.prototype, t2, h2);
+      void 0 !== h2 && e$2(this.prototype, t2, h2);
     }
   }
   static getPropertyDescriptor(t2, s2, i2) {
@@ -596,1223 +608,27 @@ function n2(t2) {
 function r(r2) {
   return n2({ ...r2, state: true, attribute: false });
 }
-const styles$a = css`:host {
-  --lc-button-size: 40px;
-  --lc-button-icon-size: 24px;
-  --lc-button-color: currentColor;
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  color: var(--lc-button-color);
-  font-family: var(--paper-font-body1_-_font-family);
-  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
-  font-size: var(--paper-font-body1_-_font-size);
-  font-weight: var(--paper-font-body1_-_font-weight);
-  line-height: var(--paper-font-body1_-_line-height);
-  display: inline-block;
-  position: relative;
-}
-:host:before {
-  content: " ";
-  left: 0;
-  right: 0;
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  border-radius: 50%;
-  background-color: currentcolor;
-  opacity: 0.15;
-  position: absolute;
-}
-
-.lc-circle-button-icon {
-  --ha-icon-display: block;
-  --mdc-icon-button-size: var(--lc-button-size);
-  --mdc-icon-size: var(--lc-button-icon-size);
-  --mdc-theme-primary: var(--lc-button-color);
-  color: var(--lc-button-color);
-}
-
-.lc-circle-button-spinner {
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  border-radius: 50%;
-  font-size: var(--lc-button-icon-size);
-}`;
-function formatColors(value, defaultColor = "var(--primary-color)") {
-  if (!value) return defaultColor;
-  switch (value) {
-    case "primary":
-      return "var(--primary-color)";
-    case "accent":
-      return "var(--accent-color)";
-    case "error":
-    case "err":
-      return "var(--error-color)";
-    case "warning":
-    case "warn":
-      return "var(--warning-color)";
-    case "success":
-      return "var(--success-color)";
-    case "info":
-      return "var(--info-color)";
-  }
-  return value;
-}
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
-  return result;
-};
-function createComponent(Base) {
-  const _LCCircleButton = class _LCCircleButton extends Base {
-    constructor(...rest) {
-      super(...rest);
-      this._popoverOff = false;
-      this.disabled = false;
-      this.icon = "mdi:gesture-tap-button";
-    }
-    set color(value) {
-      this.style.setProperty("--lc-button-color", formatColors(value, "currentColor"));
-    }
-    render() {
-      return html`
-        <mwc-icon-button
-          type="button"
-          role="button"
-          class="lc-circle-button-icon"
-          .disabled=${this.disabled}
-          @mouseenter="${this._onMouseenter}"
-          @mouseleave="${this._onMouseLeave}"
-          @click=${this._onClick}
-        >
-          ${this._renderIcon()}
-        </mwc-icon-button>
-      `;
-    }
-    _renderIcon() {
-      if (this.disabled || !this.status) {
-        return html`<ha-icon icon=${this.icon} class="icon"></ha-icon>`;
-      }
-      switch (this.status) {
-        case "loading":
-          return html`<lc-icon-spinner color="var(--lc-button-color)"></lc-icon-spinner>`;
-        case "success":
-          return html`<lc-icon-success color="var(--lc-button-color)"></lc-icon-success>`;
-        case "error":
-          return html`<lc-icon-error color="var(--lc-button-color)"></lc-icon-error>`;
-      }
-    }
-    _removePopover() {
-      if (this._popover) {
-        this._popover.hide();
-        this._popover = void 0;
-      }
-    }
-    _onClick() {
-      this._popoverOff = true;
-      this._removePopover();
-    }
-    /**
-     * Show tooltip popover
-     * @private
-     */
-    _onMouseenter() {
-      if (this._popoverOff || !this.tooltip) return;
-      const rect = this.getClientRects().item(0);
-      if (!rect || this.status) return;
-      this._popover = document.createElement("lc-popover");
-      this._popover.text = this.tooltip;
-      this._popover.rect = rect;
-      this._popover.placement = "top";
-      this._popover.offset = 2;
-      document.body.append(this._popover);
-    }
-    /**
-     * Hide tooltip popover
-     * @private
-     */
-    _onMouseLeave() {
-      this._removePopover();
-      this._popoverOff = false;
-    }
-  };
-  _LCCircleButton.styles = styles$a;
-  let LCCircleButton = _LCCircleButton;
-  __decorateClass$b([
-    n2({ attribute: true })
-  ], LCCircleButton.prototype, "icon", 2);
-  __decorateClass$b([
-    n2({ attribute: "color", reflect: true, type: String })
-  ], LCCircleButton.prototype, "color", 1);
-  __decorateClass$b([
-    n2({ attribute: true })
-  ], LCCircleButton.prototype, "tooltip", 2);
-  __decorateClass$b([
-    n2({ attribute: "status", reflect: true, type: String })
-  ], LCCircleButton.prototype, "status", 2);
-  __decorateClass$b([
-    n2({ attribute: "disabled", reflect: true, type: Boolean })
-  ], LCCircleButton.prototype, "disabled", 2);
-  return LCCircleButton;
-}
-(async () => {
-  await customElements.whenDefined("ha-icon");
-  const source = await customElements.whenDefined("mwc-icon-button");
-  customElements.define("lc-circle-button", createComponent(source), { extends: "button" });
-})();
-function fireEvent(node, type2, detail, options = {}) {
-  const _detail = detail === null || detail === void 0 ? {} : detail;
-  const event = new Event(type2, {
-    bubbles: options.bubbles === void 0 ? true : options.bubbles,
-    cancelable: Boolean(options.cancelable),
-    composed: options.composed === void 0 ? true : options.composed
-  });
-  event.detail = _detail;
-  node.dispatchEvent(event);
-  return event;
-}
-function forwardHaptic(hapticType) {
-  fireEvent(window, "haptic", hapticType);
-}
-function domainToName(localize, domain, manifest) {
-  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
-}
-const MAIN_WINDOW_NAME = "ha-main-window";
-const mainWindow = (() => {
-  try {
-    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
-  } catch {
-    return window;
-  }
-})();
-function isCustomType(type2) {
-  return type2.startsWith("custom:");
-}
-function computeDomain(entityId) {
-  return entityId.substring(0, entityId.indexOf("."));
-}
-function arrayFilter(array2, conditions, maxSize) {
-  if (!maxSize || maxSize > array2.length) {
-    maxSize = array2.length;
-  }
-  const filteredArray = [];
-  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
-    let meetsConditions = true;
-    for (const condition of conditions) {
-      if (!condition(array2[i2])) {
-        meetsConditions = false;
-        break;
-      }
-    }
-    if (meetsConditions) {
-      filteredArray.push(array2[i2]);
-    }
-  }
-  return filteredArray;
-}
-function processEntities(entities, opts = {}) {
-  const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
-  const maxCount = opts.maxCount ?? Infinity;
-  const validateMode = opts.validateMode == null ? "throw" : opts.validateMode;
-  const callback = opts.callback || ((entity) => entity);
-  if (!entities) {
-    if (validateMode === "skip") return [];
-    throw new Error(`No entities provided`);
-  }
-  if (maxCount < entities.length && validateMode !== "skip") {
-    throw new Error(`The maximum number of elements is ${maxCount}`);
-  }
-  const results = [];
-  for (let i2 = 0; i2 < entities.length; i2++) {
-    const entity = entities[i2];
-    if (!entity) {
-      if (validateMode === "skip") continue;
-      throw new Error(`Missing entity in position ${i2}, null provided`);
-    }
-    let result;
-    if (typeof entity === "string") {
-      result = { entity };
-    } else if (typeof entity === "object" && !Array.isArray(entity)) {
-      if ("type" in entity || "entity" in entity) {
-        result = { ...entity };
-      } else {
-        if (validateMode === "skip") continue;
-        throw new Error(`Object at position ${i2} is missing entity or type field`);
-      }
-    } else {
-      if (validateMode === "skip") continue;
-      throw new Error(`Invalid entity at position ${i2}`);
-    }
-    let domain = null;
-    if (result.entity) {
-      const regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
-      if (regExResult) {
-        domain = regExResult[1];
-      } else {
-        if (validateMode === "skip") continue;
-        throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
-      }
-    }
-    if (domains == null ? void 0 : domains.length) {
-      if (!domain) continue;
-      if (!domains.includes(domain)) {
-        if (validateMode === "skip") continue;
-        throw new Error(`Invalid entity domain ${domain} at position ${i2}. Allowed ${domains.join(". ")}`);
-      }
-    }
-    result = callback(result);
-    if (!result) continue;
-    results.push(result);
-    if (results.length >= maxCount) break;
-  }
-  return results;
-}
-function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
-  const conditions = [];
-  if (includeDomains == null ? void 0 : includeDomains.length) {
-    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
-  }
-  if (entityFilter) {
-    conditions.push(
-      (eid) => hass.states[eid] && entityFilter(hass.states[eid])
-    );
-  }
-  const entityIds = arrayFilter(entities, conditions, maxEntities);
-  if (entityIds.length < maxEntities && entitiesFallback.length) {
-    const fallbackEntityIds = findEntities(
-      hass,
-      maxEntities - entityIds.length,
-      entitiesFallback,
-      [],
-      includeDomains,
-      entityFilter
-    );
-    entityIds.push(...fallbackEntityIds);
-  }
-  return entityIds;
-}
-function isShowConfirmation(confirmation, userId) {
-  if (!confirmation) return false;
-  if (confirmation === true) return true;
-  return !confirmation.exemptions || !confirmation.exemptions.some((e2) => e2.user === userId);
-}
-const style = css`.footer {
-  margin-top: 0;
-}
-.footer .divider {
-  margin: 0;
-  border: none;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--divider-color);
-}
-.footer .buttons {
-  width: auto;
-  padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-}
-.footer .buttons .btn-wrap {
-  padding: 0 6px;
-}`;
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$a(target, key, result);
-  return result;
-};
-let FooterButtons = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this._statuses = [];
-  }
-  render() {
-    var _a;
-    if (!((_a = this.buttons) == null ? void 0 : _a.length)) {
-      return html``;
-    }
-    return html`
-      <div class="footer">
-        <hr class="divider" role="separator" />
-
-        <div class="buttons">
-          ${this.buttons.map((config, index) => this._renderButton(index, config))}
-        </div>
-      </div>
-    `;
-  }
-  _renderButton(index, config) {
-    if (!config) {
-      return html``;
-    }
-    return html`
-      <div class="btn-wrap">
-        <lc-circle-button
-          data-index=${index}
-          color=${config.color}
-          icon=${config.icon}
-          tooltip=${config.tooltip}
-          .status=${this._statuses[index]}
-          @click=${this._onClick}
-        ></lc-circle-button>
-      </div>
-    `;
-  }
-  async _onClick(event) {
-    event.stopPropagation();
-    const element = event.target;
-    const index = parseInt(element.dataset.index);
-    if (this._statuses[index] === "loading") return;
-    this._setButtonStatus(index, "loading");
-    const config = this.buttons[index];
-    if (await this._isConfirmed(config)) {
-      this._setButtonStatus(index, void 0);
-      return;
-    }
-    const [domain, service] = config.action.split(".", 2);
-    const begin = Date.now();
-    try {
-      await this.hass.callService(domain, service, config.data, config.target);
-      const delay = Date.now() - begin;
-      if (delay > 600) {
-        this._setCallResult(index, "success")();
-      } else {
-        setTimeout(this._setCallResult(index, "success"), 600 - delay);
-      }
-    } catch {
-      this._setCallResult(index, "error")();
-    }
-  }
-  async _isConfirmed(config) {
-    var _a;
-    if (!isShowConfirmation(config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
-    forwardHaptic("warning");
-    let text = "";
-    if (typeof config.confirmation !== "boolean" && config.confirmation.text) {
-      text = config.confirmation.text;
-    } else {
-      const [domain, service] = config.action.split(".", 2);
-      const serviceDomains = this.hass.services;
-      let serviceName = "";
-      if (domain in serviceDomains && service in serviceDomains[domain]) {
-        await this.hass.loadBackendTranslation("title");
-        const localize = await this.hass.loadBackendTranslation("entity");
-        serviceName += domainToName(localize, domain);
-        serviceName += ": ";
-        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
-      }
-      text = this.hass.localize("ui.panel.lovelace.cards.actions.action_confirmation", {
-        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${config.action}`) || config.action
-      });
-    }
-    const utils = await mainWindow.loadCardHelpers();
-    return !await utils.showConfirmationDialog(this, { text, title: config.tooltip });
-  }
-  _setButtonStatus(index, status) {
-    this._statuses[index] = status;
-    this._statuses = [...this._statuses];
-  }
-  _setCallResult(index, status) {
-    return () => {
-      forwardHaptic("light");
-      this._setButtonStatus(index, status);
-      setTimeout(() => {
-        this._setButtonStatus(index, void 0);
-      }, 2500);
+const e$1 = (e2, t2, c2) => (c2.configurable = true, c2.enumerable = true, Reflect.decorate && "object" != typeof t2 && Object.defineProperty(e2, t2, c2), c2);
+function e(e2, r2) {
+  return (n3, s2, i2) => {
+    const o2 = (t2) => {
+      var _a;
+      return ((_a = t2.renderRoot) == null ? void 0 : _a.querySelector(e2)) ?? null;
     };
-  }
-};
-FooterButtons.styles = style;
-__decorateClass$a([
-  n2({ attribute: false })
-], FooterButtons.prototype, "hass", 2);
-__decorateClass$a([
-  n2({ attribute: false })
-], FooterButtons.prototype, "buttons", 2);
-__decorateClass$a([
-  r()
-], FooterButtons.prototype, "_statuses", 2);
-FooterButtons = __decorateClass$a([
-  t$1("lc-footer-buttons")
-], FooterButtons);
-function compareRects(newVal, oldVal) {
-  if (!oldVal) return true;
-  return newVal.x !== oldVal.x || newVal.y !== oldVal.y || newVal.width !== oldVal.width || newVal.height !== oldVal.height;
-}
-const styles$9 = css`:host {
-  --lc-popover-y: 0px;
-  --lc-popover-x: 0px;
-  --lc-popover-width: auto;
-  --lc-popover-height: auto;
-  --lc-popover-arrow-position: 0px;
-  --lc-popover-arrow-left: 0px;
-  --lc-popover-background-color: var(--card-background-color);
-  --lc-popover-text-color: var(--primary-text-color);
-  --lc-popover-border-color: var(--divider-color);
-  --lc-popover-border-radius: .4rem;
-  --lc-popover-padding: .5rem .75rem;
-  --lc-popover-arrow-size: 8px;
-  --lc-popover-offset: 2px;
-  --lc-popover-transform-x: 0;
-  --lc-popover-transform-y: 0;
-  --lc-popover-transform-scale: .7;
-  top: var(--lc-popover-y);
-  left: var(--lc-popover-x);
-  width: var(--lc-popover-width);
-  height: var(--lc-popover-height);
-  max-width: 280px;
-  display: block;
-  position: absolute;
-  box-sizing: border-box;
-  z-index: 999999;
-}
-
-.popover {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: var(--lc-popover-padding);
-  opacity: 0;
-  transition: opacity 0.2s ease-out, transform 0.15s ease-out;
-  box-shadow: var(--mui-shadows-8, 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12));
-  background-color: var(--lc-popover-background-color);
-  color: var(--lc-popover-text-color);
-  border-radius: var(--lc-popover-border-radius);
-  border: 1px solid var(--lc-popover-border-color);
-  text-align: center;
-  pointer-events: none;
-  box-sizing: border-box;
-  z-index: 9999;
-  /* TOP */
-  /* BOTTOM */
-  /* LEFT */
-  /* RIGHT */
-}
-.popover .text {
-  font-size: 0.825rem;
-  letter-spacing: 0.3px;
-  line-height: 1.3;
-  text-rendering: geometricPrecision;
-}
-.popover .arrow {
-  border: var(--lc-popover-arrow-size) solid transparent;
-  height: 0;
-  width: 0;
-  display: block;
-  position: absolute;
-}
-.popover.popover-top {
-  transform: translate(0, 6px) scale(0.7);
-}
-.popover.popover-top .arrow {
-  bottom: calc(var(--lc-popover-arrow-size) * -2);
-  left: var(--lc-popover-arrow-position);
-  border-top-color: var(--lc-popover-background-color);
-  filter: drop-shadow(0 1px var(--lc-popover-border-color));
-}
-.popover.popover-bottom {
-  transform: translate(0, -6px) scale(0.7);
-}
-.popover.popover-bottom .arrow {
-  top: calc(var(--lc-popover-arrow-size) * -2);
-  left: var(--lc-popover-arrow-position);
-  border-bottom-color: var(--lc-popover-background-color);
-  filter: drop-shadow(0 -1px var(--lc-popover-border-color));
-}
-.popover.popover-left {
-  transform: translate(6px, 0) scale(0.7);
-}
-.popover.popover-left .arrow {
-  top: var(--lc-popover-arrow-position);
-  right: calc(var(--lc-popover-arrow-size) * -2);
-  border-left-color: var(--lc-popover-background-color);
-  filter: drop-shadow(1px 0 var(--lc-popover-border-color));
-}
-.popover.popover-right {
-  transform: translate(-6px, 0) scale(0.7);
-}
-.popover.popover-right .arrow {
-  top: var(--lc-popover-arrow-position);
-  left: calc(var(--lc-popover-arrow-size) * -2);
-  border-right-color: var(--lc-popover-background-color);
-  filter: drop-shadow(-1px 0 var(--lc-popover-border-color));
-}
-.popover.show.in {
-  transform: translate(0, 0) scale(1);
-  opacity: 1;
-}
-.popover.show.in.out {
-  opacity: 0;
-}`;
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
-  return result;
-};
-const _Popover = class _Popover extends LitElement {
-  constructor() {
-    super();
-    this._hiddenInProcess = false;
-    this.placement = "bottom";
-    this._rect = { x: 0, y: 0, width: 40, height: 40 };
-    this.arrow = 8;
-    this.offset = 0;
-    this.maxWidth = 280;
-  }
-  set rect(_rect) {
-    this._rect = {
-      x: _rect.x + window.scrollX,
-      y: _rect.y + window.scrollY,
-      width: _rect.width,
-      height: _rect.height
-    };
-  }
-  get rect() {
-    return this._rect;
-  }
-  hide() {
-    if (this._hiddenInProcess) return;
-    this._hiddenInProcess = true;
-    const popup = this.shadowRoot.firstElementChild;
-    popup.classList.add("out");
-    setTimeout(() => this.remove(), 200);
-  }
-  connectedCallback() {
-    super.connectedCallback();
-    const elements = document.getElementsByTagName("lc-popover");
-    for (const popover of elements) {
-      if (popover !== this) {
-        popover.hide();
-      }
-    }
-  }
-  updated() {
-    this._computePosition();
-  }
-  render() {
-    return html`
-      <div class="popover">
-        <div class="text">${this.text}</div>
-        <div class="arrow" />
-      </div>
-    `;
-  }
-  _computePosition() {
-    const sizeMin = (this.offset + this.arrow) * 2;
-    let y2;
-    let x;
-    let height = Math.ceil(this.offsetHeight) + 1;
-    let width = Math.ceil(this.offsetWidth) + 1;
-    let arrowPosition;
-    let placement = this.placement;
-    height = Math.max(height, sizeMin);
-    width = Math.min(Math.max(width, sizeMin), this.maxWidth);
-    const rect = this.rect;
-    const popover = this.shadowRoot.firstElementChild;
-    const xMin = this.offset;
-    const xMax = window.innerWidth - width - this.offset;
-    const yMin = this.offset;
-    const yMax = window.innerHeight - height - this.offset;
-    switch (placement) {
-      case "top":
-        y2 = Math.round(rect.y - height - this.arrow - this.offset);
-        x = Math.round(rect.x + rect.width / 2 - width / 2);
-        if (y2 < yMin) {
-          y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
-          placement = "bottom";
-        }
-        x = Math.max(Math.min(x, xMax), xMin);
-        break;
-      case "bottom":
-        y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
-        x = Math.round(rect.x + rect.width / 2 - width / 2);
-        if (y2 > yMax) {
-          y2 = Math.round(rect.y - height - this.arrow - this.offset);
-          placement = "top";
-        }
-        x = Math.max(Math.min(x, xMax), xMin);
-        break;
-      case "left":
-        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
-        x = Math.round(rect.x - width - this.arrow - this.offset);
-        if (x < xMin) {
-          x = Math.round(rect.x + rect.width + this.arrow + this.offset);
-          placement = "right";
-        }
-        y2 = Math.max(Math.min(y2, yMax), yMin);
-        break;
-      case "right":
-        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
-        x = Math.round(rect.x + rect.width + this.arrow + this.offset);
-        if (x > xMax) {
-          x = Math.round(rect.x - width - this.arrow - this.offset);
-          placement = "left";
-        }
-        y2 = Math.max(Math.min(y2, yMax), yMin);
-        break;
-    }
-    if (placement === "top" || placement === "bottom") {
-      arrowPosition = rect.x - x + rect.width / 2 - this.arrow;
-    } else {
-      arrowPosition = rect.y - y2 + rect.height / 2 - this.arrow;
-    }
-    for (const className of popover.classList.values()) {
-      if (/^popover-(:?top|bottom|left|right)$/.test(className)) {
-        popover.classList.remove(className);
-      }
-    }
-    popover.classList.add(`popover-${placement}`);
-    this.style.setProperty("--lc-popover-arrow-position", `${arrowPosition}px`);
-    this.style.setProperty("--lc-popover-arrow-size", `${this.arrow}px`);
-    this.style.setProperty("--lc-popover-offset", `${this.offset}px`);
-    this.style.setProperty("--lc-popover-y", `${y2}px`);
-    this.style.setProperty("--lc-popover-x", `${x}px`);
-    this.style.setProperty("--lc-popover-height", `${height}px`);
-    this.style.setProperty("--lc-popover-width", `${width}px`);
-    setTimeout(() => popover.classList.add("show", "in"), 100);
-  }
-};
-_Popover.styles = styles$9;
-let Popover = _Popover;
-__decorateClass$9([
-  n2()
-], Popover.prototype, "text", 2);
-__decorateClass$9([
-  n2()
-], Popover.prototype, "placement", 2);
-__decorateClass$9([
-  n2({ hasChanged: compareRects })
-], Popover.prototype, "rect", 1);
-__decorateClass$9([
-  n2()
-], Popover.prototype, "arrow", 2);
-__decorateClass$9([
-  n2()
-], Popover.prototype, "offset", 2);
-__decorateClass$9([
-  n2({ attribute: "max-width" })
-], Popover.prototype, "maxWidth", 2);
-customElements.define("lc-popover", Popover, { extends: "div" });
-const styles$8 = css`:host {
-  --gauge-needle-position: 0deg;
-  display: block;
-}
-:host .lc-gauge {
-  width: 100%;
-  height: auto;
-}
-:host .lc-gauge .dial-plate {
-  stroke: rgb(0, 0, 0);
-  stroke-width: 0;
-  stroke-linejoin: round;
-}
-:host .lc-gauge .scale {
-  font-weight: 400;
-  font-size: 5px;
-  font-family: Roboto, Noto, sans-serif;
-  fill: var(--secondary-text-color);
-}
-:host .lc-gauge .pointer {
-  transform: rotate(var(--gauge-needle-position));
-}
-:host .lc-gauge .pointer path {
-  fill: var(--primary-text-color);
-}
-:host .lc-gauge .value {
-  font-size: 14px;
-  font-weight: 400;
-  font-family: Roboto, Noto, sans-serif;
-  fill: var(--primary-text-color);
-}
-:host .lc-gauge .label {
-  font-size: 7px;
-  font-weight: 400;
-  font-family: Roboto, Noto, sans-serif;
-  fill: var(--primary-text-color);
-}
-:host .lc-gauge.disabled .gauge {
-  filter: grayscale(1) brightness(0.6);
-}`;
-const tau = 2 * Math.PI;
-const amplitude = 1;
-const period = 0.3;
-function tpmt(x) {
-  return (Math.pow(2, -10 * x) - 9765625e-10) * 1.0009775171065494;
-}
-(function custom(a2, p2) {
-  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
-  function elasticIn2(t2) {
-    return a2 * tpmt(- --t2) * Math.sin((s2 - t2) / p2);
-  }
-  elasticIn2.amplitude = function(a22) {
-    return custom(a22, p2 * tau);
+    return e$1(n3, s2, { get() {
+      return o2(this);
+    } });
   };
-  elasticIn2.period = function(p22) {
-    return custom(a2, p22);
-  };
-  return elasticIn2;
-})(amplitude, period);
-const elasticOut = function custom2(a2, p2) {
-  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
-  function elasticOut2(t2) {
-    return 1 - a2 * tpmt(t2 = +t2) * Math.sin((t2 + s2) / p2);
-  }
-  elasticOut2.amplitude = function(a22) {
-    return custom2(a22, p2 * tau);
-  };
-  elasticOut2.period = function(p22) {
-    return custom2(a2, p22);
-  };
-  return elasticOut2;
-}(amplitude, period);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+}
+const styles$i = css``;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
-  return result;
-};
-function round(value, decimals = 2) {
-  const mul = 10 ** decimals;
-  return Math.round(value * mul) / mul;
-}
-function normalize(value, min, max, step = 0.1) {
-  var _a;
-  min = isNaN(min) ? 0 : min;
-  max = isNaN(max) ? 100 : max;
-  if (min > max) {
-    throw new Error("MIN_MAX");
-  }
-  value = value == null || isNaN(value) ? 0 : value;
-  value = Math.max(value, min);
-  value = Math.min(value, max);
-  const decimals = ((_a = `${step}`.split(".")[1]) == null ? void 0 : _a.length) || 0;
-  const remains = value % step;
-  const half = step / 2;
-  const rounded = value - remains;
-  const nextTick = rounded + step;
-  if (half < remains && nextTick <= max) {
-    value = parseFloat(nextTick.toFixed(decimals));
-  } else {
-    value = parseFloat(rounded.toFixed(decimals));
-  }
-  return [value, min, max];
-}
-function getAngle(value, min, max) {
-  const percent = (value - min) / (max - min) * 100;
-  return percent * 180 / 100;
-}
-function toRadians(deg) {
-  return deg * Math.PI / 180;
-}
-let Gauge = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.label = "";
-    this.unit = "";
-    this.min = 0;
-    this.max = 100;
-    this.step = 0.1;
-    this.value = 0;
-    this.disabled = false;
-    this.digits = false;
-    this._angleDeg = 0;
-  }
-  set levels(_levels) {
-    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
-      this._levels = void 0;
-    } else {
-      _levels = _levels.map((item) => ({ level: (item == null ? void 0 : item.level) ?? 0, color: formatColors(item == null ? void 0 : item.color) }));
-      _levels.sort((a2, b2) => a2.level - b2.level);
-      if (_levels[0].level !== this.min) {
-        _levels = [{ level: this.min, color: "var(--info-color)" }, ..._levels];
-      }
-      this._levels = _levels;
-    }
-  }
-  connectedCallback() {
-    super.connectedCallback();
-    this._renderRootElements();
-    this._renderScaleElements();
-    this._renderLabelElement();
-    this._syncValue();
-  }
-  disconnectedCallback() {
-    var _a;
-    super.disconnectedCallback();
-    if (this._rafID != null) {
-      cancelAnimationFrame(this._rafID);
-      this._rafID = null;
-    }
-    (_a = this._svg) == null ? void 0 : _a.remove();
-    this._svg = void 0;
-    this._dial = void 0;
-  }
-  updated(_changed) {
-    var _a, _b, _c;
-    super.updated(_changed);
-    if (_changed.has("_levels") || _changed.has("isDigitScale") || _changed.has("min") || _changed.has("max")) {
-      this._renderScaleElements();
-    }
-    if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
-      this._syncValue();
-    }
-    if (_changed.has("disabled")) {
-      (_c = (_b = (_a = this._svg) == null ? void 0 : _a.classList) == null ? void 0 : _b[this.disabled ? "add" : "remove"]) == null ? void 0 : _c.call(_b, "disabled");
-    }
-    if (_changed.has("label")) {
-      this._renderLabelElement();
-    }
-  }
-  _syncValue() {
-    if (this._rafID != null) {
-      cancelAnimationFrame(this._rafID);
-      this._rafID = null;
-    }
-    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
-    this._text.innerHTML = `${value}${this.unit || ""}`;
-    const oldAngle = this._angleDeg;
-    const newAngle = getAngle(value, min, max);
-    const diffAngle = newAngle - oldAngle;
-    const duration = 500;
-    const timingFunction = elasticOut.amplitude(0.5).period(0.4);
-    let start = null;
-    const setAngle = (angle) => {
-      const angleRad = toRadians(angle - 90);
-      this.style.setProperty("--gauge-needle-position", `${angle}deg`);
-      this._shadow.setAttribute("dx", round(Math.cos(angleRad), 4).toString());
-      this._shadow.setAttribute("dy", round(Math.sin(angleRad), 4).toString());
-    };
-    const animate = (time) => {
-      if (!start) {
-        start = time;
-        this._rafID = requestAnimationFrame(animate);
-        return;
-      }
-      if (start + duration > time) {
-        const progress = timingFunction((time - start) / duration);
-        this._angleDeg = Math.min(180, Math.max(0, oldAngle + diffAngle * progress));
-        setAngle(this._angleDeg);
-        this._rafID = requestAnimationFrame(animate);
-      }
-    };
-    this._rafID = requestAnimationFrame(animate);
-  }
-  _renderRootElements() {
-    var _a;
-    const insetShadowFilterId = "inset-filter";
-    const dropShadowFilterId = "drop-shadow-filter";
-    this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this._svg.classList.add("lc-gauge");
-    const width = Gauge.sizes.width;
-    const height = Gauge.sizes.width / 2 + Gauge.sizes.labelHeight;
-    const start = width / 2 * -1;
-    this._svg.setAttribute("viewBox", `${start} ${start} ${width} ${height}`);
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    defs.append(this._renderInsetShadow(insetShadowFilterId));
-    defs.append(this._renderDropShadow(dropShadowFilterId));
-    this._svg.append(defs);
-    this._dial = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._dial.classList.add("dial-plate");
-    this._dial.setAttribute("filter", `url(#${insetShadowFilterId})`);
-    this._svg.append(this._dial);
-    this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._scale.classList.add("scale");
-    this._svg.append(this._scale);
-    this._pointer = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    this._pointer.classList.add("pointer");
-    this._pointer.setAttribute("filter", `url(#${dropShadowFilterId})`);
-    this._svg.append(this._pointer);
-    const needlePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    const tip = Gauge.sizes.scaleRadius;
-    const base = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth - Gauge.sizes.scaleWidth / 2;
-    needlePath.setAttribute("d", `M -${base} -2 L -${tip} 0 L -${base} 2 z`);
-    this._pointer.append(needlePath);
-    this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    this._text.classList.add("value");
-    this._text.setAttribute("text-anchor", "middle");
-    this._text.setAttribute("x", "0");
-    this._text.setAttribute("y", "-2");
-    this._svg.append(this._text);
-    this._label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    this._label.classList.add("label");
-    this._label.setAttribute("text-anchor", "middle");
-    this._label.setAttribute("x", "0px");
-    this._label.setAttribute("y", "9px");
-    this._svg.append(this._label);
-    (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
-  }
-  _renderScaleElements() {
-    var _a;
-    if (!this._dial || !this._scale) return;
-    for (let i2 = 0; i2 < this._dial.childNodes.length; i2++) {
-      this._dial.childNodes.item(i2).remove();
-    }
-    for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
-      this._scale.childNodes.item(i2).remove();
-    }
-    const rExt = Gauge.sizes.scaleRadius;
-    const rInt = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth;
-    const renderNumber = (value, angle, anchor) => {
-      if (!this.digits) return;
-      const angleRad = toRadians(angle);
-      const x = round(0 - (rExt + 2) * Math.cos(angleRad));
-      const y2 = round(0 - (rExt + 2) * Math.sin(angleRad));
-      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      text.setAttribute("x", x.toString());
-      text.setAttribute("y", y2.toString());
-      text.setAttribute("text-anchor", anchor);
-      text.setAttribute("transform", `rotate(${angle - 90},${x},${y2})`);
-      text.innerHTML = value.toString();
-      this._scale.append(text);
-    };
-    if (this._levels) {
-      for (let i2 = 0; i2 < this._levels.length; i2++) {
-        const level = this._levels[i2].level;
-        const nextLevel = ((_a = this._levels[i2 + 1]) == null ? void 0 : _a.level) ?? this.max;
-        const color = this._levels[i2].color;
-        const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
-        const beginAngle = toRadians(beginAngleDeg);
-        const beginAngleCos = Math.cos(beginAngle);
-        const beginAngleSin = Math.sin(beginAngle);
-        const endAngle = toRadians(getAngle(...normalize(nextLevel, this.min, this.max)));
-        const endAngleCos = Math.cos(endAngle);
-        const endAngleSin = Math.sin(endAngle);
-        let d2 = "";
-        d2 += `M ${round(0 - rExt * beginAngleCos)} ${round(0 - rExt * beginAngleSin)} `;
-        d2 += `A ${rExt} ${rExt} 0 0 1 ${round(0 - rExt * endAngleCos)} ${round(0 - rExt * endAngleSin)} `;
-        d2 += `L ${round(0 - rInt * endAngleCos)} ${round(0 - rInt * endAngleSin)} `;
-        d2 += `A ${rInt} ${rInt} 0 0 0 ${round(0 - rInt * beginAngleCos)} ${round(0 - rInt * beginAngleSin)} `;
-        d2 += "z";
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", d2);
-        path.setAttribute("fill", color);
-        this._dial.append(path);
-        renderNumber(level, beginAngleDeg, i2 === 0 ? "start" : "middle");
-      }
-    } else {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
-      path.setAttribute("fill", "var(--info-color)");
-      this._dial.append(path);
-      renderNumber(this.min ?? 0, 0, "start");
-    }
-    renderNumber(this.max ?? 100, 180, "end");
-  }
-  _renderLabelElement() {
-    if (!this._label) return;
-    this._label.innerHTML = this.label || "";
-  }
-  _renderInsetShadow(filterId) {
-    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-    filter.id = filterId;
-    const feOffset = document.createElementNS("http://www.w3.org/2000/svg", "feOffset");
-    feOffset.setAttribute("in", "SourceGraphic");
-    feOffset.setAttribute("dx", "0");
-    feOffset.setAttribute("dy", "0");
-    filter.append(feOffset);
-    const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
-    feGaussianBlur.setAttribute("stdDeviation", "1.5");
-    feGaussianBlur.setAttribute("result", "offset-blur");
-    filter.append(feGaussianBlur);
-    const feCompositeOut = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
-    feCompositeOut.setAttribute("operator", "out");
-    feCompositeOut.setAttribute("in", "SourceGraphic");
-    feCompositeOut.setAttribute("in2", "offset-blur");
-    feCompositeOut.setAttribute("result", "inverse");
-    filter.append(feCompositeOut);
-    const feFlood = document.createElementNS("http://www.w3.org/2000/svg", "feFlood");
-    feFlood.setAttribute("flood-color", "rgb(0, 0, 0)");
-    feFlood.setAttribute("flood-opacity", ".35");
-    filter.append(feFlood);
-    const feCompositeIn = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
-    feCompositeIn.setAttribute("operator", "in");
-    feCompositeIn.setAttribute("in", "color");
-    feCompositeIn.setAttribute("in2", "inverse");
-    feCompositeIn.setAttribute("result", "shadow");
-    filter.append(feCompositeIn);
-    const feCompositeOver = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
-    feCompositeOver.setAttribute("operator", "over");
-    feCompositeOver.setAttribute("in", "shadow");
-    feCompositeOver.setAttribute("in2", "SourceGraphic");
-    filter.append(feCompositeOver);
-    return filter;
-  }
-  _renderDropShadow(filterId) {
-    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-    filter.id = filterId;
-    this._shadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
-    this._shadow.classList.add("needle-shadow");
-    this._shadow.setAttribute("dx", "0");
-    this._shadow.setAttribute("dy", "0");
-    this._shadow.setAttribute("stdDeviation", "0");
-    this._shadow.setAttribute("flood-color", "rgb(0, 0, 0)");
-    this._shadow.setAttribute("flood-opacity", "0.3");
-    filter.append(this._shadow);
-    return filter;
-  }
-};
-Gauge.styles = styles$8;
-Gauge.sizes = {
-  width: 110,
-  labelHeight: 14,
-  scaleRadius: 47.5,
-  scaleWidth: 15
-};
-__decorateClass$8([
-  n2({ type: String })
-], Gauge.prototype, "label", 2);
-__decorateClass$8([
-  n2({ type: String })
-], Gauge.prototype, "unit", 2);
-__decorateClass$8([
-  n2({ type: Number, reflect: true })
-], Gauge.prototype, "min", 2);
-__decorateClass$8([
-  n2({ type: Number, reflect: true })
-], Gauge.prototype, "max", 2);
-__decorateClass$8([
-  n2({ type: Number, reflect: true })
-], Gauge.prototype, "step", 2);
-__decorateClass$8([
-  n2({ type: Number })
-], Gauge.prototype, "value", 2);
-__decorateClass$8([
-  n2({ type: Boolean, reflect: true })
-], Gauge.prototype, "disabled", 2);
-__decorateClass$8([
-  n2({ attribute: "digits", type: Boolean, reflect: true })
-], Gauge.prototype, "digits", 2);
-__decorateClass$8([
-  n2({ attribute: false })
-], Gauge.prototype, "levels", 1);
-__decorateClass$8([
-  r()
-], Gauge.prototype, "_levels", 2);
-Gauge = __decorateClass$8([
-  t$1("lc-gauge")
-], Gauge);
-const styles$7 = css``;
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
-  return result;
-};
-let IconSpinner = class extends LitElement {
-  constructor() {
-    super();
-    this.size = 24;
-    this.color = "currentColor";
-  }
-  render() {
-    return html`
-      <svg role="progressbar" aria-label="Loading" width=${this.size} height=${this.size} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke=${this.color} stroke-linecap="round" stroke-width="5">
-          <circle cx="25" cy="25" r="22" opacity="0.3" />
-          <g>
-            <circle cx="25" cy="25" r="22"  stroke-dasharray="0 138" stroke-dashoffset="0">
-              <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="linear" values="0 1400;38 1400;100 1400;100 1400" keyTimes="0;0.33;0.66;1" repeatCount="indefinite" />
-              <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="linear" values="0;-38;-100;-139" keyTimes="0;0.33;0.66;1" repeatCount="indefinite" />
-            </circle>
-            <animateTransform attributeName="transform" type="rotate" dur="1.5s" values="0 25 25;360 25 25" repeatCount="indefinite" />
-          </g>
-        </g>
-      </svg>
-    `;
-  }
-};
-IconSpinner.styles = styles$7;
-__decorateClass$7([
-  n2({ attribute: "size", type: Number })
-], IconSpinner.prototype, "size", 2);
-__decorateClass$7([
-  n2({ attribute: "color", type: String })
-], IconSpinner.prototype, "color", 2);
-IconSpinner = __decorateClass$7([
-  t$1("lc-icon-spinner")
-], IconSpinner);
-const styles$6 = css``;
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
-  return result;
-};
-let IconSuccess = class extends LitElement {
-  constructor() {
-    super();
-    this.size = 24;
-    this.color = "currentColor";
-  }
-  render() {
-    return html`
-      <svg role="status" aria-label="Success" width=${this.size} height=${this.size} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke=${this.color} stroke-linecap="round" stroke-linejoin="round" stroke-width="5">
-          <path
-            fill=${this.color}
-            fill-opacity="0"
-            stroke-dasharray="138"
-            stroke-dashoffset="138"
-            d="m2.5 25c0-12 10-22 22-22s22 10 22 22-10 22-22 22-22-10-22-22z"
-          >
-            <animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.15s" values="0;0.2" />
-            <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="138;0" />
-          </path>
-          <path stroke-dasharray="30" stroke-dashoffset="30" d="m15 25 7.5 7.5 12-12">
-            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.75s" dur="0.15s" values="30;0" />
-          </path>
-        </g>
-      </svg>
-    `;
-  }
-};
-IconSuccess.styles = styles$6;
-__decorateClass$6([
-  n2({ attribute: "size", type: Number })
-], IconSuccess.prototype, "size", 2);
-__decorateClass$6([
-  n2({ attribute: "color", type: String })
-], IconSuccess.prototype, "color", 2);
-IconSuccess = __decorateClass$6([
-  t$1("lc-icon-success")
-], IconSuccess);
-const styles$5 = css``;
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 let IconError = class extends LitElement {
@@ -1850,81 +666,315 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = styles$5;
-__decorateClass$5([
+IconError.styles = styles$i;
+__decorateClass$j([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
-__decorateClass$5([
+__decorateClass$j([
   n2({ attribute: "color", type: String })
 ], IconError.prototype, "color", 2);
-IconError = __decorateClass$5([
+IconError = __decorateClass$j([
   t$1("lc-icon-error")
 ], IconError);
-const styles$4 = css``;
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+const styles$h = css``;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
-function isSupported(stateObj) {
-  const domain = computeDomain(stateObj.entity_id);
-  return domain === "button" || domain === "input_button";
-}
-let ActionButtonFeature = class extends LitElement {
-  static getStubConfig() {
-    return {
-      type: "custom:lc-circle-button-feature",
-      label: "Circle Button Feature",
-      icon: "mdi:gesture-tap-button",
-      color: "success"
-    };
-  }
-  setConfig(config) {
-    if (!config) {
-      throw new Error("Invalid configuration");
-    }
-    this._config = config;
+let IconSuccess = class extends LitElement {
+  constructor() {
+    super();
+    this.size = 24;
+    this.color = "currentColor";
   }
   render() {
-    if (!this._config || !this.hass || !this.stateObj || !isSupported(this.stateObj)) {
-      return null;
-    }
     return html`
-      <lc-circle-button class="button" .icon=${this._config.icon} .tooltip=${this._config.label} .color=${this._config.color} @click=${this._press} />
+      <svg role="status" aria-label="Success" width=${this.size} height=${this.size} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke=${this.color} stroke-linecap="round" stroke-linejoin="round" stroke-width="5">
+          <path
+            fill=${this.color}
+            fill-opacity="0"
+            stroke-dasharray="138"
+            stroke-dashoffset="138"
+            d="m2.5 25c0-12 10-22 22-22s22 10 22 22-10 22-22 22-22-10-22-22z"
+          >
+            <animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.15s" values="0;0.2" />
+            <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="138;0" />
+          </path>
+          <path stroke-dasharray="30" stroke-dashoffset="30" d="m15 25 7.5 7.5 12-12">
+            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.75s" dur="0.15s" values="30;0" />
+          </path>
+        </g>
+      </svg>
     `;
   }
-  _press(event) {
-    event.stopPropagation();
-    this.hass.callService("input_button", "press", {
-      entity_id: this.stateObj.entity_id
-    });
+};
+IconSuccess.styles = styles$h;
+__decorateClass$i([
+  n2({ attribute: "size", type: Number })
+], IconSuccess.prototype, "size", 2);
+__decorateClass$i([
+  n2({ attribute: "color", type: String })
+], IconSuccess.prototype, "color", 2);
+IconSuccess = __decorateClass$i([
+  t$1("lc-icon-success")
+], IconSuccess);
+const styles$g = css``;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$h(target, key, result);
+  return result;
+};
+let IconSpinner = class extends LitElement {
+  constructor() {
+    super();
+    this.size = 24;
+    this.color = "currentColor";
+  }
+  render() {
+    return html`
+      <svg role="progressbar" aria-label="Loading" width=${this.size} height=${this.size} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke=${this.color} stroke-linecap="round" stroke-width="5">
+          <circle cx="25" cy="25" r="22" opacity="0.3" />
+          <g>
+            <circle cx="25" cy="25" r="22"  stroke-dasharray="0 138" stroke-dashoffset="0">
+              <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="linear" values="0 1400;38 1400;100 1400;100 1400" keyTimes="0;0.33;0.66;1" repeatCount="indefinite" />
+              <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="linear" values="0;-38;-100;-139" keyTimes="0;0.33;0.66;1" repeatCount="indefinite" />
+            </circle>
+            <animateTransform attributeName="transform" type="rotate" dur="1.5s" values="0 25 25;360 25 25" repeatCount="indefinite" />
+          </g>
+        </g>
+      </svg>
+    `;
   }
 };
-ActionButtonFeature.styles = styles$4;
-__decorateClass$4([
-  n2({ attribute: true })
-], ActionButtonFeature.prototype, "hass", 2);
-__decorateClass$4([
-  n2({ attribute: true })
-], ActionButtonFeature.prototype, "stateObj", 2);
-__decorateClass$4([
-  r()
-], ActionButtonFeature.prototype, "_config", 2);
-ActionButtonFeature = __decorateClass$4([
-  t$1("lc-action-button-feature")
-], ActionButtonFeature);
-window.customCardFeatures = window.customCardFeatures || [];
-window.customCardFeatures.push({
-  type: "lc-action-button-feature",
-  name: "Circle Button",
-  supported: isSupported,
-  configurable: true
-});
+IconSpinner.styles = styles$g;
+__decorateClass$h([
+  n2({ attribute: "size", type: Number })
+], IconSpinner.prototype, "size", 2);
+__decorateClass$h([
+  n2({ attribute: "color", type: String })
+], IconSpinner.prototype, "color", 2);
+IconSpinner = __decorateClass$h([
+  t$1("lc-icon-spinner")
+], IconSpinner);
+function fireEvent(node, type2, detail, options = {}) {
+  const _detail = detail === null || detail === void 0 ? {} : detail;
+  const event = new Event(type2, {
+    bubbles: options.bubbles === void 0 ? true : options.bubbles,
+    cancelable: Boolean(options.cancelable),
+    composed: options.composed === void 0 ? true : options.composed
+  });
+  event.detail = _detail;
+  node.dispatchEvent(event);
+  return event;
+}
+const styles$f = css`:host {
+  display: block;
+}
+
+.buttons .button-config {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+.buttons .button-config .handle {
+  padding-right: 8px;
+  cursor: grab;
+  padding-inline-end: 8px;
+}
+.buttons .button-config .edit-button {
+  flex-grow: 1;
+}
+.buttons .button-config .action-button {
+  --lc-button-size: 36px;
+  color: var(--secondary-text-color);
+}
+
+.add-entity {
+  margin-top: 8px;
+  display: block;
+  margin-left: 31px;
+  margin-right: 71px;
+  margin-inline-start: 31px;
+  margin-inline-end: 71px;
+  direction: var(--direction);
+}`;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$g(target, key, result);
+  return result;
+};
+let FooterButtonsEditor = class extends LitElement {
+  render() {
+    if (!this.hass) return html``;
+    return html`
+      <h3>
+        <span>${this.hass.localize("ui.panel.lovelace.editor.card.generic.actions")}</span>
+        <span>&nbsp;</span>
+        <span>(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})</span>
+      </h3>
+      
+      ${this._renderButtons()}
+
+      <lc-action-selector
+        class="add-entity"
+        .hass=${this.hass}
+        @value-changed=${this._addButton}
+      ></lc-action-selector>
+    `;
+  }
+  _renderButtons() {
+    if (!this.buttons) return html``;
+    return html`
+      <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
+        <div class="buttons">
+          ${this.buttons.map((button, index) => this._renderButton(index, button))}
+        </div>
+      </ha-sortable>
+    `;
+  }
+  _renderButton(index, button) {
+    return html`
+      <div class="button-config">
+        <div class="handle">
+          <ha-icon icon="mdi:drag" class="icon"></ha-icon>
+        </div>
+
+        <lc-action-selector
+          class="edit-button"
+          .index=${index}
+          .hass=${this.hass}
+          .value=${button.action}
+          @value-changed=${this._changeValue}
+        ></lc-action-selector>
+
+        <lc-button-circle
+          icon="mdi:close"
+          .index=${index}
+          .tooltip=${this.hass.localize("ui.components.entity.entity-picker.clear")}
+          class="action-button"
+          @click=${this._removeRow}
+          transparent
+        ></lc-button-circle>
+
+        <lc-button-circle
+          icon="mdi:pencil"
+          .index=${index}
+          .tooltip=${this.hass.localize("ui.components.entity.entity-picker.edit")}
+          class="action-button"
+          @click=${this._editRow}
+          transparent
+        ></lc-button-circle>
+      </div>
+
+    `;
+  }
+  _addButton(event) {
+    const value = event.detail.value;
+    if (value === "") {
+      return;
+    }
+    const button = {
+      action: value,
+      icon: "lc:play"
+    };
+    event.target.value = "";
+    fireEvent(this, "buttons-changed", { buttons: [...this.buttons || [], button] });
+  }
+  _editRow(event) {
+    const index = event.currentTarget.index;
+    fireEvent(this, "edit-detail-element", {
+      subElementConfig: {
+        index,
+        type: "footer-button",
+        elementConfig: this.buttons[index]
+      }
+    });
+  }
+  _removeRow(event) {
+    const index = event.currentTarget.index;
+    const buttons = this.buttons.concat();
+    buttons.splice(index, 1);
+    fireEvent(this, "buttons-changed", { buttons });
+  }
+  _changeValue(event) {
+    const value = event.detail.value;
+    const index = event.target.index;
+    const buttons = this.buttons.concat();
+    if (value === "" || value === void 0) {
+      buttons.splice(index, 1);
+    } else {
+      buttons[index] = {
+        ...buttons[index],
+        action: value
+      };
+    }
+    fireEvent(this, "buttons-changed", { buttons });
+  }
+  _rowMoved(event) {
+    event.stopPropagation();
+    const { oldIndex, newIndex } = event.detail;
+    const buttons = this.buttons.concat();
+    buttons.splice(newIndex, 0, buttons.splice(oldIndex, 1)[0]);
+    fireEvent(this, "buttons-changed", { buttons });
+  }
+};
+FooterButtonsEditor.styles = styles$f;
+__decorateClass$g([
+  n2({ attribute: false })
+], FooterButtonsEditor.prototype, "hass", 2);
+__decorateClass$g([
+  n2({ attribute: false })
+], FooterButtonsEditor.prototype, "buttons", 2);
+__decorateClass$g([
+  n2()
+], FooterButtonsEditor.prototype, "label", 2);
+FooterButtonsEditor = __decorateClass$g([
+  t$1("lc-footer-buttons-editor")
+], FooterButtonsEditor);
+const styles$e = css`.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 16px;
+}
+.container .row-full {
+  grid-column: span 2/span 2;
+}
+.container .enable-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.container .color-radio {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.yaml-editor .error {
+  margin-top: 8px;
+  color: var(--error-color);
+  font-size: 13px;
+}`;
 class StructError extends TypeError {
   constructor(failure, failures) {
     let cached;
@@ -2362,75 +1412,6 @@ function refine(struct, name, refiner) {
     }
   });
 }
-const configElementStyle = css`
-    .card-config {
-        /* Cancels overlapping Margins for HAForm + Card Config options */
-        overflow: auto;
-    }
-
-    ha-switch {
-        padding: 16px 6px;
-    }
-
-    .side-by-side {
-        display: flex;
-        align-items: flex-end;
-    }
-
-    .side-by-side > * {
-        flex: 1;
-        padding-right: 8px;
-        padding-inline-end: 8px;
-        padding-inline-start: initial;
-    }
-
-    .side-by-side > *:last-child {
-        flex: 1;
-        padding-right: 0;
-        padding-inline-end: 0;
-        padding-inline-start: initial;
-    }
-
-    .suffix {
-        margin: 0 8px;
-    }
-
-    hui-action-editor,
-    ha-select,
-    ha-textfield,
-    ha-icon-picker {
-        margin-top: 8px;
-        display: block;
-    }
-
-    ha-expansion-panel {
-        display: block;
-        --expansion-panel-content-padding: 0;
-        border-radius: 6px;
-        --ha-card-border-radius: 6px;
-    }
-
-    ha-expansion-panel .content {
-        padding: 12px;
-    }
-
-    ha-expansion-panel > *[slot="header"] {
-        margin: 0;
-        font-size: inherit;
-        font-weight: inherit;
-    }
-
-    ha-expansion-panel ha-svg-icon {
-        color: var(--secondary-text-color);
-    }
-`;
-const BaseCardConfigSchema = object({
-  type: string(),
-  view_layout: any(),
-  layout_options: any(),
-  grid_options: any(),
-  visibility: any()
-});
 const ExemptionSchema = object({
   user: string()
 });
@@ -2448,6 +1429,2297 @@ const TargetConfigSchema = object({
   area_id: optional(union([string(), array(string())])),
   floor_id: optional(union([string(), array(string())])),
   label_id: optional(union([string(), array(string())]))
+});
+const ButtonConfigSchema = object({
+  action: string(),
+  color: optional(string()),
+  icon: optional(string()),
+  tooltip: optional(string()),
+  data: optional(object()),
+  target: optional(TargetConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$f(target, key, result);
+  return result;
+};
+const COLORS = ["primary", "accent", "danger", "warning", "success", "info"];
+let FooterButtonEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._guiMode = true;
+  }
+  get hasError() {
+    return !!this._error;
+  }
+  get GUImode() {
+    return this._guiMode;
+  }
+  set GUImode(guiMode) {
+    this._guiMode = guiMode;
+    this.updateComplete.then(() => {
+      fireEvent(this, "GUImode-changed", {
+        guiMode,
+        guiModeAvailable: !(this.hasError || this._guiSupported === false)
+      });
+    });
+  }
+  set confirmationText(text) {
+    const value = {
+      ...this.value,
+      confirmation: text ? { text } : true
+    };
+    fireEvent(this, "config-changed", {
+      config: value
+    });
+  }
+  get confirmationText() {
+    var _a, _b, _c, _d;
+    if (typeof ((_a = this.value) == null ? void 0 : _a.confirmation) !== "boolean" && ((_c = (_b = this.value) == null ? void 0 : _b.confirmation) == null ? void 0 : _c.text)) {
+      return (_d = this.value) == null ? void 0 : _d.confirmation.text;
+    }
+    return this._confirmationText || "";
+  }
+  toggleMode() {
+    this.GUImode = !this.GUImode;
+  }
+  focusYamlEditor() {
+    var _a;
+    (_a = this._yamlEditor) == null ? void 0 : _a.focus();
+  }
+  render() {
+    var _a, _b, _c;
+    if (!this.hass || !this.value) return html``;
+    if (!this._guiMode) {
+      return this._renderYamlEditor();
+    }
+    const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
+    return html`
+      <div class="container">
+        <lc-action-selector
+          class="row-full"
+          .value=${(_a = this.value) == null ? void 0 : _a.action}
+          .hass=${this.hass}
+          .configValue=${"action"}
+          @value-changed=${this._valueChanged}
+        ></lc-action-selector>
+
+        <ha-textfield
+          class="input"
+          .label=${this.hass.localize("ui.components.label-picker.label")}
+          .value=${((_b = this.value) == null ? void 0 : _b.tooltip) || ""}
+          .configValue=${"tooltip"}
+          @input=${this._valueChanged}
+        >
+          <slot name="icon" slot="leadingIcon"></slot>
+        </ha-textfield>
+
+        <ha-icon-picker
+          .hass=${this.hass}
+          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")} ${optional2}"
+          .value=${this.value.icon}
+          .required=${false}
+          .disabled=${false}
+          .configValue=${"icon"}
+          .placeholder=${"lc:placeholder"}
+          @value-changed=${this._valueChanged}
+        >
+        </ha-icon-picker>
+
+        <div class="row-full enable-confirm">
+          <span>${this.hass.localize("component.lovelace_cards.entity_component._.show_confirmation_dialog")}</span>
+
+          <lc-switch
+            .checked=${!!this.value.confirmation}
+            @change=${this._toggleConfirmSwitch}
+          ></lc-switch>
+        </div>
+
+        <ha-textfield
+          class="row-full"
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")}
+          .value=${this.confirmationText}
+          .configValue=${"confirmation"}
+          .disabled=${((_c = this.value) == null ? void 0 : _c.confirmation) === false}
+          @input=${this._valueChanged}
+        >
+          <slot name="icon" slot="leadingIcon"></slot>
+        </ha-textfield>
+
+        <div class="row-full">${this.hass.localize("component.lovelace_cards.entity_component._.button_color")}</div>
+
+        ${COLORS.map((color) => {
+      var _a2;
+      return html`
+          <lc-radio 
+            id=${`color-${color}`} 
+            name="color" 
+            .label=${this.hass.localize(`component.lovelace_cards.entity_component._.color_${color}`)}
+            .value=${color} 
+            .checked=${((_a2 = this.value) == null ? void 0 : _a2.color) === color}
+            @change=${this._namedColorChanged}
+          ></lc-radio>
+        `;
+    })}
+      </div>
+    `;
+  }
+  _renderYamlEditor() {
+    return html`
+      <div class="yaml-editor">
+        <ha-yaml-editor
+          .defaultValue=${this.value}
+          autofocus
+          .hass=${this.hass}
+          @value-changed=${this._handleYAMLChanged}
+          dir="ltr"
+        ></ha-yaml-editor>
+
+        ${this._error ? html`
+          <div class="error">${this._error}</div>` : null}
+      </div>
+    `;
+  }
+  _toggleConfirmSwitch(event) {
+    var _a;
+    const config = { ...this.value };
+    const checked = !!event.detail.checked;
+    if (checked) {
+      if (this._confirmationText) {
+        config.confirmation = { text: this._confirmationText };
+        this._confirmationText = "";
+      } else {
+        config.confirmation = true;
+      }
+    } else {
+      if (typeof config.confirmation !== "boolean" && ((_a = config.confirmation) == null ? void 0 : _a.text)) {
+        this._confirmationText = config.confirmation.text;
+      }
+      config.confirmation = false;
+    }
+    fireEvent(this, "config-changed", { config });
+  }
+  _valueChanged(event) {
+    const value = event.target.value;
+    const configValue = event.target.configValue;
+    const config = { ...this.value };
+    if (configValue === "confirmation") {
+      config.confirmation = value ? { text: value } : true;
+    } else {
+      config[configValue] = value;
+    }
+    fireEvent(this, "config-changed", { config });
+  }
+  _namedColorChanged(event) {
+    const config = { ...this.value, color: event.detail.value };
+    fireEvent(this, "config-changed", { config });
+  }
+  _handleYAMLChanged(event) {
+    event.stopPropagation();
+    const config = event.detail.value;
+    if (event.detail.isValid) {
+      try {
+        assert(config, ButtonConfigSchema);
+        this.value = config;
+        this._error = void 0;
+        fireEvent(this, "config-changed", { config });
+      } catch (e2) {
+        this._error = `${e2.message}`.trim();
+      }
+    } else {
+      this._error = `${event.detail.errorMsg}`.trim();
+    }
+  }
+};
+FooterButtonEditor.styles = styles$e;
+__decorateClass$f([
+  n2({ attribute: false })
+], FooterButtonEditor.prototype, "hass", 2);
+__decorateClass$f([
+  n2({ attribute: false })
+], FooterButtonEditor.prototype, "value", 2);
+__decorateClass$f([
+  e("ha-yaml-editor")
+], FooterButtonEditor.prototype, "_yamlEditor", 2);
+__decorateClass$f([
+  r()
+], FooterButtonEditor.prototype, "_guiSupported", 2);
+__decorateClass$f([
+  r()
+], FooterButtonEditor.prototype, "_error", 2);
+__decorateClass$f([
+  r()
+], FooterButtonEditor.prototype, "_guiMode", 2);
+FooterButtonEditor = __decorateClass$f([
+  t$1("lc-footer-button-editor")
+], FooterButtonEditor);
+const styles$d = css`.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}`;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$e(target, key, result);
+  return result;
+};
+let HuiSubElementEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._guiModeAvailable = true;
+    this._guiMode = true;
+  }
+  render() {
+    return html`
+      ${this._renderHeader()}
+      ${this._renderEditor()}
+    `;
+  }
+  _renderHeader() {
+    var _a, _b;
+    if (!this.hass) return html``;
+    let title;
+    if (((_a = this.config) == null ? void 0 : _a.type) === "footer-button") {
+      title = this.hass.localize(`component.lovelace_cards.entity_component._.button_action`);
+    } else {
+      title = this.hass.localize(`ui.panel.lovelace.editor.sub-element-editor.types.${(_b = this.config) == null ? void 0 : _b.type}`);
+    }
+    return html`
+      <div class="header">
+        <div class="back-title">
+          <lc-button-circle
+            icon="lc:back"
+            .tooltip=${this.hass.localize("ui.common.back")}
+            @click=${this._goBack}
+            transparent
+          ></lc-button-circle>
+          <span slot="title">${title}</span>
+        </div>
+        <lc-button-circle
+          type="button"
+          role="button"
+          class="gui-mode-button"
+          @click=${this._toggleMode}
+          .icon=${this._guiMode ? "mdi:code-braces" : "mdi:list-box-outline"}
+          .disabled=${!this._guiModeAvailable}
+          .tooltip=${this.hass.localize(
+      this._guiMode ? "ui.panel.lovelace.editor.edit_card.show_code_editor" : "ui.panel.lovelace.editor.edit_card.show_visual_editor"
+    )}
+          transparent
+        ></lc-button-circle>
+      </div>`;
+  }
+  _renderEditor() {
+    const type2 = this.config.type;
+    switch (type2) {
+      case "row":
+        return html`
+          <hui-row-element-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></hui-row-element-editor>
+        `;
+      case "footer-button":
+        return html`
+          <lc-footer-button-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></lc-footer-button-editor>
+        `;
+      default:
+        return html``;
+    }
+  }
+  _goBack() {
+    fireEvent(this, "go-back");
+  }
+  _toggleMode() {
+    var _a;
+    (_a = this._editorElement) == null ? void 0 : _a.toggleMode();
+  }
+  _handleGUIModeChanged(ev) {
+    ev.stopPropagation();
+    this._guiMode = ev.detail.guiMode;
+    this._guiModeAvailable = ev.detail.guiModeAvailable;
+  }
+  _handleConfigChanged(ev) {
+    this.config.elementConfig = ev.detail.config;
+  }
+};
+HuiSubElementEditor.styles = styles$d;
+__decorateClass$e([
+  n2({ attribute: false })
+], HuiSubElementEditor.prototype, "hass", 2);
+__decorateClass$e([
+  n2({ attribute: false })
+], HuiSubElementEditor.prototype, "config", 2);
+__decorateClass$e([
+  r()
+], HuiSubElementEditor.prototype, "_guiModeAvailable", 2);
+__decorateClass$e([
+  r()
+], HuiSubElementEditor.prototype, "_guiMode", 2);
+__decorateClass$e([
+  e(".editor")
+], HuiSubElementEditor.prototype, "_editorElement", 2);
+HuiSubElementEditor = __decorateClass$e([
+  t$1("lc-sub-element-editor")
+], HuiSubElementEditor);
+const styles$c = css`:host {
+  --lc-dropdown-item-height: 72px;
+  --lc-dropdown-items-count: 5;
+  --lc-dropdown-width: 300px;
+  --lc-dropdown-top: 0;
+  --lc-dropdown-left: 0;
+  --lc-dropdown-border-radius: 0;
+}
+
+.dropdown {
+  top: var(--lc-dropdown-top);
+  left: var(--lc-dropdown-left);
+  width: var(--lc-dropdown-width);
+  height: var(--lc-dropdown-height);
+  max-height: var(--lc-dropdown-height);
+  background-color: var(--material-background-color);
+  border-radius: var(--lc-dropdown-border-radius);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  position: fixed;
+  z-index: 99999;
+}
+
+.scroller {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: block;
+}
+
+.list-items {
+  padding-left: 0;
+  margin: 0;
+}`;
+const styles$b = css`:host {
+  height: var(--lc-dropdown-item-height);
+  width: auto;
+  padding: 0 16px;
+  cursor: pointer;
+  color: var(--primary-text-color);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  outline: 0;
+}
+:host[focused] {
+  outline: none;
+}
+:host[selected] {
+  color: var(--primary-color);
+  --mdc-ripple-color: var(--primary-color);
+}
+
+:host([selected]) {
+  color: var(--primary-color);
+  background-color: color-mix(in srgb, var(--primary-color) 10%, transparent 90%);
+}
+
+.icon {
+  --mdc-icon-size: 24px;
+  --icon-primary-color: var(--secondary-text-color);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info {
+  margin-left: 16px;
+}
+.info .label {
+  font-size: 14px;
+}
+.info .text {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--secondary-text-color);
+}
+
+/**
+:host([focused]) {
+
+}
+
+@media (any-hover: hover) {
+  :host(:hover:not([disabled])) {
+    background-color: var(--material-secondary-background-color);
+  }
+
+}
+
+:host([focused]:not([disabled])) {
+  background-color: var(--material-divider-color);
+}
+
+:host([disabled]) {
+  color: var(--material-disabled-text-color);
+  cursor: default;
+  pointer-events: none;
+}
+
+:host([focused]:not([disabled])) {
+  background-color: rgba(var(--rgb-primary-text-color, 0, 0, 0), .12)
+}
+
+:host([selected]:not([disabled])) {
+  background-color: transparent;
+  color: var(--mdc-theme-primary);
+  --mdc-ripple-color: var(--mdc-theme-primary);
+  --mdc-theme-text-primary-on-background: var(--mdc-theme-primary)
+}
+
+:host([selected]:not([disabled])):before {
+  background-color: var(--mdc-theme-primary);
+  opacity: .12;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%
+}
+
+:host([selected][focused]:not([disabled])):before {
+  opacity: .24
+}
+
+:host(:hover:not([disabled])) {
+  background-color: transparent
+}
+**/`;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$d(target, key, result);
+  return result;
+};
+let DropdownListItem = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.selected = false;
+  }
+  render() {
+    return html`
+      <div class="icon">
+        <ha-icon .icon=${this.icon}></ha-icon>
+      </div>
+      <div class="info">
+        <div class="label">${this.label || this.value}</div>
+        ${this.text ? html`<div class="text">${this.text}</div>` : null}
+        </div>
+      </div>
+    `;
+  }
+};
+DropdownListItem.styles = styles$b;
+__decorateClass$d([
+  n2()
+], DropdownListItem.prototype, "value", 2);
+__decorateClass$d([
+  n2({ attribute: "selected", reflect: true, type: Boolean })
+], DropdownListItem.prototype, "selected", 2);
+__decorateClass$d([
+  n2()
+], DropdownListItem.prototype, "label", 2);
+__decorateClass$d([
+  n2()
+], DropdownListItem.prototype, "text", 2);
+__decorateClass$d([
+  n2()
+], DropdownListItem.prototype, "icon", 2);
+DropdownListItem = __decorateClass$d([
+  t$1("lc-dropdown-list-item")
+], DropdownListItem);
+function getElementRect(element) {
+  const rect = element.getBoundingClientRect();
+  if (!rect) {
+    throw new Error("No possible compute rect");
+  }
+  return {
+    x: rect.x,
+    y: rect.y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$c(target, key, result);
+  return result;
+};
+let Dropdown = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.count = 5;
+    this.itemHeight = 72;
+    this.inert = false;
+    this._isLessThanMax = false;
+  }
+  setConfig(config) {
+    var _a;
+    if (!((_a = config.items) == null ? void 0 : _a.length)) return;
+    this.value = config.value;
+    this._ref = config.ref;
+    this._allItems = config.items;
+    this._items = config.items;
+    this._positioning();
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this._wheelCallback = this._onWheel.bind(this);
+    window.addEventListener("wheel", this._wheelCallback);
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("wheel", this._wheelCallback);
+    this._wheelCallback = void 0;
+  }
+  filter(value) {
+    value = (value == null ? void 0 : value.trim().toLowerCase()) || "";
+    if (!value || !this._allItems) {
+      this._items = this._allItems || [];
+    } else {
+      this._items = this._allItems.filter((item) => {
+        return item.value.toLowerCase().includes(value) || item.label && item.label.toLowerCase().includes(value);
+      });
+    }
+    if (this._items.length < this.count || this._isLessThanMax) {
+      this._isLessThanMax = this._items.length < this.count;
+      this._positioning();
+    }
+  }
+  willUpdate(_changed) {
+    var _a;
+    super.willUpdate(_changed);
+    if (_changed.has("_items") || _changed.has("count") || _changed.has("itemHeight")) {
+      const height = this.itemHeight * Math.min(this.count, ((_a = this._items) == null ? void 0 : _a.length) || 0);
+      this.style.setProperty("--lc-dropdown-height", `${height}px`);
+    }
+  }
+  render() {
+    if (!this._items) return html``;
+    return html`
+      <div class="dropdown" @click=${(event) => event.stopPropagation()}>
+        <div class="scroller">
+          <ul class="list-items">
+            ${this._items.map((item) => this._renderItem(item))}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+  _renderItem(item) {
+    return html`
+      <lc-dropdown-list-item
+        .value=${item.value}
+        .selected=${item.value === this.value}
+        .icon=${item.icon}
+        .label=${item.label}
+        .text=${item.text}
+        @click=${(event) => this._onChange(event, item.value)}
+      ></lc-dropdown-list-item>
+    `;
+  }
+  _onChange(event, value) {
+    event.stopPropagation();
+    fireEvent(this, "value-changed", { value });
+  }
+  _onWheel() {
+    let x;
+    let y2;
+    const tryPosition = () => {
+      const result = this._positioning();
+      if (!result) return;
+      if (x !== result.x || y2 !== result.y) {
+        x = result.x;
+        y2 = result.y;
+        requestAnimationFrame(tryPosition);
+      }
+    };
+    requestAnimationFrame(tryPosition);
+  }
+  _positioning() {
+    var _a;
+    if (!this._ref || !this._items || !this.count) return null;
+    const { x, y: y2, width, height } = getElementRect(this._ref);
+    const windowHeight = ((_a = window.visualViewport) == null ? void 0 : _a.height) || window.innerHeight;
+    const dropdownHeight = this.itemHeight * Math.min(this.count, this._items.length);
+    const isBellow = windowHeight < y2 + height + dropdownHeight;
+    const top2 = isBellow ? y2 - dropdownHeight : y2 + height;
+    this.style.setProperty("--lc-dropdown-top", `${top2}px`);
+    this.style.setProperty("--lc-dropdown-left", `${x}px`);
+    this.style.setProperty("--lc-dropdown-width", `${width}px`);
+    this.style.setProperty("--lc-dropdown-border-radius", isBellow ? ".5rem .5rem 0 0" : "0 0 .5rem .5rem");
+    return { y: top2, x };
+  }
+};
+Dropdown.styles = styles$c;
+__decorateClass$c([
+  n2()
+], Dropdown.prototype, "value", 2);
+__decorateClass$c([
+  n2()
+], Dropdown.prototype, "count", 2);
+__decorateClass$c([
+  n2({ attribute: "item-height" })
+], Dropdown.prototype, "itemHeight", 2);
+__decorateClass$c([
+  n2({ attribute: "inert", type: Boolean })
+], Dropdown.prototype, "inert", 2);
+__decorateClass$c([
+  r()
+], Dropdown.prototype, "_allItems", 2);
+__decorateClass$c([
+  r()
+], Dropdown.prototype, "_items", 2);
+Dropdown = __decorateClass$c([
+  t$1("lc-dropdown")
+], Dropdown);
+const styles$a = css`:host {
+  display: block;
+}
+:host[opened] .toggle-button {
+  color: var(--primary-color);
+}
+
+.action-selector {
+  position: relative;
+}
+.action-selector .input {
+  width: 100%;
+}
+.action-selector .toggle-button {
+  right: 1rem;
+  top: 1rem;
+  position: absolute;
+  color: var(--input-dropdown-icon-color);
+}`;
+const DEFAULT_SERVICE_ICON = "mdi:room-service";
+const DOMAIN_ICONS = {
+  air_quality: "mdi:air-filter",
+  alert: "mdi:alert",
+  automation: "mdi:robot",
+  calendar: "mdi:calendar",
+  climate: "mdi:thermostat",
+  configurator: "mdi:cog",
+  conversation: "mdi:forum-outline",
+  counter: "mdi:counter",
+  date: "mdi:calendar",
+  datetime: "mdi:calendar-clock",
+  demo: "mdi:home-assistant",
+  device_tracker: "mdi:account",
+  google_assistant: "mdi:google-assistant",
+  group: "mdi:google-circles-communities",
+  homeassistant: "mdi:home-assistant",
+  homekit: "mdi:home-automation",
+  image_processing: "mdi:image-filter-frames",
+  image: "mdi:image",
+  input_boolean: "mdi:toggle-switch",
+  input_button: "mdi:button-pointer",
+  input_datetime: "mdi:calendar-clock",
+  input_number: "mdi:ray-vertex",
+  input_select: "mdi:format-list-bulleted",
+  input_text: "mdi:form-textbox",
+  lawn_mower: "mdi:robot-mower",
+  light: "mdi:lightbulb",
+  notify: "mdi:comment-alert",
+  number: "mdi:ray-vertex",
+  persistent_notification: "mdi:bell",
+  person: "mdi:account",
+  plant: "mdi:flower",
+  proximity: "mdi:apple-safari",
+  remote: "mdi:remote",
+  scene: "mdi:palette",
+  schedule: "mdi:calendar-clock",
+  script: "mdi:script-text",
+  select: "mdi:format-list-bulleted",
+  sensor: "mdi:eye",
+  simple_alarm: "mdi:bell",
+  siren: "mdi:bullhorn",
+  stt: "mdi:microphone-message",
+  sun: "mdi:white-balance-sunny",
+  text: "mdi:form-textbox",
+  time: "mdi:clock",
+  timer: "mdi:timer-outline",
+  todo: "mdi:clipboard-list",
+  tts: "mdi:speaker-message",
+  vacuum: "mdi:robot-vacuum",
+  wake_word: "mdi:chat-sleep",
+  weather: "mdi:weather-partly-cloudy",
+  zone: "mdi:map-marker-radius"
+};
+function getServiceIcon(service) {
+  const [domain, serviceName] = service.split(".", 2);
+  if (serviceName === "pause") {
+    return "mdi:pause";
+  }
+  if (serviceName === "reload") {
+    return "mdi:reload";
+  }
+  const iconName = DOMAIN_ICONS[domain];
+  return iconName || DEFAULT_SERVICE_ICON;
+}
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$b(target, key, result);
+  return result;
+};
+let ActionSelector = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.disabled = false;
+    this.required = false;
+    this.opened = false;
+  }
+  willUpdate(_changed) {
+    var _a, _b, _c;
+    super.willUpdate(_changed);
+    if (_changed.has("value")) {
+      if (this.value) {
+        const [domain, action] = this.value.split(".");
+        const service = action && ((_c = (_b = (_a = this.hass) == null ? void 0 : _a.services) == null ? void 0 : _b[domain]) == null ? void 0 : _c[action]) || void 0;
+        this._name = (service == null ? void 0 : service.name) || this.value || "";
+      } else {
+        this._name = "";
+      }
+    }
+  }
+  render() {
+    if (!this.hass) return html``;
+    return html`
+      <div class="action-selector" @click=${this._openDropdown}>
+        <ha-textfield
+          class="input"
+          .label=${this.hass.localize("ui.components.service-picker.action")}
+          .value=${this._name || this.value || ""}
+          .configValue=${"title"}
+          @input=${this._valueChanged}
+        >
+          <slot name="icon" slot="leadingIcon"></slot>
+        </ha-textfield>
+
+        <ha-icon
+          role="button"
+          tabindex="-1"
+          aria-expanded=${this.opened ? "true" : "false"}
+          class="toggle-button"
+          .icon=${this.opened ? "mdi:menu-up" : "mdi:menu-down"}
+          ?disabled=${this.disabled}
+        ></ha-icon>
+      </div>
+    `;
+  }
+  _openDropdown(event) {
+    var _a;
+    event.stopPropagation();
+    if (this.opened || !this.hass) return;
+    this.opened = true;
+    (_a = this._textfield) == null ? void 0 : _a.focus();
+    const items = [];
+    const domains = Object.keys(this.hass.services);
+    for (const domain of domains) {
+      const services = this.hass.services[domain];
+      const servicesNames = Object.keys(services);
+      for (const serviceName of servicesNames) {
+        const serviceId = `${domain}.${serviceName}`;
+        items.push({
+          value: serviceId,
+          label: services[serviceName].name,
+          text: serviceId,
+          icon: getServiceIcon(serviceId)
+        });
+      }
+    }
+    const close = () => {
+      var _a2;
+      this.opened = false;
+      (_a2 = this._dropdown) == null ? void 0 : _a2.remove();
+      window.removeEventListener("click", close);
+    };
+    this._dropdown = document.createElement("lc-dropdown");
+    this._dropdown.setConfig({
+      items,
+      ref: this,
+      value: this.value
+    });
+    this._dropdown.addEventListener("value-changed", (event2) => {
+      this.value = event2.detail.value;
+      close();
+      fireEvent(this, "value-changed", { value: event2.detail.value });
+    });
+    document.body.append(this._dropdown);
+    requestAnimationFrame(() => {
+      window.addEventListener("click", close);
+    });
+  }
+  _valueChanged() {
+    if (!this._dropdown || !this._textfield) return;
+    this._dropdown.filter(this._textfield.value);
+  }
+};
+ActionSelector.styles = styles$a;
+__decorateClass$b([
+  n2({ attribute: false })
+], ActionSelector.prototype, "hass", 2);
+__decorateClass$b([
+  n2()
+], ActionSelector.prototype, "value", 2);
+__decorateClass$b([
+  n2({ type: Boolean })
+], ActionSelector.prototype, "disabled", 2);
+__decorateClass$b([
+  n2({ type: Boolean })
+], ActionSelector.prototype, "required", 2);
+__decorateClass$b([
+  n2({ type: Boolean, reflect: true })
+], ActionSelector.prototype, "opened", 2);
+__decorateClass$b([
+  e(".input")
+], ActionSelector.prototype, "_textfield", 2);
+__decorateClass$b([
+  r()
+], ActionSelector.prototype, "_name", 2);
+ActionSelector = __decorateClass$b([
+  t$1("lc-action-selector")
+], ActionSelector);
+function formatColors(value, defaultColor = "var(--primary-color)") {
+  if (!value) return defaultColor;
+  switch (value) {
+    case "primary":
+      return "var(--primary-color)";
+    case "accent":
+      return "var(--accent-color)";
+    case "error":
+    case "err":
+    case "danger":
+      return "var(--error-color)";
+    case "warning":
+    case "warn":
+      return "var(--warning-color)";
+    case "success":
+      return "var(--success-color)";
+    case "info":
+      return "var(--info-color)";
+  }
+  return value;
+}
+const styles$9 = css`:host {
+  --lc-button-size: 40px;
+  --lc-button-icon-size: 24px;
+  --lc-button-color: currentColor;
+  --lc-button-bg-opacity: 0.15;
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  color: var(--lc-button-color);
+  font-family: var(--paper-font-body1_-_font-family);
+  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
+  font-size: var(--paper-font-body1_-_font-size);
+  font-weight: var(--paper-font-body1_-_font-weight);
+  line-height: var(--paper-font-body1_-_line-height);
+  display: inline-block;
+  position: relative;
+}
+:host:before {
+  content: " ";
+  left: 0;
+  right: 0;
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  border-radius: 50%;
+  background-color: currentcolor;
+  opacity: var(--lc-button-bg-opacity);
+  position: absolute;
+}
+
+.lc-button-circle-icon {
+  --ha-icon-display: block;
+  --mdc-icon-button-size: var(--lc-button-size);
+  --mdc-icon-size: var(--lc-button-icon-size);
+  --mdc-theme-primary: var(--lc-button-color);
+  color: var(--lc-button-color);
+}
+
+.lc-button-circle-spinner {
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  border-radius: 50%;
+  font-size: var(--lc-button-icon-size);
+}`;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$a(target, key, result);
+  return result;
+};
+function createComponent(Base) {
+  const _ButtonCircle = class _ButtonCircle extends Base {
+    constructor(...rest) {
+      super(...rest);
+      this.icon = "mdi:gesture-tap-button";
+      this.disabled = false;
+      this._popoverOff = false;
+    }
+    set color(value) {
+      this.style.setProperty("--lc-button-color", formatColors(value, "currentColor"));
+    }
+    set transparent(value) {
+      this.style.setProperty("--lc-button-bg-opacity", value ? "0" : "0.15");
+    }
+    render() {
+      return html`
+        <mwc-icon-button
+          type="button"
+          role="button"
+          class="lc-button-circle-icon"
+          .disabled=${this.disabled}
+          @mouseenter="${this._onMouseenter}"
+          @mouseleave="${this._onMouseLeave}"
+          @click=${this._onClick}
+        >
+          ${this._renderIcon()}
+        </mwc-icon-button>
+      `;
+    }
+    _renderIcon() {
+      if (this.disabled || !this.status) {
+        return html`<ha-icon icon=${this.icon} class="icon"></ha-icon>`;
+      }
+      switch (this.status) {
+        case "loading":
+          return html`<lc-icon-spinner color="var(--lc-button-color)"></lc-icon-spinner>`;
+        case "success":
+          return html`<lc-icon-success color="var(--lc-button-color)"></lc-icon-success>`;
+        case "error":
+          return html`<lc-icon-error color="var(--lc-button-color)"></lc-icon-error>`;
+      }
+    }
+    _removePopover() {
+      if (this._popover) {
+        this._popover.hide();
+        this._popover = void 0;
+      }
+    }
+    _onClick() {
+      this._popoverOff = true;
+      this._removePopover();
+    }
+    /**
+     * Show tooltip popover
+     * @private
+     */
+    _onMouseenter() {
+      if (this._popoverOff || !this.tooltip || this.status) return;
+      this._popover = document.createElement("lc-popover");
+      this._popover.attach(this, this.tooltip);
+    }
+    /**
+     * Hide tooltip popover
+     * @private
+     */
+    _onMouseLeave() {
+      this._removePopover();
+      this._popoverOff = false;
+    }
+  };
+  _ButtonCircle.styles = styles$9;
+  let ButtonCircle = _ButtonCircle;
+  __decorateClass$a([
+    n2({ attribute: true })
+  ], ButtonCircle.prototype, "icon", 2);
+  __decorateClass$a([
+    n2({ attribute: "color", reflect: true, type: String })
+  ], ButtonCircle.prototype, "color", 1);
+  __decorateClass$a([
+    n2({ attribute: true })
+  ], ButtonCircle.prototype, "tooltip", 2);
+  __decorateClass$a([
+    n2({ attribute: "status", reflect: true, type: String })
+  ], ButtonCircle.prototype, "status", 2);
+  __decorateClass$a([
+    n2({ attribute: "disabled", reflect: true, type: Boolean })
+  ], ButtonCircle.prototype, "disabled", 2);
+  __decorateClass$a([
+    n2({ attribute: "transparent", reflect: true, type: Boolean })
+  ], ButtonCircle.prototype, "transparent", 1);
+  return ButtonCircle;
+}
+(async () => {
+  await customElements.whenDefined("ha-icon");
+  const source = await customElements.whenDefined("mwc-icon-button");
+  customElements.define("lc-button-circle", createComponent(source), { extends: "button" });
+})();
+function forwardHaptic(hapticType) {
+  fireEvent(window, "haptic", hapticType);
+}
+function domainToName(localize, domain, manifest) {
+  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
+}
+const MAIN_WINDOW_NAME = "ha-main-window";
+const mainWindow = (() => {
+  try {
+    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
+  } catch {
+    return window;
+  }
+})();
+function isCustomType(type2) {
+  return type2.startsWith("custom:");
+}
+function computeDomain(entityId) {
+  return entityId.substring(0, entityId.indexOf("."));
+}
+function arrayFilter(array2, conditions, maxSize) {
+  if (!maxSize || maxSize > array2.length) {
+    maxSize = array2.length;
+  }
+  const filteredArray = [];
+  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
+    let meetsConditions = true;
+    for (const condition of conditions) {
+      if (!condition(array2[i2])) {
+        meetsConditions = false;
+        break;
+      }
+    }
+    if (meetsConditions) {
+      filteredArray.push(array2[i2]);
+    }
+  }
+  return filteredArray;
+}
+function processEntities(entities, opts = {}) {
+  const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
+  const maxCount = opts.maxCount ?? Infinity;
+  const validateMode = opts.validateMode == null ? "throw" : opts.validateMode;
+  const callback = opts.callback || ((entity) => entity);
+  if (!entities) {
+    if (validateMode === "skip") return [];
+    throw new Error(`No entities provided`);
+  }
+  if (maxCount < entities.length && validateMode !== "skip") {
+    throw new Error(`The maximum number of elements is ${maxCount}`);
+  }
+  const results = [];
+  for (let i2 = 0; i2 < entities.length; i2++) {
+    const entity = entities[i2];
+    if (!entity) {
+      if (validateMode === "skip") continue;
+      throw new Error(`Missing entity in position ${i2}, null provided`);
+    }
+    let result;
+    if (typeof entity === "string") {
+      result = { entity };
+    } else if (typeof entity === "object" && !Array.isArray(entity)) {
+      if ("type" in entity || "entity" in entity) {
+        result = { ...entity };
+      } else {
+        if (validateMode === "skip") continue;
+        throw new Error(`Object at position ${i2} is missing entity or type field`);
+      }
+    } else {
+      if (validateMode === "skip") continue;
+      throw new Error(`Invalid entity at position ${i2}`);
+    }
+    let domain = null;
+    if (result.entity) {
+      const regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
+      if (regExResult) {
+        domain = regExResult[1];
+      } else {
+        if (validateMode === "skip") continue;
+        throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
+      }
+    }
+    if (domains == null ? void 0 : domains.length) {
+      if (!domain) continue;
+      if (!domains.includes(domain)) {
+        if (validateMode === "skip") continue;
+        throw new Error(`Invalid entity domain ${domain} at position ${i2}. Allowed ${domains.join(". ")}`);
+      }
+    }
+    result = callback(result);
+    if (!result) continue;
+    results.push(result);
+    if (results.length >= maxCount) break;
+  }
+  return results;
+}
+function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
+  const conditions = [];
+  if (includeDomains == null ? void 0 : includeDomains.length) {
+    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
+  }
+  if (entityFilter) {
+    conditions.push(
+      (eid) => hass.states[eid] && entityFilter(hass.states[eid])
+    );
+  }
+  const entityIds = arrayFilter(entities, conditions, maxEntities);
+  if (entityIds.length < maxEntities && entitiesFallback.length) {
+    const fallbackEntityIds = findEntities(
+      hass,
+      maxEntities - entityIds.length,
+      entitiesFallback,
+      [],
+      includeDomains,
+      entityFilter
+    );
+    entityIds.push(...fallbackEntityIds);
+  }
+  return entityIds;
+}
+function isShowConfirmation(confirmation, userId) {
+  if (!confirmation) return false;
+  if (confirmation === true) return true;
+  return !confirmation.exemptions || !confirmation.exemptions.some((e2) => e2.user === userId);
+}
+const style = css`.footer {
+  margin-top: 0;
+}
+.footer .divider {
+  margin: 0;
+  border: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--divider-color);
+}
+.footer .buttons {
+  width: auto;
+  padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.footer .buttons .btn-wrap {
+  padding: 0 6px;
+}`;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$9(target, key, result);
+  return result;
+};
+let FooterButtons = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._statuses = [];
+  }
+  render() {
+    var _a;
+    if (!((_a = this.buttons) == null ? void 0 : _a.length)) {
+      return html``;
+    }
+    return html`
+      <div class="footer">
+        <hr class="divider" role="separator" />
+
+        <div class="buttons">
+          ${this.buttons.map((config, index) => this._renderButton(index, config))}
+        </div>
+      </div>
+    `;
+  }
+  _renderButton(index, config) {
+    if (!config) {
+      return html``;
+    }
+    return html`
+      <div class="btn-wrap">
+        <lc-button-circle
+          data-index=${index}
+          color=${config.color}
+          icon=${config.icon}
+          tooltip=${config.tooltip}
+          .status=${this._statuses[index]}
+          @click=${this._onClick}
+        ></lc-button-circle>
+      </div>
+    `;
+  }
+  async _onClick(event) {
+    event.stopPropagation();
+    const element = event.target;
+    const index = parseInt(element.dataset.index);
+    if (this._statuses[index] === "loading") return;
+    this._setButtonStatus(index, "loading");
+    const config = this.buttons[index];
+    if (await this._isConfirmed(config)) {
+      this._setButtonStatus(index, void 0);
+      return;
+    }
+    const [domain, service] = config.action.split(".", 2);
+    const begin = Date.now();
+    try {
+      await this.hass.callService(domain, service, config.data, config.target);
+      const delay = Date.now() - begin;
+      if (delay > 600) {
+        this._setCallResult(index, "success")();
+      } else {
+        setTimeout(this._setCallResult(index, "success"), 600 - delay);
+      }
+    } catch {
+      this._setCallResult(index, "error")();
+    }
+  }
+  async _isConfirmed(config) {
+    var _a;
+    if (!isShowConfirmation(config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
+    forwardHaptic("warning");
+    let text = "";
+    if (typeof config.confirmation !== "boolean" && config.confirmation.text) {
+      text = config.confirmation.text;
+    } else {
+      const [domain, service] = config.action.split(".", 2);
+      const serviceDomains = this.hass.services;
+      let serviceName = "";
+      if (domain in serviceDomains && service in serviceDomains[domain]) {
+        await this.hass.loadBackendTranslation("title");
+        const localize = await this.hass.loadBackendTranslation("entity");
+        serviceName += domainToName(localize, domain);
+        serviceName += ": ";
+        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
+      }
+      text = this.hass.localize("ui.panel.lovelace.cards.actions.action_confirmation", {
+        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${config.action}`) || config.action
+      });
+    }
+    const utils = await mainWindow.loadCardHelpers();
+    return !await utils.showConfirmationDialog(this, { text, title: config.tooltip });
+  }
+  _setButtonStatus(index, status) {
+    this._statuses[index] = status;
+    this._statuses = [...this._statuses];
+  }
+  _setCallResult(index, status) {
+    return () => {
+      forwardHaptic("light");
+      this._setButtonStatus(index, status);
+      setTimeout(() => {
+        this._setButtonStatus(index, void 0);
+      }, 2500);
+    };
+  }
+};
+FooterButtons.styles = style;
+__decorateClass$9([
+  n2({ attribute: false })
+], FooterButtons.prototype, "hass", 2);
+__decorateClass$9([
+  n2({ attribute: false })
+], FooterButtons.prototype, "buttons", 2);
+__decorateClass$9([
+  r()
+], FooterButtons.prototype, "_statuses", 2);
+FooterButtons = __decorateClass$9([
+  t$1("lc-footer-buttons")
+], FooterButtons);
+const styles$8 = css`:host {
+  --lc-popover-y: 0px;
+  --lc-popover-x: 0px;
+  --lc-popover-width: auto;
+  --lc-popover-height: auto;
+  --lc-popover-arrow-position: 0px;
+  --lc-popover-arrow-left: 0px;
+  --lc-popover-background-color: var(--card-background-color);
+  --lc-popover-text-color: var(--primary-text-color);
+  --lc-popover-border-color: var(--divider-color);
+  --lc-popover-border-radius: .4rem;
+  --lc-popover-padding: .5rem .75rem;
+  --lc-popover-arrow-size: 8px;
+  --lc-popover-offset: 2px;
+  --lc-popover-transform-x: 0;
+  --lc-popover-transform-y: 0;
+  --lc-popover-transform-scale: .7;
+  top: var(--lc-popover-y);
+  left: var(--lc-popover-x);
+  width: var(--lc-popover-width);
+  height: var(--lc-popover-height);
+  max-width: 280px;
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 999999;
+}
+
+.popover {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: var(--lc-popover-padding);
+  opacity: 0;
+  transition: opacity 0.2s ease-out, transform 0.15s ease-out;
+  box-shadow: var(--mui-shadows-8, 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12));
+  background-color: var(--lc-popover-background-color);
+  color: var(--lc-popover-text-color);
+  border-radius: var(--lc-popover-border-radius);
+  border: 1px solid var(--lc-popover-border-color);
+  text-align: center;
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 9999;
+  /* TOP */
+  /* BOTTOM */
+  /* LEFT */
+  /* RIGHT */
+}
+.popover .text {
+  font-size: 0.825rem;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  text-rendering: geometricPrecision;
+}
+.popover .arrow {
+  border: var(--lc-popover-arrow-size) solid transparent;
+  height: 0;
+  width: 0;
+  display: block;
+  position: absolute;
+}
+.popover.popover-top {
+  transform: translate(0, 6px) scale(0.7);
+}
+.popover.popover-top .arrow {
+  bottom: calc(var(--lc-popover-arrow-size) * -2);
+  left: var(--lc-popover-arrow-position);
+  border-top-color: var(--lc-popover-background-color);
+  filter: drop-shadow(0 1px var(--lc-popover-border-color));
+}
+.popover.popover-bottom {
+  transform: translate(0, -6px) scale(0.7);
+}
+.popover.popover-bottom .arrow {
+  top: calc(var(--lc-popover-arrow-size) * -2);
+  left: var(--lc-popover-arrow-position);
+  border-bottom-color: var(--lc-popover-background-color);
+  filter: drop-shadow(0 -1px var(--lc-popover-border-color));
+}
+.popover.popover-left {
+  transform: translate(6px, 0) scale(0.7);
+}
+.popover.popover-left .arrow {
+  top: var(--lc-popover-arrow-position);
+  right: calc(var(--lc-popover-arrow-size) * -2);
+  border-left-color: var(--lc-popover-background-color);
+  filter: drop-shadow(1px 0 var(--lc-popover-border-color));
+}
+.popover.popover-right {
+  transform: translate(-6px, 0) scale(0.7);
+}
+.popover.popover-right .arrow {
+  top: var(--lc-popover-arrow-position);
+  left: calc(var(--lc-popover-arrow-size) * -2);
+  border-right-color: var(--lc-popover-background-color);
+  filter: drop-shadow(-1px 0 var(--lc-popover-border-color));
+}
+.popover.show.in {
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+.popover.show.in.out {
+  opacity: 0;
+}`;
+var __defProp$8 = Object.defineProperty;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = void 0;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = decorator(target, key, result) || result;
+  if (result) __defProp$8(target, key, result);
+  return result;
+};
+const _Popover = class _Popover extends LitElement {
+  constructor() {
+    super();
+    this._hiddenInProcess = false;
+    this.placement = "top";
+    this.arrow = 8;
+    this.offset = 2;
+    this.maxWidth = 280;
+  }
+  hide() {
+    if (this._hiddenInProcess) return;
+    this._hiddenInProcess = true;
+    const popup = this.shadowRoot.firstElementChild;
+    popup.classList.add("out");
+    setTimeout(() => {
+      this._reference = void 0;
+      this.remove();
+    }, 200);
+  }
+  attach(element, content, opts) {
+    this._reference = element;
+    this.content = content;
+    if (opts == null ? void 0 : opts.offset) {
+      this.offset = opts.offset;
+    }
+    if (opts == null ? void 0 : opts.placement) {
+      this.placement = opts.placement;
+    }
+    if (opts == null ? void 0 : opts.maxWidth) {
+      this.maxWidth = opts.maxWidth;
+    }
+    document.body.append(this);
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    const elements = document.getElementsByTagName("lc-popover");
+    for (const popover of elements) {
+      if (popover !== this) {
+        popover.hide();
+      }
+    }
+  }
+  updated() {
+    this._computePosition();
+  }
+  render() {
+    return html`
+      <div class="popover">
+        <div class="text">${this.content}</div>
+        <div class="arrow" />
+      </div>
+    `;
+  }
+  _computePosition() {
+    var _a, _b;
+    const sizeMin = (this.offset + this.arrow) * 2;
+    let y2;
+    let x;
+    let height = Math.ceil(this.offsetHeight) + 1;
+    let width = Math.ceil(this.offsetWidth) + 1;
+    let arrowPosition;
+    let placement = this.placement;
+    height = Math.max(height, sizeMin);
+    width = Math.min(Math.max(width, sizeMin), this.maxWidth);
+    const _rect = getElementRect(this._reference);
+    const rect = { ..._rect, x: _rect.x + window.scrollX, y: _rect.y + window.scrollY };
+    const windowWidth = ((_a = window.visualViewport) == null ? void 0 : _a.width) || window.innerWidth;
+    const windowHeight = ((_b = window.visualViewport) == null ? void 0 : _b.height) || window.innerHeight;
+    const popover = this.shadowRoot.firstElementChild;
+    const xMin = this.offset;
+    const xMax = windowWidth - width - this.offset;
+    const yMin = this.offset;
+    const yMax = windowHeight - height - this.offset;
+    switch (placement) {
+      case "top":
+        y2 = Math.round(rect.y - height - this.arrow - this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
+        if (y2 < yMin) {
+          y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
+          placement = "bottom";
+        }
+        x = Math.max(Math.min(x, xMax), xMin);
+        break;
+      case "bottom":
+        y2 = Math.round(rect.y + rect.height + this.arrow + this.offset);
+        x = Math.round(rect.x + rect.width / 2 - width / 2);
+        if (y2 > yMax) {
+          y2 = Math.round(rect.y - height - this.arrow - this.offset);
+          placement = "top";
+        }
+        x = Math.max(Math.min(x, xMax), xMin);
+        break;
+      case "left":
+        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x - width - this.arrow - this.offset);
+        if (x < xMin) {
+          x = Math.round(rect.x + rect.width + this.arrow + this.offset);
+          placement = "right";
+        }
+        y2 = Math.max(Math.min(y2, yMax), yMin);
+        break;
+      case "right":
+        y2 = Math.round(rect.y + rect.height / 2 - height / 2);
+        x = Math.round(rect.x + rect.width + this.arrow + this.offset);
+        if (x > xMax) {
+          x = Math.round(rect.x - width - this.arrow - this.offset);
+          placement = "left";
+        }
+        y2 = Math.max(Math.min(y2, yMax), yMin);
+        break;
+    }
+    if (placement === "top" || placement === "bottom") {
+      arrowPosition = rect.x - x + rect.width / 2 - this.arrow;
+    } else {
+      arrowPosition = rect.y - y2 + rect.height / 2 - this.arrow;
+    }
+    for (const className of popover.classList.values()) {
+      if (/^popover-(:?top|bottom|left|right)$/.test(className)) {
+        popover.classList.remove(className);
+      }
+    }
+    popover.classList.add(`popover-${placement}`);
+    this.style.setProperty("--lc-popover-arrow-position", `${arrowPosition}px`);
+    this.style.setProperty("--lc-popover-arrow-size", `${this.arrow}px`);
+    this.style.setProperty("--lc-popover-offset", `${this.offset}px`);
+    this.style.setProperty("--lc-popover-y", `${y2}px`);
+    this.style.setProperty("--lc-popover-x", `${x}px`);
+    this.style.setProperty("--lc-popover-height", `${height}px`);
+    this.style.setProperty("--lc-popover-width", `${width}px`);
+    setTimeout(() => popover.classList.add("show", "in"), 100);
+  }
+};
+_Popover.styles = styles$8;
+let Popover = _Popover;
+__decorateClass$8([
+  n2()
+], Popover.prototype, "content");
+__decorateClass$8([
+  n2({ attribute: "placement", reflect: true })
+], Popover.prototype, "placement");
+__decorateClass$8([
+  n2()
+], Popover.prototype, "arrow");
+__decorateClass$8([
+  n2()
+], Popover.prototype, "offset");
+__decorateClass$8([
+  n2({ attribute: "max-width" })
+], Popover.prototype, "maxWidth");
+customElements.define("lc-popover", Popover, { extends: "div" });
+const styles$7 = css`:host {
+  --gauge-needle-position: 0deg;
+  display: block;
+}
+:host .lc-gauge {
+  width: 100%;
+  height: auto;
+}
+:host .lc-gauge .dial-plate {
+  stroke: rgb(0, 0, 0);
+  stroke-width: 0;
+  stroke-linejoin: round;
+}
+:host .lc-gauge .scale {
+  font-weight: 400;
+  font-size: 5px;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--secondary-text-color);
+}
+:host .lc-gauge .pointer {
+  transform: rotate(var(--gauge-needle-position));
+}
+:host .lc-gauge .pointer path {
+  fill: var(--primary-text-color);
+}
+:host .lc-gauge .value {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--primary-text-color);
+}
+:host .lc-gauge .label {
+  font-size: 7px;
+  font-weight: 400;
+  font-family: Roboto, Noto, sans-serif;
+  fill: var(--primary-text-color);
+}
+:host .lc-gauge.disabled .gauge {
+  filter: grayscale(1) brightness(0.6);
+}`;
+const tau = 2 * Math.PI;
+const amplitude = 1;
+const period = 0.3;
+function tpmt(x) {
+  return (Math.pow(2, -10 * x) - 9765625e-10) * 1.0009775171065494;
+}
+(function custom(a2, p2) {
+  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
+  function elasticIn2(t2) {
+    return a2 * tpmt(- --t2) * Math.sin((s2 - t2) / p2);
+  }
+  elasticIn2.amplitude = function(a22) {
+    return custom(a22, p2 * tau);
+  };
+  elasticIn2.period = function(p22) {
+    return custom(a2, p22);
+  };
+  return elasticIn2;
+})(amplitude, period);
+const elasticOut = function custom2(a2, p2) {
+  const s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p2 /= tau);
+  function elasticOut2(t2) {
+    return 1 - a2 * tpmt(t2 = +t2) * Math.sin((t2 + s2) / p2);
+  }
+  elasticOut2.amplitude = function(a22) {
+    return custom2(a22, p2 * tau);
+  };
+  elasticOut2.period = function(p22) {
+    return custom2(a2, p22);
+  };
+  return elasticOut2;
+}(amplitude, period);
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$7(target, key, result);
+  return result;
+};
+function round(value, decimals = 2) {
+  const mul = 10 ** decimals;
+  return Math.round(value * mul) / mul;
+}
+function normalize(value, min, max, step = 0.1) {
+  var _a;
+  min = isNaN(min) ? 0 : min;
+  max = isNaN(max) ? 100 : max;
+  if (min > max) {
+    throw new Error("MIN_MAX");
+  }
+  value = value == null || isNaN(value) ? 0 : value;
+  value = Math.max(value, min);
+  value = Math.min(value, max);
+  const decimals = ((_a = `${step}`.split(".")[1]) == null ? void 0 : _a.length) || 0;
+  const remains = value % step;
+  const half = step / 2;
+  const rounded = value - remains;
+  const nextTick = rounded + step;
+  if (half < remains && nextTick <= max) {
+    value = parseFloat(nextTick.toFixed(decimals));
+  } else {
+    value = parseFloat(rounded.toFixed(decimals));
+  }
+  return [value, min, max];
+}
+function getAngle(value, min, max) {
+  const percent = (value - min) / (max - min) * 100;
+  return percent * 180 / 100;
+}
+function toRadians(deg) {
+  return deg * Math.PI / 180;
+}
+let Gauge = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.label = "";
+    this.unit = "";
+    this.min = 0;
+    this.max = 100;
+    this.step = 0.1;
+    this.value = 0;
+    this.disabled = false;
+    this.digits = false;
+    this._angleDeg = 0;
+  }
+  set levels(_levels) {
+    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
+      this._levels = void 0;
+    } else {
+      _levels = _levels.map((item) => ({ level: (item == null ? void 0 : item.level) ?? 0, color: formatColors(item == null ? void 0 : item.color) }));
+      _levels.sort((a2, b2) => a2.level - b2.level);
+      if (_levels[0].level !== this.min) {
+        _levels = [{ level: this.min, color: "var(--info-color)" }, ..._levels];
+      }
+      this._levels = _levels;
+    }
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this._renderRootElements();
+    this._renderScaleElements();
+    this._renderLabelElement();
+    this._syncValue();
+  }
+  disconnectedCallback() {
+    var _a;
+    super.disconnectedCallback();
+    if (this._rafID != null) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
+    (_a = this._svg) == null ? void 0 : _a.remove();
+    this._svg = void 0;
+    this._dial = void 0;
+  }
+  updated(_changed) {
+    var _a, _b, _c;
+    super.updated(_changed);
+    if (_changed.has("_levels") || _changed.has("isDigitScale") || _changed.has("min") || _changed.has("max")) {
+      this._renderScaleElements();
+    }
+    if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
+      this._syncValue();
+    }
+    if (_changed.has("disabled")) {
+      (_c = (_b = (_a = this._svg) == null ? void 0 : _a.classList) == null ? void 0 : _b[this.disabled ? "add" : "remove"]) == null ? void 0 : _c.call(_b, "disabled");
+    }
+    if (_changed.has("label")) {
+      this._renderLabelElement();
+    }
+  }
+  _syncValue() {
+    if (this._rafID != null) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
+    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
+    this._text.innerHTML = `${value}${this.unit || ""}`;
+    const oldAngle = this._angleDeg;
+    const newAngle = getAngle(value, min, max);
+    const diffAngle = newAngle - oldAngle;
+    const duration = 500;
+    const timingFunction = elasticOut.amplitude(0.5).period(0.4);
+    let start = null;
+    const setAngle = (angle) => {
+      const angleRad = toRadians(angle - 90);
+      this.style.setProperty("--gauge-needle-position", `${angle}deg`);
+      this._shadow.setAttribute("dx", round(Math.cos(angleRad), 4).toString());
+      this._shadow.setAttribute("dy", round(Math.sin(angleRad), 4).toString());
+    };
+    const animate = (time) => {
+      if (!start) {
+        start = time;
+        this._rafID = requestAnimationFrame(animate);
+        return;
+      }
+      if (start + duration > time) {
+        const progress = timingFunction((time - start) / duration);
+        this._angleDeg = Math.min(180, Math.max(0, oldAngle + diffAngle * progress));
+        setAngle(this._angleDeg);
+        this._rafID = requestAnimationFrame(animate);
+      }
+    };
+    this._rafID = requestAnimationFrame(animate);
+  }
+  _renderRootElements() {
+    var _a;
+    const insetShadowFilterId = "inset-filter";
+    const dropShadowFilterId = "drop-shadow-filter";
+    this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this._svg.classList.add("lc-gauge");
+    const width = Gauge.sizes.width;
+    const height = Gauge.sizes.width / 2 + Gauge.sizes.labelHeight;
+    const start = width / 2 * -1;
+    this._svg.setAttribute("viewBox", `${start} ${start} ${width} ${height}`);
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.append(this._renderInsetShadow(insetShadowFilterId));
+    defs.append(this._renderDropShadow(dropShadowFilterId));
+    this._svg.append(defs);
+    this._dial = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._dial.classList.add("dial-plate");
+    this._dial.setAttribute("filter", `url(#${insetShadowFilterId})`);
+    this._svg.append(this._dial);
+    this._scale = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._scale.classList.add("scale");
+    this._svg.append(this._scale);
+    this._pointer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this._pointer.classList.add("pointer");
+    this._pointer.setAttribute("filter", `url(#${dropShadowFilterId})`);
+    this._svg.append(this._pointer);
+    const needlePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const tip = Gauge.sizes.scaleRadius;
+    const base = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth - Gauge.sizes.scaleWidth / 2;
+    needlePath.setAttribute("d", `M -${base} -2 L -${tip} 0 L -${base} 2 z`);
+    this._pointer.append(needlePath);
+    this._text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this._text.classList.add("value");
+    this._text.setAttribute("text-anchor", "middle");
+    this._text.setAttribute("x", "0");
+    this._text.setAttribute("y", "-2");
+    this._svg.append(this._text);
+    this._label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this._label.classList.add("label");
+    this._label.setAttribute("text-anchor", "middle");
+    this._label.setAttribute("x", "0px");
+    this._label.setAttribute("y", "9px");
+    this._svg.append(this._label);
+    (_a = this.shadowRoot) == null ? void 0 : _a.append(this._svg);
+  }
+  _renderScaleElements() {
+    var _a;
+    if (!this._dial || !this._scale) return;
+    for (let i2 = 0; i2 < this._dial.childNodes.length; i2++) {
+      this._dial.childNodes.item(i2).remove();
+    }
+    for (let i2 = 0; i2 < this._scale.childNodes.length; i2++) {
+      this._scale.childNodes.item(i2).remove();
+    }
+    const rExt = Gauge.sizes.scaleRadius;
+    const rInt = Gauge.sizes.scaleRadius - Gauge.sizes.scaleWidth;
+    const renderNumber = (value, angle, anchor) => {
+      if (!this.digits) return;
+      const angleRad = toRadians(angle);
+      const x = round(0 - (rExt + 2) * Math.cos(angleRad));
+      const y2 = round(0 - (rExt + 2) * Math.sin(angleRad));
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", x.toString());
+      text.setAttribute("y", y2.toString());
+      text.setAttribute("text-anchor", anchor);
+      text.setAttribute("transform", `rotate(${angle - 90},${x},${y2})`);
+      text.innerHTML = value.toString();
+      this._scale.append(text);
+    };
+    if (this._levels) {
+      for (let i2 = 0; i2 < this._levels.length; i2++) {
+        const level = this._levels[i2].level;
+        const nextLevel = ((_a = this._levels[i2 + 1]) == null ? void 0 : _a.level) ?? this.max;
+        const color = this._levels[i2].color;
+        const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
+        const beginAngle = toRadians(beginAngleDeg);
+        const beginAngleCos = Math.cos(beginAngle);
+        const beginAngleSin = Math.sin(beginAngle);
+        const endAngle = toRadians(getAngle(...normalize(nextLevel, this.min, this.max)));
+        const endAngleCos = Math.cos(endAngle);
+        const endAngleSin = Math.sin(endAngle);
+        let d2 = "";
+        d2 += `M ${round(0 - rExt * beginAngleCos)} ${round(0 - rExt * beginAngleSin)} `;
+        d2 += `A ${rExt} ${rExt} 0 0 1 ${round(0 - rExt * endAngleCos)} ${round(0 - rExt * endAngleSin)} `;
+        d2 += `L ${round(0 - rInt * endAngleCos)} ${round(0 - rInt * endAngleSin)} `;
+        d2 += `A ${rInt} ${rInt} 0 0 0 ${round(0 - rInt * beginAngleCos)} ${round(0 - rInt * beginAngleSin)} `;
+        d2 += "z";
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", d2);
+        path.setAttribute("fill", color);
+        this._dial.append(path);
+        renderNumber(level, beginAngleDeg, i2 === 0 ? "start" : "middle");
+      }
+    } else {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
+      path.setAttribute("fill", "var(--info-color)");
+      this._dial.append(path);
+      renderNumber(this.min ?? 0, 0, "start");
+    }
+    renderNumber(this.max ?? 100, 180, "end");
+  }
+  _renderLabelElement() {
+    if (!this._label) return;
+    this._label.innerHTML = this.label || "";
+  }
+  _renderInsetShadow(filterId) {
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    filter.id = filterId;
+    const feOffset = document.createElementNS("http://www.w3.org/2000/svg", "feOffset");
+    feOffset.setAttribute("in", "SourceGraphic");
+    feOffset.setAttribute("dx", "0");
+    feOffset.setAttribute("dy", "0");
+    filter.append(feOffset);
+    const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
+    feGaussianBlur.setAttribute("stdDeviation", "1.5");
+    feGaussianBlur.setAttribute("result", "offset-blur");
+    filter.append(feGaussianBlur);
+    const feCompositeOut = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeOut.setAttribute("operator", "out");
+    feCompositeOut.setAttribute("in", "SourceGraphic");
+    feCompositeOut.setAttribute("in2", "offset-blur");
+    feCompositeOut.setAttribute("result", "inverse");
+    filter.append(feCompositeOut);
+    const feFlood = document.createElementNS("http://www.w3.org/2000/svg", "feFlood");
+    feFlood.setAttribute("flood-color", "rgb(0, 0, 0)");
+    feFlood.setAttribute("flood-opacity", ".35");
+    filter.append(feFlood);
+    const feCompositeIn = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeIn.setAttribute("operator", "in");
+    feCompositeIn.setAttribute("in", "color");
+    feCompositeIn.setAttribute("in2", "inverse");
+    feCompositeIn.setAttribute("result", "shadow");
+    filter.append(feCompositeIn);
+    const feCompositeOver = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+    feCompositeOver.setAttribute("operator", "over");
+    feCompositeOver.setAttribute("in", "shadow");
+    feCompositeOver.setAttribute("in2", "SourceGraphic");
+    filter.append(feCompositeOver);
+    return filter;
+  }
+  _renderDropShadow(filterId) {
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    filter.id = filterId;
+    this._shadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
+    this._shadow.classList.add("needle-shadow");
+    this._shadow.setAttribute("dx", "0");
+    this._shadow.setAttribute("dy", "0");
+    this._shadow.setAttribute("stdDeviation", "0");
+    this._shadow.setAttribute("flood-color", "rgb(0, 0, 0)");
+    this._shadow.setAttribute("flood-opacity", "0.3");
+    filter.append(this._shadow);
+    return filter;
+  }
+};
+Gauge.styles = styles$7;
+Gauge.sizes = {
+  width: 110,
+  labelHeight: 14,
+  scaleRadius: 47.5,
+  scaleWidth: 15
+};
+__decorateClass$7([
+  n2({ type: String })
+], Gauge.prototype, "label", 2);
+__decorateClass$7([
+  n2({ type: String })
+], Gauge.prototype, "unit", 2);
+__decorateClass$7([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "min", 2);
+__decorateClass$7([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "max", 2);
+__decorateClass$7([
+  n2({ type: Number, reflect: true })
+], Gauge.prototype, "step", 2);
+__decorateClass$7([
+  n2({ type: Number })
+], Gauge.prototype, "value", 2);
+__decorateClass$7([
+  n2({ type: Boolean, reflect: true })
+], Gauge.prototype, "disabled", 2);
+__decorateClass$7([
+  n2({ attribute: "digits", type: Boolean, reflect: true })
+], Gauge.prototype, "digits", 2);
+__decorateClass$7([
+  n2({ attribute: false })
+], Gauge.prototype, "levels", 1);
+__decorateClass$7([
+  r()
+], Gauge.prototype, "_levels", 2);
+Gauge = __decorateClass$7([
+  t$1("lc-gauge")
+], Gauge);
+const styles$6 = css`:host {
+  --lc-switch-color: var(--blue-color);
+  --lc-switch-aspect-ratio: 1.8333333;
+  --lc-switch-thumb-size: 20px;
+  --lc-switch-thumb-margin: 2px;
+  /* Computed size54s */
+  --lc-switch-height: calc(var(--lc-switch-thumb-size) + (var(--lc-switch-thumb-margin) * 2));
+  --lc-switch-width: calc(var(--lc-switch-height) * var(--lc-switch-aspect-ratio));
+  /* Colors */
+  --lc-switch-bg-color: color-mix(in lch, var(--secondary-background-color), var(--secondary-text-color) 20%);
+  --lc-switch-border-color: var(--lc-switch-bg-color);
+  --lc-switch-thumb-color: color-mix(in lch, rgb(255 255 255 / 1), var(--secondary-background-color) 12%);
+  --lc-switch-thumb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.15), 0 1px 2px -1px rgb(0 0 0 / 0.15);
+  /* Colors state */
+  --lc-switch-bg-active-color: var(--lc-switch-color);
+  --lc-switch-thumb-active-color: rgb(255 255 255 / 1);
+  display: block;
+}
+
+.lc-switch {
+  height: var(--lc-switch-height);
+  width: var(--lc-switch-width);
+  aspect-ratio: var(--lc-switch-aspect-ratio);
+  background-color: var(--lc-switch-bg-color);
+  border-radius: 999999px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.15s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lc-switch .lc-switch-thumb {
+  top: var(--lc-switch-thumb-margin);
+  left: var(--lc-switch-thumb-margin);
+  width: var(--lc-switch-thumb-size);
+  height: var(--lc-switch-thumb-size);
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background-color: var(--lc-switch-thumb-color);
+  transition-duration: 0.15s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--lc-switch-thumb-shadow);
+  display: block;
+  position: absolute;
+  z-index: 2;
+}
+
+:host([checked]) {
+  --lc-switch-border-color: var(--lc-switch-bg-active-color);
+  --lc-switch-bg-color: var(--lc-switch-bg-active-color);
+}
+:host([checked]) .lc-switch-thumb {
+  left: calc(var(--lc-switch-width) - var(--lc-switch-thumb-size) - var(--lc-switch-thumb-margin));
+  --lc-switch-thumb-color: var(--lc-switch-thumb-active-color);
+}`;
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$6(target, key, result);
+  return result;
+};
+let Switch = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.checked = false;
+    this.disabled = false;
+  }
+  render() {
+    return html`
+      <div class="lc-switch" @click="${this._handleClick}">
+        <div class="lc-switch-thumb"/>
+      </div>
+    `;
+  }
+  _handleClick() {
+    const options = {
+      detail: {
+        checked: !this.checked
+      },
+      bubbles: true,
+      composed: true
+    };
+    this.dispatchEvent(new CustomEvent("change", options));
+  }
+};
+Switch.styles = styles$6;
+__decorateClass$6([
+  n2({ attribute: "checked", reflect: true, type: Boolean })
+], Switch.prototype, "checked", 2);
+__decorateClass$6([
+  n2({ attribute: "disabled", reflect: true, type: Boolean })
+], Switch.prototype, "disabled", 2);
+Switch = __decorateClass$6([
+  t$1("lc-switch")
+], Switch);
+const styles$5 = css`.radio {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.radio .label {
+  font-size: 1rem;
+}
+.radio .checkbox {
+  height: calc(1rem + 2px);
+  width: auto;
+  margin: 0.25rem 0.75rem;
+  aspect-ratio: 1/1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+.radio .checkbox .marker {
+  left: 2px;
+  top: 2px;
+  height: calc(1rem - 2px);
+  width: auto;
+  aspect-ratio: 1/1;
+  background-color: currentColor;
+  border-radius: 50%;
+  opacity: 1;
+  transform: scale(0, 0);
+  transition: all 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+  position: absolute;
+  z-index: 1;
+}
+
+:host([checked]) .radio .checkbox .marker {
+  opacity: 1;
+  transform: scale(1, 1);
+}`;
+var __defProp$5 = Object.defineProperty;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = void 0;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = decorator(target, key, result) || result;
+  if (result) __defProp$5(target, key, result);
+  return result;
+};
+const _Radio = class _Radio extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.checked = false;
+    this.disabled = false;
+    this.direction = "ltr";
+  }
+  render() {
+    if (this.direction === "ltr") {
+      return html`
+        <div class="radio ltr" role="radio" @click=${this._handleClick}>
+          ${this._renderCheckbox()}
+          ${this._renderLabel()}
+        </div>
+      `;
+    } else {
+      return html`
+        <div class="radio rtl" role="radio" @click=${this._handleClick}>
+          ${this._renderLabel()}
+          ${this._renderCheckbox()}
+        </div>
+      `;
+    }
+  }
+  _renderCheckbox() {
+    return html`
+      <div class="checkbox">
+        <div class="marker"></div>
+      </div>
+    `;
+  }
+  _renderLabel() {
+    return html`
+      <div class="label">${this.label || ""}</div>
+    `;
+  }
+  _handleClick() {
+    fireEvent(this, "change", { value: this.value, name: this.name });
+  }
+};
+_Radio.styles = styles$5;
+let Radio = _Radio;
+__decorateClass$5([
+  n2()
+], Radio.prototype, "label");
+__decorateClass$5([
+  n2({ attribute: "name", reflect: true, type: String })
+], Radio.prototype, "name");
+__decorateClass$5([
+  n2({ attribute: "value", reflect: true, type: String })
+], Radio.prototype, "value");
+__decorateClass$5([
+  n2({ attribute: "checked", reflect: true, type: Boolean })
+], Radio.prototype, "checked");
+__decorateClass$5([
+  n2({ attribute: "disabled", reflect: true, type: Boolean })
+], Radio.prototype, "disabled");
+__decorateClass$5([
+  n2()
+], Radio.prototype, "direction");
+customElements.define("lc-radio", Radio, { extends: "input" });
+const styles$4 = css``;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$4(target, key, result);
+  return result;
+};
+function isSupported(stateObj) {
+  const domain = computeDomain(stateObj.entity_id);
+  return domain === "button" || domain === "input_button";
+}
+let ActionButtonFeature = class extends LitElement {
+  static getStubConfig() {
+    return {
+      type: "custom:lc-button-circle-feature",
+      label: "Circle Button Feature",
+      icon: "mdi:gesture-tap-button",
+      color: "success"
+    };
+  }
+  setConfig(config) {
+    if (!config) {
+      throw new Error("Invalid configuration");
+    }
+    this._config = config;
+  }
+  render() {
+    if (!this._config || !this.hass || !this.stateObj || !isSupported(this.stateObj)) {
+      return null;
+    }
+    return html`
+      <lc-button-circle class="button" .icon=${this._config.icon} .tooltip=${this._config.label} .color=${this._config.color} @click=${this._press} />
+    `;
+  }
+  _press(event) {
+    event.stopPropagation();
+    this.hass.callService("input_button", "press", {
+      entity_id: this.stateObj.entity_id
+    });
+  }
+};
+ActionButtonFeature.styles = styles$4;
+__decorateClass$4([
+  n2({ attribute: true })
+], ActionButtonFeature.prototype, "hass", 2);
+__decorateClass$4([
+  n2({ attribute: true })
+], ActionButtonFeature.prototype, "stateObj", 2);
+__decorateClass$4([
+  r()
+], ActionButtonFeature.prototype, "_config", 2);
+ActionButtonFeature = __decorateClass$4([
+  t$1("lc-action-button-feature")
+], ActionButtonFeature);
+window.customCardFeatures = window.customCardFeatures || [];
+window.customCardFeatures.push({
+  type: "lc-action-button-feature",
+  name: "Circle Button",
+  supported: isSupported,
+  configurable: true
+});
+const BaseCardConfigSchema = object({
+  type: string(),
+  view_layout: any(),
+  layout_options: any(),
+  grid_options: any(),
+  visibility: any()
 });
 const ActionConfigServiceSchema = object({
   action: enums(["call-service", "perform-action"]),
@@ -2657,16 +3929,7 @@ const EntitiesConfigSchema = dynamic((value) => {
   }
   return EntitiesConfigBaseSchema;
 });
-const ButtonConfigSchema = object({
-  color: optional(string()),
-  icon: optional(string()),
-  tooltip: optional(string()),
-  action: string(),
-  data: optional(object()),
-  target: optional(TargetConfigSchema),
-  confirmation: optional(ConfirmationConfigSchema)
-});
-const EntitiesActionsCardConfigSchema = assign(
+const EntitiesCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),
@@ -2677,20 +3940,14 @@ const EntitiesActionsCardConfigSchema = assign(
     buttons: optional(array(ButtonConfigSchema))
   })
 );
-const styles$3 = css`.edit-entity-row-header {
+const styles$3 = css`.card-config {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-hui-header-footer-editor {
-  padding-top: 4px;
-}
-
-ha-textfield {
-  display: block;
-  margin-bottom: 16px;
+lc-footer-buttons-editor {
+  margin-top: 16px;
 }`;
 var __defProp$3 = Object.defineProperty;
 var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
@@ -2702,11 +3959,12 @@ var __decorateClass$3 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$3(target, key, result);
   return result;
 };
-let EntitiesActionsCardConfig = class extends LitElement {
+let EntitiesCardConfig = class extends LitElement {
   setConfig(config) {
-    assert(config, EntitiesActionsCardConfigSchema);
+    assert(config, EntitiesCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities);
+    this._configButtons = config.buttons;
   }
   async firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
@@ -2719,13 +3977,13 @@ let EntitiesActionsCardConfig = class extends LitElement {
     }
     if (this._subElementEditorConfig) {
       return html`
-        <hui-sub-element-editor
+        <lc-sub-element-editor
           .hass=${this.hass}
           .config=${this._subElementEditorConfig}
           @go-back=${this._goBack}
           @config-changed=${this._handleSubElementChanged}
         >
-        </hui-sub-element-editor>
+        </lc-sub-element-editor>
       `;
     }
     const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
@@ -2737,6 +3995,19 @@ let EntitiesActionsCardConfig = class extends LitElement {
           .configValue=${"title"}
           @input=${this._valueChanged}
         ></ha-textfield>
+
+        <ha-icon-picker
+          .hass=${this.hass}
+          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")} ${optional2}"
+          .value=${this._icon}
+          .required=${false}
+          .disabled=${false}
+          .configValue=${"icon"}
+          .placeholder=${"lc:placeholder"}
+          @value-changed=${this._valueChanged}
+        >
+        </ha-icon-picker>
+
         <ha-theme-picker
           .hass=${this.hass}
           .value=${this._theme}
@@ -2745,12 +4016,20 @@ let EntitiesActionsCardConfig = class extends LitElement {
           @value-changed=${this._valueChanged}
         ></ha-theme-picker>
       </div>
+
       <hui-entities-card-row-editor
         .hass=${this.hass}
         .entities=${this._configEntities}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></hui-entities-card-row-editor>
+      
+      <lc-footer-buttons-editor
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+        @buttons-changed=${this._handleButtonsChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-footer-buttons-editor>
     `;
   }
   _valueChanged(ev) {
@@ -2762,7 +4041,7 @@ let EntitiesActionsCardConfig = class extends LitElement {
     const target = ev.target;
     const configValue = target.configValue || ((_a = this._subElementEditorConfig) == null ? void 0 : _a.type);
     const value = target.checked !== void 0 ? target.checked : target.value || ev.detail.config || ev.detail.value;
-    if (configValue === "title" && target.value === this._title || configValue === "theme" && target.value === this._theme) {
+    if (configValue === "title" && target.value === this._title || configValue === "theme" && target.value === this._theme || configValue === "icon" && target.value === this._icon) {
       return;
     }
     if (configValue === "row" || ev.detail && ev.detail.entities) {
@@ -2802,15 +4081,27 @@ let EntitiesActionsCardConfig = class extends LitElement {
     }
     const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
     const value = ev.detail.config;
-    if (configValue === "row") {
-      const newConfigEntities = this._configEntities.concat();
-      if (!value) {
-        newConfigEntities.splice(this._subElementEditorConfig.index, 1);
-        this._goBack();
+    if (configValue === "footer-button") {
+      const index = this._subElementEditorConfig.index;
+      const buttons = [...this._configButtons || []];
+      if (value) {
+        buttons[index] = value;
       } else {
-        newConfigEntities[this._subElementEditorConfig.index] = value;
+        buttons.splice(index, 1);
+        this._goBack();
       }
-      this._config = { ...this._config, entities: newConfigEntities };
+      this._config = { ...this._config, buttons };
+      this._configButtons = buttons;
+    } else if (configValue === "row") {
+      const index = this._subElementEditorConfig.index;
+      const entities = this._configEntities.concat();
+      if (value) {
+        entities[index] = value;
+      } else {
+        entities.splice(index, 1);
+        this._goBack();
+      }
+      this._config = { ...this._config, entities };
       this._configEntities = processEntities(this._config.entities);
     } else if (configValue) {
       if (value === "") {
@@ -2830,9 +4121,18 @@ let EntitiesActionsCardConfig = class extends LitElement {
     console.log(this._subElementEditorConfig);
     fireEvent(this, "config-changed", { config: this._config });
   }
-  _editDetailElement(ev) {
-    this._subElementEditorConfig = ev.detail.subElementConfig;
+  _editDetailElement(event) {
+    this._subElementEditorConfig = event.detail.subElementConfig;
     console.log(this._subElementEditorConfig);
+  }
+  _handleButtonsChanged(ev) {
+    const buttons = ev.detail.buttons;
+    this._configButtons = buttons;
+    this._config = {
+      ...this._config,
+      buttons
+    };
+    fireEvent(this, "config-changed", { config: this._config });
   }
   _handleConfigChanged(ev) {
     console.log(ev);
@@ -2849,23 +4149,29 @@ let EntitiesActionsCardConfig = class extends LitElement {
   get _theme() {
     return this._config.theme || "";
   }
+  get _icon() {
+    return this._config.icon || "";
+  }
 };
-EntitiesActionsCardConfig.styles = [styles$3, configElementStyle];
+EntitiesCardConfig.styles = styles$3;
 __decorateClass$3([
   n2({ attribute: false })
-], EntitiesActionsCardConfig.prototype, "hass", 2);
+], EntitiesCardConfig.prototype, "hass", 2);
 __decorateClass$3([
   r()
-], EntitiesActionsCardConfig.prototype, "_config", 2);
+], EntitiesCardConfig.prototype, "_config", 2);
 __decorateClass$3([
   r()
-], EntitiesActionsCardConfig.prototype, "_configEntities", 2);
+], EntitiesCardConfig.prototype, "_configEntities", 2);
 __decorateClass$3([
   r()
-], EntitiesActionsCardConfig.prototype, "_subElementEditorConfig", 2);
-EntitiesActionsCardConfig = __decorateClass$3([
-  t$1("lc-entities-actions-card-config")
-], EntitiesActionsCardConfig);
+], EntitiesCardConfig.prototype, "_configButtons", 2);
+__decorateClass$3([
+  r()
+], EntitiesCardConfig.prototype, "_subElementEditorConfig", 2);
+EntitiesCardConfig = __decorateClass$3([
+  t$1("lc-entities-card-config")
+], EntitiesCardConfig);
 const styles$2 = css`ha-card {
   height: 100%;
   display: flex;
@@ -2936,11 +4242,11 @@ var __decorateClass$2 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$2(target, key, result);
   return result;
 };
-let EntitiesActionsCard = class extends LitElement {
+let EntitiesCard = class extends LitElement {
   static async getConfigElement() {
     const source = await customElements.whenDefined("hui-entities-card");
     await source.getConfigElement();
-    return document.createElement("lc-entities-actions-card-config");
+    return document.createElement("lc-entities-card-config");
   }
   static getStubConfig(hass, entities, entitiesFallback) {
     const maxEntities = 3;
@@ -2972,7 +4278,7 @@ let EntitiesActionsCard = class extends LitElement {
     if (!this._config) {
       return 0;
     }
-    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1);
+    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1) + (this._config.buttons ? 2 : 0);
   }
   render() {
     if (!this._config || !this.hass) {
@@ -2982,10 +4288,7 @@ let EntitiesActionsCard = class extends LitElement {
       <ha-card>
         ${this._renderHeader()}
         ${this._renderEntities()}
-        <lc-footer-buttons 
-          .hass=${this.hass}
-          .buttons=${this._config.buttons}
-        ></lc-footer-buttons>
+        ${this._renderFooter()}
       </ha-card>
     `;
   }
@@ -2994,15 +4297,25 @@ let EntitiesActionsCard = class extends LitElement {
     if (!((_a = this._config) == null ? void 0 : _a.title) && !((_b = this._config) == null ? void 0 : _b.icon)) {
       return html``;
     }
-    const icon = this._config.icon ? html`
-      <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : "";
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${icon}
+          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : ""}
           ${this._config.title}
         </div>
       </h1>
+    `;
+  }
+  _renderFooter() {
+    var _a, _b;
+    if (!((_b = (_a = this._config) == null ? void 0 : _a.buttons) == null ? void 0 : _b.length)) {
+      return html``;
+    }
+    return html`
+      <lc-footer-buttons
+        .hass=${this.hass}
+        .buttons=${this._config.buttons}
+      ></lc-footer-buttons>
     `;
   }
   _renderEntities() {
@@ -3030,24 +4343,86 @@ let EntitiesActionsCard = class extends LitElement {
       <div>${element}</div>`;
   }
 };
-EntitiesActionsCard.styles = styles$2;
+EntitiesCard.styles = styles$2;
 __decorateClass$2([
   n2({ attribute: false })
-], EntitiesActionsCard.prototype, "hass", 2);
+], EntitiesCard.prototype, "hass", 2);
 __decorateClass$2([
   r()
-], EntitiesActionsCard.prototype, "_config", 2);
-EntitiesActionsCard = __decorateClass$2([
-  t$1("lc-entities-actions-card")
-], EntitiesActionsCard);
+], EntitiesCard.prototype, "_config", 2);
+EntitiesCard = __decorateClass$2([
+  t$1("lc-entities-card")
+], EntitiesCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "lc-entities-actions-card",
+  type: "lc-entities-card",
   name: "Entities With Actions Card",
   preview: true,
   description: "This map allows you to group entities and actions that are triggered by buttons in the footer.",
   documentationURL: "https://github.com/itsib/lovelace-cards/blob/main/README.md"
 });
+const configElementStyle = css`
+    .card-config {
+        /* Cancels overlapping Margins for HAForm + Card Config options */
+        overflow: auto;
+    }
+
+    ha-switch {
+        padding: 16px 6px;
+    }
+
+    .side-by-side {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .side-by-side > * {
+        flex: 1;
+        padding-right: 8px;
+        padding-inline-end: 8px;
+        padding-inline-start: initial;
+    }
+
+    .side-by-side > *:last-child {
+        flex: 1;
+        padding-right: 0;
+        padding-inline-end: 0;
+        padding-inline-start: initial;
+    }
+
+    .suffix {
+        margin: 0 8px;
+    }
+
+    hui-action-editor,
+    ha-select,
+    ha-textfield,
+    ha-icon-picker {
+        margin-top: 8px;
+        display: block;
+    }
+
+    ha-expansion-panel {
+        display: block;
+        --expansion-panel-content-padding: 0;
+        border-radius: 6px;
+        --ha-card-border-radius: 6px;
+    }
+
+    ha-expansion-panel .content {
+        padding: 12px;
+    }
+
+    ha-expansion-panel > *[slot="header"] {
+        margin: 0;
+        font-size: inherit;
+        font-weight: inherit;
+    }
+
+    ha-expansion-panel ha-svg-icon {
+        color: var(--secondary-text-color);
+    }
+`;
 const GaugeConfigSchema = object({
   entity: string(),
   attribute: optional(string()),
@@ -3488,9 +4863,11 @@ window.customCards.push({
 });
 export {
   Gauge,
+  HuiSubElementEditor,
   ICONS,
   ICONS_MAP,
   IconError,
   IconSpinner,
-  IconSuccess
+  IconSuccess,
+  Switch
 };

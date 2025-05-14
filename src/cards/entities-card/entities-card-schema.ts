@@ -4,16 +4,16 @@ import { EntitiesConfigSchema } from '../../schemas/entities-config-schema';
 import { LovelaceCardConfig, LovelaceRowConfig } from 'types';
 import { ButtonConfigSchema, IButtonConfigSchema } from '../../schemas/button-config-schema';
 
-export interface IEntitiesActionsCardConfigSchema extends LovelaceCardConfig {
-  type: 'custom:lc-entities-actions-card';
+export interface IEntitiesCardConfigSchema extends LovelaceCardConfig {
+  type: 'custom:lc-entities-card';
   title?: string;
+  icon?: string;
   entities: (LovelaceRowConfig | string)[];
   theme?: string;
-  icon?: string;
   buttons?: IButtonConfigSchema[];
 }
 
-export const EntitiesActionsCardConfigSchema = assign(
+export const EntitiesCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),

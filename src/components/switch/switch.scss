@@ -49,14 +49,14 @@
     position: absolute;
     z-index: 2;
   }
+}
 
-  &.active {
-    --lc-switch-border-color: var(--lc-switch-bg-active-color);
-    --lc-switch-bg-color: var(--lc-switch-bg-active-color);
+:host([checked]) {
+  --lc-switch-border-color: var(--lc-switch-bg-active-color);
+  --lc-switch-bg-color: var(--lc-switch-bg-active-color);
 
-    .lc-switch-thumb {
-      left: calc(var(--lc-switch-width) - var(--lc-switch-thumb-size) - var(--lc-switch-thumb-margin));
-      --lc-switch-thumb-color: var(--lc-switch-thumb-active-color);
-    }
+  .lc-switch-thumb {
+    left: calc(var(--lc-switch-width) - var(--lc-switch-thumb-size) - var(--lc-switch-thumb-margin));
+    --lc-switch-thumb-color: var(--lc-switch-thumb-active-color);
   }
 }

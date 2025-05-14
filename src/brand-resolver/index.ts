@@ -7,16 +7,14 @@ declare global {
   }
 }
 
-(async () => {
-  if (window.domWatcher) return;
-
-  const elements = document.body.getElementsByTagName('home-assistant') as HTMLCollection;
-  const homeAssistant = elements.item(0) as HTMLElement;
-  if (!homeAssistant) {
-    throw new Error('No <home-assistant> element');
-  }
-
+if (!window.domWatcher) {
   window.domWatcher = new Promise(resolve => {
+    const elements = document.body.getElementsByTagName('home-assistant') as HTMLCollection;
+    const homeAssistant = elements.item(0) as HTMLElement;
+    if (!homeAssistant) {
+      throw new Error('No <home-assistant> element');
+    }
+
     waitSelector<HTMLElement>(homeAssistant, ':shadow home-assistant-main', main => {
       const hass = (main as any).hass;
       if (!hass) {
@@ -26,7 +24,6 @@ declare global {
       const watcher = new BrandResolver({
         hass,
         root: homeAssistant.shadowRoot!,
-        debug: true,
         images: {
           ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
           ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
@@ -37,4 +34,5 @@ declare global {
       resolve(watcher);
     });
   });
-})();
+}
+

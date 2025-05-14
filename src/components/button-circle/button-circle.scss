@@ -2,6 +2,7 @@
   --lc-button-size: 40px;
   --lc-button-icon-size: 24px;
   --lc-button-color: currentColor;
+  --lc-button-bg-opacity: 0.15;
 
   width: var(--lc-button-size);
   height: var(--lc-button-size);
@@ -22,13 +23,13 @@
     height: var(--lc-button-size);
     border-radius: 50%;
     background-color: currentcolor;
-    opacity: 0.15;
+    opacity: var(--lc-button-bg-opacity);
     position: absolute;
   }
 
 }
 
-.lc-circle-button-icon {
+.lc-button-circle-icon {
   --ha-icon-display: block;
   --mdc-icon-button-size: var(--lc-button-size);
   --mdc-icon-size: var(--lc-button-icon-size);
@@ -37,7 +38,7 @@
    color: var(--lc-button-color);
 }
 
-.lc-circle-button-spinner {
+.lc-button-circle-spinner {
   width: var(--lc-button-size);
   height: var(--lc-button-size);
   border-radius: 50%;

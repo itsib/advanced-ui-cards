@@ -8,6 +8,7 @@ export function formatColors(value?: string | null, defaultColor = 'var(--primar
       return 'var(--accent-color)';
     case 'error':
     case 'err':
+    case 'danger':
       return 'var(--error-color)';
     case 'warning':
     case 'warn':

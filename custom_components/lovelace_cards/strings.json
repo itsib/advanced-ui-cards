@@ -1,8 +1,23 @@
 {
-    "title": "UI Lovelace",
-    "config": {
-        "abort": {
-            "single_instance_allowed": "Already configured. Only a single configuration possible."
-        }
+  "title": "UI Lovelace",
+  "config": {
+    "abort": {
+      "single_instance_allowed": "Already configured. Only a single configuration possible."
     }
+  },
+  "entity_component": {
+    "_": {
+      "button_action": "Button Action Config",
+      "button_color": "Button Color",
+      "confirm_text": "Confirm Text",
+      "show_confirmation_dialog": "Request confirmation before performing an action.",
+      "color_primary": "Primary Color",
+      "color_accent": "Accent Color",
+      "color_danger": "Danger Color",
+      "color_warning": "Warning Color",
+      "color_success": "Success Color",
+      "color_info": "Info Color",
+      "color_custom": "Choose Color"
+    }
+  }
 }

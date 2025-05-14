@@ -1,12 +1,12 @@
 import { html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant } from 'types';
-import { ButtonStatus } from '../circle-button/circle-button';
-import { IButtonConfig } from '../../cards/entities-actions-card/entities-actions-card-schema';
+import { ButtonStatus } from '../button-circle/button-circle';
 import { forwardHaptic } from '../../utils/haptic';
 import { isShowConfirmation } from '../../utils/handle-action';
 import { domainToName } from '../../utils/licalization';
 import { mainWindow } from '../../utils/get-main-window';
+import { IButtonConfigSchema } from '../../schemas/button-config-schema';
 import style from './footer-buttons.scss';
 
 @customElement('lc-footer-buttons')
@@ -15,7 +15,7 @@ class FooterButtons extends LitElement {
 
   @property({ attribute: false }) hass?: HomeAssistant;
 
-  @property({ attribute: false }) buttons?: IButtonConfig[];
+  @property({ attribute: false }) buttons?: IButtonConfigSchema[];
 
   @state() private _statuses: (ButtonStatus | undefined)[] = [];
 
@@ -35,21 +35,21 @@ class FooterButtons extends LitElement {
     `;
   }
 
-  private _renderButton(index: number, config?: IButtonConfig | null): TemplateResult {
+  private _renderButton(index: number, config?: IButtonConfigSchema | null): TemplateResult {
     if (!config) {
       return html``;
     }
 
     return html`
       <div class="btn-wrap">
-        <lc-circle-button
+        <lc-button-circle
           data-index=${index}
           color=${config.color}
           icon=${config.icon}
           tooltip=${config.tooltip}
           .status=${this._statuses[index]}
           @click=${this._onClick}
-        ></lc-circle-button>
+        ></lc-button-circle>
       </div>
     `;
   }
@@ -87,7 +87,7 @@ class FooterButtons extends LitElement {
     }
   }
 
-  private async _isConfirmed(config: IButtonConfig): Promise<boolean> {
+  private async _isConfirmed(config: IButtonConfigSchema): Promise<boolean> {
     if (!isShowConfirmation(config.confirmation, this.hass!.user?.id)) return false;
 
     forwardHaptic('warning');

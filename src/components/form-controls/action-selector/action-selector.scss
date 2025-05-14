@@ -1,0 +1,22 @@
+:host {
+  display: block;
+
+  &[opened] .toggle-button {
+    color: var(--primary-color);
+  }
+}
+
+.action-selector {
+  position: relative;
+
+  .input {
+    width: 100%;
+  }
+
+  .toggle-button {
+    right: 1rem;
+    top: 1rem;
+    position: absolute;
+    color: var(--input-dropdown-icon-color);
+  }
+}

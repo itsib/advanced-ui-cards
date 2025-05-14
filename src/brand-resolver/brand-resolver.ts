@@ -1,14 +1,5 @@
 import { DomWatcher, waitSelector } from './utils';
-import { HomeAssistant } from 'types';
-
-export interface BrandResolverConfig {
-  hass: HomeAssistant;
-  root: HTMLElement | ShadowRoot;
-  images: ReplacementImages;
-  debug?: boolean;
-}
-
-export type ReplacementImages = { [domain: string]: string };
+import { BrandResolverConfig, ReplacementImages, HomeAssistant } from './types';
 
 export class BrandResolver extends DomWatcher {
 
@@ -21,7 +12,7 @@ export class BrandResolver extends DomWatcher {
   private readonly _domains: string[];
 
   constructor(config: BrandResolverConfig) {
-    super(config.debug);
+    super(config.hass.config.debug);
 
     this._root = config.root;
     this._hass = config.hass;
@@ -33,18 +24,6 @@ export class BrandResolver extends DomWatcher {
     if (this._root.firstElementChild) {
       this.emitCreate(this._root, this._root.firstElementChild as HTMLElement);
     }
-
-    // this._hass.connection.addEventListener('message', message => {
-    //   console.log(message);
-    // });
-    //
-    // this._hass.callWS({ type: 'subscribe_events', event_type: 'state_changed' })
-    //   .then(data => {
-    //     console.log(data);
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //   });
   }
 
   getImgSrc(domain?: string | null): string | null {

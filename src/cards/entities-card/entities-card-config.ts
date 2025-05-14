@@ -1,55 +1,38 @@
 import type { PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { assert } from 'superstruct';
-import {
-  EditorTarget,
-  HASSDomEvent,
-  HomeAssistant,
-  LovelaceCardEditor,
-  LovelaceCardFeatureConfig,
-  LovelaceElementConfig,
-  LovelaceHeaderFooterConfig,
-  LovelaceRowConfig,
-} from 'types';
+import { EditorTarget, HASSDomEvent, HomeAssistant, LovelaceCardEditor, LovelaceRowConfig } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
-import { configElementStyle } from '../../utils/config-elements-style';
-import { EntitiesActionsCardConfigSchema, IEntitiesActionsCardConfigSchema } from './entities-actions-card-schema';
-import styles from './entities-actions-card-config.scss';
-
-interface SubElementEditorConfig {
-  index?: number;
-  elementConfig?:
-    | LovelaceRowConfig
-    | LovelaceHeaderFooterConfig
-    | LovelaceCardFeatureConfig
-    | LovelaceElementConfig;
-  saveElementConfig?: (elementConfig: any) => void;
-  context?: any;
-  type: 'header' | 'footer' | 'row' | 'feature' | 'element' | 'heading-badge';
-}
+import { EntitiesCardConfigSchema, IEntitiesCardConfigSchema } from './entities-card-schema';
+import styles from './entities-card-config.scss';
+import { IButtonConfigSchema } from '../../schemas/button-config-schema';
+import { SubElementEditorConfig } from '../../components';
 
 interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
 }
 
-@customElement('lc-entities-actions-card-config')
-class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor {
-  static styles = [styles, configElementStyle];
+@customElement('lc-entities-card-config')
+class EntitiesCardConfig extends LitElement implements LovelaceCardEditor {
+  static styles = styles;
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IEntitiesActionsCardConfigSchema;
+  @state() private _config?: IEntitiesCardConfigSchema;
 
   @state() private _configEntities?: LovelaceRowConfig[];
 
+  @state() private _configButtons?: IButtonConfigSchema[];
+
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
-  setConfig(config: IEntitiesActionsCardConfigSchema): void {
-    assert(config, EntitiesActionsCardConfigSchema);
+  setConfig(config: IEntitiesCardConfigSchema): void {
+    assert(config, EntitiesCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities);
+    this._configButtons = config.buttons;
   }
 
   protected async firstUpdated(_changedProperties: PropertyValues) {
@@ -60,20 +43,20 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
     utils.importMoreInfoControl;
   }
 
-  protected render(): TemplateResult {
+  render(): TemplateResult {
     if (!this.hass || !this._config) {
       return html``;
     }
 
     if (this._subElementEditorConfig) {
       return html`
-        <hui-sub-element-editor
+        <lc-sub-element-editor
           .hass=${this.hass}
           .config=${this._subElementEditorConfig}
           @go-back=${this._goBack}
           @config-changed=${this._handleSubElementChanged}
         >
-        </hui-sub-element-editor>
+        </lc-sub-element-editor>
       `;
     }
 
@@ -87,6 +70,19 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
           .configValue=${'title'}
           @input=${this._valueChanged}
         ></ha-textfield>
+
+        <ha-icon-picker
+          .hass=${this.hass}
+          .label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.icon')} ${optional}"
+          .value=${this._icon}
+          .required=${false}
+          .disabled=${false}
+          .configValue=${'icon'}
+          .placeholder=${'lc:placeholder'}
+          @value-changed=${this._valueChanged}
+        >
+        </ha-icon-picker>
+
         <ha-theme-picker
           .hass=${this.hass}
           .value=${this._theme}
@@ -95,12 +91,20 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
           @value-changed=${this._valueChanged}
         ></ha-theme-picker>
       </div>
+
       <hui-entities-card-row-editor
         .hass=${this.hass}
         .entities=${this._configEntities}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></hui-entities-card-row-editor>
+      
+      <lc-footer-buttons-editor
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+        @buttons-changed=${this._handleButtonsChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-footer-buttons-editor>
     `;
   }
 
@@ -116,7 +120,8 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
 
     if (
       (configValue === 'title' && target.value === this._title) ||
-      (configValue === 'theme' && target.value === this._theme)
+      (configValue === 'theme' && target.value === this._theme) ||
+      (configValue === 'icon' && target.value === this._icon)
     ) {
       return;
     }
@@ -165,18 +170,34 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
     const configValue = this._subElementEditorConfig?.type;
     const value = ev.detail.config;
 
-    if (configValue === 'row') {
-      const newConfigEntities = this._configEntities!.concat();
-      if (!value) {
-        newConfigEntities.splice(this._subElementEditorConfig!.index!, 1);
-        this._goBack();
+    // Buttons
+    if (configValue === 'footer-button') {
+      const index = this._subElementEditorConfig!.index!;
+      const buttons: IButtonConfigSchema[] = [...(this._configButtons || [])];
+      if (value) {
+        buttons[index] = value;
       } else {
-        newConfigEntities[this._subElementEditorConfig!.index!] = value;
+        buttons.splice(index, 1);
+        this._goBack();
       }
-
-      this._config = { ...this._config!, entities: newConfigEntities };
+      this._config = { ...this._config!, buttons };
+      this._configButtons = buttons;
+    }
+    // Entities
+    else if (configValue === 'row') {
+      const index = this._subElementEditorConfig!.index!;
+      const entities = this._configEntities!.concat();
+      if (value) {
+        entities[index] = value;
+      } else {
+        entities.splice(index, 1);
+        this._goBack();
+      }
+      this._config = { ...this._config!, entities: entities };
       this._configEntities = processEntities(this._config!.entities);
-    } else if (configValue) {
+    }
+    // Other
+    else if (configValue) {
       if (value === '') {
         this._config = { ...this._config };
         delete this._config[configValue!];
@@ -197,9 +218,21 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
     fireEvent(this, 'config-changed', { config: this._config });
   }
 
-  private _editDetailElement(ev: HASSDomEvent<EditDetailElementEvent>): void {
-    this._subElementEditorConfig = ev.detail.subElementConfig;
+  private _editDetailElement(event: HASSDomEvent<EditDetailElementEvent>): void {
+    this._subElementEditorConfig = event.detail.subElementConfig;
     console.log(this._subElementEditorConfig);
+  }
+
+  private _handleButtonsChanged(ev: CustomEvent) {
+    const buttons = ev.detail.buttons;
+
+    this._configButtons = buttons;
+    this._config = {
+      ...this._config!,
+      buttons: buttons as IButtonConfigSchema[],
+    }
+
+    fireEvent(this, 'config-changed', { config: this._config });
   }
 
   private _handleConfigChanged(ev: any) {
@@ -221,10 +254,14 @@ class EntitiesActionsCardConfig extends LitElement implements LovelaceCardEditor
   get _theme(): string {
     return this._config!.theme || '';
   }
+
+  get _icon(): string {
+    return this._config!.icon || '';
+  }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-entities-actions-card-config': EntitiesActionsCardConfig;
+    'lc-entities-card-config': EntitiesCardConfig;
   }
 }

@@ -250,7 +250,7 @@ class DomWatcher {
 }
 class BrandResolver extends DomWatcher {
   constructor(config) {
-    super(config.debug);
+    super(config.hass.config.debug);
     this._root = config.root;
     this._hass = config.hass;
     this._images = config.images;
@@ -459,14 +459,13 @@ class BrandResolver extends DomWatcher {
     }
   }
 }
-(async () => {
-  if (window.domWatcher) return;
-  const elements = document.body.getElementsByTagName("home-assistant");
-  const homeAssistant = elements.item(0);
-  if (!homeAssistant) {
-    throw new Error("No <home-assistant> element");
-  }
+if (!window.domWatcher) {
   window.domWatcher = new Promise((resolve) => {
+    const elements = document.body.getElementsByTagName("home-assistant");
+    const homeAssistant = elements.item(0);
+    if (!homeAssistant) {
+      throw new Error("No <home-assistant> element");
+    }
     waitSelector(homeAssistant, ":shadow home-assistant-main", (main) => {
       const hass = main.hass;
       if (!hass) {
@@ -475,7 +474,6 @@ class BrandResolver extends DomWatcher {
       const watcher = new BrandResolver({
         hass,
         root: homeAssistant.shadowRoot,
-        debug: true,
         images: {
           ["lovelace_cards"]: "/lovelace_cards_files/lovelace-cards.svg",
           ["yandex_player"]: "/lovelace_cards_files/yandex-music.svg",
@@ -485,4 +483,4 @@ class BrandResolver extends DomWatcher {
       resolve(watcher);
     });
   });
-})();
+}

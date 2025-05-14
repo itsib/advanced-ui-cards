@@ -3,16 +3,16 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type { EntityConfig, HomeAssistant, LovelaceCard, LovelaceCardEditor, LovelaceRowConfig } from 'types';
 import { mainWindow } from '../../utils/get-main-window';
 import { findEntities, processEntities } from '../../utils/entities-utils';
-import { IEntitiesActionsCardConfigSchema } from './entities-actions-card-schema';
-import styles from './entities-actions-card.scss';
+import { IEntitiesCardConfigSchema } from './entities-card-schema';
+import styles from './entities-card.scss';
 
-@customElement('lc-entities-actions-card')
-class EntitiesActionsCard extends LitElement implements LovelaceCard {
+@customElement('lc-entities-card')
+class EntitiesCard extends LitElement implements LovelaceCard {
   static async getConfigElement(): Promise<LovelaceCardEditor> {
     const source = await customElements.whenDefined('hui-entities-card') as any;
     await source.getConfigElement();
 
-    return document.createElement('lc-entities-actions-card-config') as LovelaceCardEditor;
+    return document.createElement('lc-entities-card-config') as LovelaceCardEditor;
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {
@@ -37,13 +37,13 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IEntitiesActionsCardConfigSchema;
+  @state() private _config?: IEntitiesCardConfigSchema;
 
   private _configEntities?: LovelaceRowConfig[];
 
   private _createRowElement?: (config: LovelaceRowConfig) => HTMLElement;
 
-  async setConfig(config: IEntitiesActionsCardConfigSchema) {
+  async setConfig(config: IEntitiesCardConfigSchema) {
     if (!config.entities || !Array.isArray(config.entities)) {
       throw new Error('Entities must be specified');
     }
@@ -61,21 +61,19 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
       return 0;
     }
 
-    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1);
+    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1) + (this._config.buttons ? 2 : 0);
   }
 
   protected render(): TemplateResult {
     if (!this._config || !this.hass) {
       return html``;
     }
+
     return html`
       <ha-card>
         ${this._renderHeader()}
         ${this._renderEntities()}
-        <lc-footer-buttons 
-          .hass=${this.hass}
-          .buttons=${this._config.buttons}
-        ></lc-footer-buttons>
+        ${this._renderFooter()}
       </ha-card>
     `;
   }
@@ -84,15 +82,26 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
     if (!this._config?.title && !this._config?.icon) {
       return html``;
     }
-    const icon = this._config.icon ? html`
-      <ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : '';
     return html`
       <h1 class="card-header">
         <div class="name">
-          ${icon}
+          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : ''}
           ${this._config.title}
         </div>
       </h1>
+    `;
+  }
+
+  private _renderFooter(): TemplateResult {
+    if (!this._config?.buttons?.length) {
+      return html``;
+    }
+
+    return html`
+      <lc-footer-buttons
+        .hass=${this.hass}
+        .buttons=${this._config.buttons}
+      ></lc-footer-buttons>
     `;
   }
 
@@ -134,7 +143,7 @@ class EntitiesActionsCard extends LitElement implements LovelaceCard {
 
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'lc-entities-actions-card',
+  type: 'lc-entities-card',
   name: 'Entities With Actions Card',
   preview: true,
   description: 'This map allows you to group entities and actions that are triggered by buttons in the footer.',

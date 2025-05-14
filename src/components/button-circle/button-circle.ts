@@ -1,14 +1,14 @@
 import { html, TemplateResult } from 'lit';
 import type { HomeAssistant, ElementConstructor, LovelaceConstructor } from 'types';
 import { property } from 'lit/decorators.js';
-import styles from './circle-button.scss';
 import { formatColors } from '../../utils/format-colors';
+import styles from './button-circle.scss';
 
 export type ButtonVariant = 'default' | 'success' | 'info' | 'warning' | 'error' | string;
 
 export type ButtonStatus = 'loading' | 'success' | 'error';
 
-export interface ICircleButton {
+export interface IButtonCircle {
   hass: HomeAssistant;
   icon?: string;
   color?: ButtonVariant;
@@ -19,14 +19,16 @@ export interface ICircleButton {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-circle-button': ICircleButton;
+    'lc-button-circle': IButtonCircle;
   }
 }
 
 function createComponent<T extends ElementConstructor>(Base: T) {
-  class LCCircleButton extends Base {
+  class ButtonCircle extends Base {
+    static styles = styles;
+
     @property({ attribute: true })
-    icon: string;
+    icon = 'mdi:gesture-tap-button';
 
     @property({ attribute: 'color', reflect: true, type: String })
     set color(value: ButtonVariant) {
@@ -40,19 +42,19 @@ function createComponent<T extends ElementConstructor>(Base: T) {
     status?: ButtonStatus;
 
     @property({ attribute: 'disabled', reflect: true, type: Boolean })
-    disabled: boolean;
+    disabled = false;
+
+    @property({ attribute: 'transparent', reflect: true, type: Boolean })
+    set transparent(value: boolean) {
+      this.style.setProperty('--lc-button-bg-opacity', value ? '0' : '0.15');
+    };
 
     private _popover?: HTMLElement & Record<string, any>;
 
     private _popoverOff = false;
 
-    static styles = styles;
-
     constructor(...rest: any[]) {
       super(...rest);
-
-      this.disabled = false;
-      this.icon = 'mdi:gesture-tap-button';
     }
 
     render(): TemplateResult {
@@ -60,7 +62,7 @@ function createComponent<T extends ElementConstructor>(Base: T) {
         <mwc-icon-button
           type="button"
           role="button"
-          class="lc-circle-button-icon"
+          class="lc-button-circle-icon"
           .disabled=${this.disabled}
           @mouseenter="${this._onMouseenter}"
           @mouseleave="${this._onMouseLeave}"
@@ -103,18 +105,10 @@ function createComponent<T extends ElementConstructor>(Base: T) {
      * @private
      */
     private _onMouseenter() {
-      if (this._popoverOff || !this.tooltip) return;
-
-      const rect = this.getClientRects().item(0);
-      if (!rect || this.status) return;
+      if (this._popoverOff || !this.tooltip || this.status) return;
 
       this._popover = document.createElement('lc-popover');
-      this._popover.text = this.tooltip;
-      this._popover.rect = rect;
-      this._popover.placement = 'top';
-      this._popover.offset = 2;
-
-      document.body.append(this._popover);
+      this._popover.attach(this, this.tooltip);
     }
 
     /**
@@ -127,12 +121,12 @@ function createComponent<T extends ElementConstructor>(Base: T) {
     }
   }
 
-  return LCCircleButton;
+  return ButtonCircle;
 }
 
 (async () => {
   await customElements.whenDefined('ha-icon');
   const source = await customElements.whenDefined('mwc-icon-button') as LovelaceConstructor;
 
-  customElements.define('lc-circle-button', createComponent(source), { extends: 'button' });
+  customElements.define('lc-button-circle', createComponent(source), { extends: 'button' });
 })();

@@ -14,10 +14,10 @@ export interface IButtonConfigSchema {
 }
 
 export const ButtonConfigSchema = object({
+  action: string(),
   color: optional(string()),
   icon: optional(string()),
   tooltip: optional(string()),
-  action: string(),
   data: optional(object()),
   target: optional(TargetConfigSchema),
   confirmation: optional(ConfirmationConfigSchema),

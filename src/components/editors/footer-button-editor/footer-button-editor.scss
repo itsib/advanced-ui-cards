@@ -1,0 +1,36 @@
+:host {
+
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 16px;
+
+  .row-full {
+    grid-column: span 2 / span 2;
+  }
+
+  .enable-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .color-radio {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+}
+
+.yaml-editor {
+
+  .error {
+    margin-top: 8px;
+    color: var(--error-color);
+    font-size: 13px;
+  }
+}
