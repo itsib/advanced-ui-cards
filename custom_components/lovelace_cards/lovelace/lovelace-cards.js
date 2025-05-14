@@ -3543,6 +3543,7 @@ Switch = __decorateClass$6([
   t$1("lc-switch")
 ], Switch);
 const styles$5 = css`.radio {
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -3578,6 +3579,11 @@ const styles$5 = css`.radio {
 :host([checked]) .radio .checkbox .marker {
   opacity: 1;
   transform: scale(1, 1);
+}
+
+:host([disabled]) {
+  opacity: 0.6;
+  pointer-events: none;
 }`;
 var __defProp$5 = Object.defineProperty;
 var __decorateClass$5 = (decorators, target, key, kind) => {
