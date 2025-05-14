@@ -8,6 +8,7 @@
   "entity_component": {
     "_": {
       "button_action": "Button Action Config",
+      "button_tooltip": "Tooltip",
       "button_color": "Button Color",
       "confirm_text": "Confirm Text",
       "show_confirmation_dialog": "Request confirmation before performing an action.",

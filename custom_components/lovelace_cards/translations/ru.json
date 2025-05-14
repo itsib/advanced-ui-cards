@@ -8,6 +8,7 @@
   "entity_component": {
     "_": {
       "button_action": "Конфигурация Кнопки",
+      "button_tooltip": "Подсказка",
       "confirm_text": "Текст Подтверждения",
       "button_color": "Цвет Кнопки",
       "show_confirmation_dialog": "Запросить подтверждение перед выполнением действия.",

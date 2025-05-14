@@ -115,7 +115,7 @@ class FooterButtonEditor extends LitElement {
 
         <ha-textfield
           class="input"
-          .label=${this.hass.localize('ui.components.label-picker.label')}
+          .label="${this.hass.localize('component.lovelace_cards.entity_component._.button_tooltip')} ${optional}"
           .value=${this.value?.tooltip || ''}
           .configValue=${'tooltip'}
           @input=${this._valueChanged}
@@ -146,16 +146,16 @@ class FooterButtonEditor extends LitElement {
 
         <ha-textfield
           class="row-full"
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.confirm_text')}
+          .label="${this.hass.localize('component.lovelace_cards.entity_component._.confirm_text')} ${optional}"
           .value=${this.confirmationText}
           .configValue=${'confirmation'}
-          .disabled=${this.value?.confirmation === false}
+          .disabled=${!!this.value?.confirmation}
           @input=${this._valueChanged}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">${this.hass.localize('component.lovelace_cards.entity_component._.button_color')}</div>
+        <div class="row-full">${this.hass.localize('component.lovelace_cards.entity_component._.button_color')} ${optional}</div>
 
         ${COLORS.map(color => html`
           <lc-radio 
