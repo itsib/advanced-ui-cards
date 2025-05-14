@@ -1512,7 +1512,7 @@ let FooterButtonEditor = class extends LitElement {
 
         <ha-textfield
           class="input"
-          .label=${this.hass.localize("ui.components.label-picker.label")}
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.button_tooltip")} ${optional2}"
           .value=${((_b = this.value) == null ? void 0 : _b.tooltip) || ""}
           .configValue=${"tooltip"}
           @input=${this._valueChanged}
@@ -1543,16 +1543,16 @@ let FooterButtonEditor = class extends LitElement {
 
         <ha-textfield
           class="row-full"
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")}
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")} ${optional2}"
           .value=${this.confirmationText}
           .configValue=${"confirmation"}
-          .disabled=${((_c = this.value) == null ? void 0 : _c.confirmation) === false}
+          .disabled=${!!((_c = this.value) == null ? void 0 : _c.confirmation)}
           @input=${this._valueChanged}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">${this.hass.localize("component.lovelace_cards.entity_component._.button_color")}</div>
+        <div class="row-full">${this.hass.localize("component.lovelace_cards.entity_component._.button_color")} ${optional2}</div>
 
         ${COLORS.map((color) => {
       var _a2;
