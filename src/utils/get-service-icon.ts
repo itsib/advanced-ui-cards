@@ -57,7 +57,10 @@ export const DOMAIN_ICONS = {
   wake_word: 'mdi:chat-sleep',
   weather: 'mdi:weather-partly-cloudy',
   zone: 'mdi:map-marker-radius',
+  fan: 'mdi:fan'
 };
+
+const OFF_SUPPORTS = ['automation', 'fan', 'light', 'input_boolean']
 
 export function getServiceIcon(service: string): string {
   const [domain, serviceName] = service.split('.', 2);
@@ -70,8 +73,8 @@ export function getServiceIcon(service: string): string {
   }
 
   const iconName = DOMAIN_ICONS[domain];
-  // if (iconName && /_off$/.test(serviceName)) {
-  //   return iconName + '_off';
-  // }
+  if (iconName && /_off$/.test(serviceName) && OFF_SUPPORTS.includes(domain)) {
+    return iconName + '-off';
+  }
   return iconName || DEFAULT_SERVICE_ICON;
 }

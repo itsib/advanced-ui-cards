@@ -1,11 +1,10 @@
 import { html, LitElement, PropertyValues } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant } from 'types';
-import './dropdown';
+import './action-dropdown';
 import styles from './action-selector.scss';
-import { DropdownListItem } from './dropdown';
-import { getServiceIcon } from '../../../utils/get-service-icon';
 import { fireEvent } from '../../../utils/fire-event';
+import { formatActionName } from '../../../utils/format-action-name';
 
 @customElement('lc-action-selector')
 class ActionSelector extends LitElement {
@@ -17,33 +16,41 @@ class ActionSelector extends LitElement {
   @property()
   value?: string;
 
-  @property({ type: Boolean })
+  @property()
+  helper?: string;
+
+  @property({ attribute: 'disabled', type: Boolean, reflect: true })
   disabled = false;
 
-  @property({ type: Boolean })
+  @property({ attribute: 'required', type: Boolean, reflect: true })
   required = false;
 
-  @property({ type: Boolean, reflect: true })
+  @property({ attribute: 'opened', type: Boolean, reflect: true })
   opened = false;
 
-  @query('.input')
-  private _textfield?: HTMLInputElement;
+  @state()
+  private _valueFormatted: string = '';
 
   @state()
-  private _name?: string;
+  private _errorMessage?: string;
 
-  private _dropdown?: HTMLElementTagNameMap['lc-dropdown'];
+  @state()
+  private _search: string = '';
+
+  @state()
+  private _focused = false;
 
   protected willUpdate(_changed: PropertyValues) {
     super.willUpdate(_changed);
 
     if (_changed.has('value')) {
+      this._valueFormatted = '';
       if (this.value) {
         const [domain, action] = this.value.split('.');
         const service = action && this.hass?.services?.[domain]?.[action] || undefined;
-        this._name = service?.name || this.value || '';
-      } else {
-        this._name = '';
+        if (service) {
+          this._valueFormatted = formatActionName(domain, service, this.hass!.localize);
+        }
       }
     }
   }
@@ -52,13 +59,18 @@ class ActionSelector extends LitElement {
     if (!this.hass) return html``;
 
     return html`
-      <div class="action-selector" @click=${this._openDropdown}>
+      <div class="action-selector" @click=${(event: Event) => event.stopPropagation()}>
         <ha-textfield
           class="input"
           .label=${this.hass.localize('ui.components.service-picker.action')}
-          .value=${this._name || this.value || ''}
-          .configValue=${'title'}
-          @input=${this._valueChanged}
+          .value=${this._focused ? this._search : this._valueFormatted}
+          .errorMessage=${this._errorMessage}
+          .invalid=${!!this._errorMessage}
+          .helper=${this.helper}
+          helperPersistent
+          @input=${this._onInput}
+          @focus=${this._onFocus}
+          @blur=${this._onBlur}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
@@ -72,62 +84,36 @@ class ActionSelector extends LitElement {
           ?disabled=${this.disabled}
         ></ha-icon>
       </div>
+      <lc-action-dropdown
+        .value=${this.value}
+        .services=${this.hass.services}
+        .opened=${this.opened}
+        .search=${this._search}
+        @dismiss=${() => this.opened = false}
+        @value-changed=${this._onValueChanged}
+      ></lc-action-dropdown>
     `;
   }
 
-  private _openDropdown(event: Event) {
+  private _onBlur(event: Event) {
     event.stopPropagation();
-    if (this.opened || !this.hass) return;
-
-    this.opened = true;
-    this._textfield?.focus();
-
-    const items: DropdownListItem[] = [];
-    const domains = Object.keys(this.hass.services);
-    for (const domain of domains) {
-      const services = this.hass.services[domain];
-      const servicesNames = Object.keys(services);
-
-      for (const serviceName of servicesNames) {
-        const serviceId = `${domain}.${serviceName}`;
-        items.push({
-          value: serviceId,
-          label: services[serviceName].name,
-          text: serviceId,
-          icon: getServiceIcon(serviceId),
-        });
-      }
-    }
-
-    const close = () => {
-      this.opened = false;
-      this._dropdown?.remove();
-
-      window.removeEventListener('click', close);
-    };
-
-    this._dropdown = document.createElement('lc-dropdown')!;
-    this._dropdown.setConfig({
-      items: items,
-      ref: this,
-      value: this.value,
-    });
-    this._dropdown.addEventListener('value-changed', (event: any) => {
-      this.value = event.detail.value as string;
-      close();
-      fireEvent(this, 'value-changed', { value: event.detail.value as string });
-    });
-    document.body.append(this._dropdown);
-
-    requestAnimationFrame(() => {
-      window.addEventListener('click', close);
-    });
+    this._focused = false;
   }
 
-  private _valueChanged() {
-    if (!this._dropdown || !this._textfield) return;
+  private _onFocus(event: Event) {
+    event.stopPropagation();
+    this._focused = true;
 
-    this._dropdown.filter(this._textfield.value);
+    this.opened = true;
+  }
+
+  private _onInput(event: Event) {
+    this._search = (event.target as HTMLInputElement).value;
+  }
+
+  private _onValueChanged(event: CustomEvent) {
+    this.value = event.detail.value as string;
+    this._search = '';
   }
 }
 

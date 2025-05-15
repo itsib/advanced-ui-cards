@@ -12,6 +12,18 @@
     grid-column: span 2 / span 2;
   }
 
+  hr {
+    grid-column: span 2 / span 2;
+    width: 100%;
+    border-color: var(--entities-divider-color, var(--divider-color));
+  }
+
+  .description {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    line-height: 1.2;
+  }
+
   .enable-confirm {
     display: flex;
     align-items: center;

@@ -12,13 +12,11 @@
       "button_color": "Button Color",
       "confirm_text": "Confirm Text",
       "show_confirmation_dialog": "Request confirmation before performing an action.",
-      "color_primary": "Primary Color",
-      "color_accent": "Accent Color",
-      "color_danger": "Danger Color",
-      "color_warning": "Warning Color",
-      "color_success": "Success Color",
-      "color_info": "Info Color",
-      "color_custom": "Choose Color"
+      "more_theme_colors": "More Theme Colors",
+      "type_your_color": "Type Your Color",
+      "supports_color_format": "Any css color format is supported. For example #210F77, rgb(23, 255, 0), etc.",
+      "unsupported_color_format": "Unsupported Color Format",
+      "choose_action_target": "Choose Action Target"
     }
   }
 }

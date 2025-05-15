@@ -67,6 +67,7 @@ declare global {
     'value-changed': {
       value: unknown;
     };
+    dismiss: any,
     change: any;
     'hass-logout': undefined;
     'config-refresh': undefined;

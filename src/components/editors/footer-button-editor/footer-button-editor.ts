@@ -1,10 +1,10 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import styles from './footer-button-editor.scss';
-import { HomeAssistant } from 'types';
+import { HassService, HomeAssistant, Selector, TargetSelector } from 'types';
 import { ButtonConfigSchema, IButtonConfigSchema } from '../../../schemas/button-config-schema';
 import { fireEvent } from '../../../utils/fire-event';
-import { assert } from 'superstruct';
+import { array, assert, optional, string, union } from 'superstruct';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -18,8 +18,6 @@ declare global {
     };
   }
 }
-
-const COLORS = ['primary', 'accent', 'danger', 'warning', 'success', 'info'];
 
 @customElement('lc-footer-button-editor')
 class FooterButtonEditor extends LitElement {
@@ -35,6 +33,15 @@ class FooterButtonEditor extends LitElement {
   private _yamlEditor?: HTMLInputElement;
 
   @state()
+  private _actionDomain?: string;
+
+  @state()
+  private _actionName?: string;
+
+  @state()
+  private _targetSelector?: TargetSelector;
+
+  @state()
   private _guiSupported?: boolean;
 
   @state()
@@ -45,10 +52,12 @@ class FooterButtonEditor extends LitElement {
 
   private _confirmationText?: string;
 
-  private _debounceTimer?: ReturnType<typeof setTimeout>;
-
   get hasError(): boolean {
     return !!this._error;
+  }
+
+  get hasWarning(): boolean {
+    return false;
   }
 
   get GUImode(): boolean {
@@ -86,12 +95,46 @@ class FooterButtonEditor extends LitElement {
     return this._confirmationText || '';
   }
 
+  get actionId(): string | undefined {
+    if (this._actionName && this._actionDomain) {
+      return `${this._actionDomain}.${this._actionName}`;
+    }
+    return undefined;
+  }
+
+  set actionId(value: string | undefined) {
+    if (value) {
+      const [domain, name] = value.split('.', 2);
+      this._actionDomain = domain || '';
+      this._actionName = name || '';
+    } else {
+      this._actionDomain = undefined;
+      this._actionName = undefined;
+    }
+  }
+
+  get service(): HassService | undefined {
+    if (!this._actionDomain || !this._actionName || !this.hass || !(this._actionDomain in this.hass.services)) return;
+
+    return this.hass.services[this._actionDomain][this._actionName];
+  }
+
   toggleMode() {
     this.GUImode = !this.GUImode;
   }
 
   focusYamlEditor() {
     this._yamlEditor?.focus();
+  }
+
+  willUpdate(_changed: PropertyValues) {
+    super.willUpdate(_changed);
+
+    if (_changed.has('value')) {
+      if (this.value?.action !== this.actionId) {
+        this.actionId = this.value?.action;
+      }
+    }
   }
 
   render(): TemplateResult {
@@ -105,14 +148,25 @@ class FooterButtonEditor extends LitElement {
 
     return html`
       <div class="container">
+        <!-- Action Selector-->
         <lc-action-selector
           class="row-full"
           .value=${this.value?.action}
           .hass=${this.hass}
           .configValue=${'action'}
+          .helper=${this.service?.description}
           @value-changed=${this._valueChanged}
         ></lc-action-selector>
 
+        <!-- Action Target Selector -->
+        ${this._renderServiceTargetSelector()}
+
+        <!-- Action Data Field -->
+        ${this._renderServiceDataFields()}
+
+        <hr />
+
+        <!-- Tooltip -->
         <ha-textfield
           class="input"
           .label="${this.hass.localize('component.lovelace_cards.entity_component._.button_tooltip')} ${optional}"
@@ -123,6 +177,7 @@ class FooterButtonEditor extends LitElement {
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
+        <!-- Icon -->
         <ha-icon-picker
           .hass=${this.hass}
           .label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.icon')} ${optional}"
@@ -135,6 +190,7 @@ class FooterButtonEditor extends LitElement {
         >
         </ha-icon-picker>
 
+        <!-- Enable confirmation -->
         <div class="row-full enable-confirm">
           <span>${this.hass.localize('component.lovelace_cards.entity_component._.show_confirmation_dialog')}</span>
 
@@ -144,31 +200,83 @@ class FooterButtonEditor extends LitElement {
           ></lc-switch>
         </div>
 
+        <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
           .label="${this.hass.localize('component.lovelace_cards.entity_component._.confirm_text')} ${optional}"
           .value=${this.confirmationText}
           .configValue=${'confirmation'}
-          .disabled=${!!this.value?.confirmation}
+          .disabled=${!this.value?.confirmation}
           @input=${this._valueChanged}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">${this.hass.localize('component.lovelace_cards.entity_component._.button_color')} ${optional}</div>
+        <div class="row-full">
+          ${this.hass.localize('component.lovelace_cards.entity_component._.button_color')} ${optional}
+        </div>
 
-        ${COLORS.map(color => html`
-          <lc-radio 
-            id=${`color-${color}`} 
-            name="color" 
-            .label=${this.hass!.localize(`component.lovelace_cards.entity_component._.color_${color}`)}
-            .value=${color} 
-            .checked=${this.value?.color === color}
-            @change=${this._namedColorChanged}
-          ></lc-radio>
-        `)}
+        <!-- Select color -->
+        <lc-color-selector
+          class="row-full"
+          .hass=${this.hass}
+          .value=${this.value.color}
+          .configValue=${'color'}
+          @value-changed=${this._valueChanged}
+        ></lc-color-selector>
       </div>
     `;
+  }
+
+  private _renderServiceTargetSelector(): TemplateResult | null {
+    const service = this.service;
+    if (!service || !this.hass) return html``;
+
+    const targets = service.target ? Object.keys(service.target) : [];
+    if (!targets.length) return html``;
+
+    return html`
+      <div class="row-full">
+        <ha-selector
+          .label=${this.hass!.localize('component.lovelace_cards.entity_component._.choose_action_target')}
+          .hass=${this.hass}
+          .selector=${{ target: { ...service.target } }}
+          @value-changed=${this._valueChanged}
+          .configValue=${'target'}
+          .value=${this.value?.target}
+        ></ha-selector>
+      </div>
+    `;
+  }
+
+  private _renderServiceDataFields(): TemplateResult | null {
+    const service = this.service;
+    if (!service || !this.hass) return html``;
+
+    const fieldsIds = service.fields ? Object.keys(service.fields) : [];
+    if (!fieldsIds.length) return html``;
+
+    return html`${
+      fieldsIds.map(fieldId => {
+        const fields = service.fields[fieldId];
+        if (!fields.required) return html``;
+
+        return html`
+          <div class="row-full">
+            <ha-selector
+              .label=${fields.name}
+              .helper=${fields.description}
+              .hass=${this.hass}
+              .selector=${fields.selector}
+              @value-changed=${this._valueChanged}
+              .configValue=${'data'}
+              .dataField=${fieldId}
+              .value=${this.value?.data?.[fieldId] || ''}
+            ></ha-selector>
+          </div>
+        `;
+      })
+    }`;
   }
 
   private _renderYamlEditor() {
@@ -186,6 +294,25 @@ class FooterButtonEditor extends LitElement {
           <div class="error">${this._error}</div>` : null}
       </div>
     `;
+  }
+
+  private _handleYAMLChanged(event: CustomEvent) {
+    event.stopPropagation();
+    const config = event.detail.value;
+
+    if (event.detail.isValid) {
+      try {
+        assert(config, ButtonConfigSchema);
+        this.value = config as IButtonConfigSchema;
+        this._error = undefined;
+
+        fireEvent(this as HTMLElement, 'config-changed', { config });
+      } catch (e) {
+        this._error = `${e.message}`.trim();
+      }
+    } else {
+      this._error = `${event.detail.errorMsg}`.trim();
+    }
   }
 
   private _toggleConfirmSwitch(event: CustomEvent) {
@@ -210,41 +337,58 @@ class FooterButtonEditor extends LitElement {
   }
 
   private _valueChanged(event: CustomEvent) {
-    const value = (event.target as any).value;
     const configValue = (event.target as any).configValue;
+    const value = (event.target as any).value;
     const config = { ...this.value! };
 
-    if (configValue === 'confirmation') {
+    if (configValue === 'action') {
+      const [domain, name] = value.split('.', 2);
+      const service = this.hass!.services[domain]?.[name];
+      this._error = undefined;
+      if (!service) {
+        this._error = this.hass!.localize('ui.errors.config.configuration_error');
+        return;
+      }
+
+      if (service.target && Object.keys(service.target).length) {
+        config.target = {
+          entity_id: [],
+          device_id: [],
+          area_id: [],
+          floor_id: [],
+          label_id: [],
+        };
+      } else {
+        Reflect.deleteProperty(config, 'target');
+      }
+
+      if (service.fields && Object.keys(service.fields).length) {
+        config.data = {};
+      } else {
+        Reflect.deleteProperty(config, 'data');
+      }
+
+      config.action = value;
+    } else if (configValue === 'confirmation') {
       config.confirmation = value ? { text: value } : true;
+    } else if (configValue === 'target') {
+      const updated = event.detail.value;
+      config.target = {
+        entity_id: updated.entity_id.length ? Array.from(new Set(updated.entity_id)) : [],
+        device_id: updated.device_id.length ? Array.from(new Set(updated.device_id)) : [],
+        area_id: updated.area_id.length ? Array.from(new Set(updated.area_id)) : [],
+        floor_id: updated.floor_id.length ? Array.from(new Set(updated.floor_id)) : [],
+        label_id: updated.label_id.length ? Array.from(new Set(updated.label_id)) : [],
+      };
+    } else if (configValue === 'data') {
+      const dataField = (event.target as any).dataField;
+
+      config.data = { ...(this.value?.data || {}) };
+      config.data[dataField] = event.detail.value;
     } else {
       config[configValue] = value;
     }
 
     fireEvent(this as HTMLElement, 'config-changed', { config });
-  }
-
-  private _namedColorChanged(event: CustomEvent) {
-    const config = { ...this.value!, color: event.detail.value };
-
-    fireEvent(this as HTMLElement, 'config-changed', { config });
-  }
-
-  private _handleYAMLChanged(event: CustomEvent) {
-    event.stopPropagation();
-    const config = event.detail.value;
-
-    if (event.detail.isValid) {
-      try {
-        assert(config, ButtonConfigSchema);
-        this.value = config as IButtonConfigSchema;
-        this._error = undefined;
-
-        fireEvent(this as HTMLElement, 'config-changed', { config });
-      } catch (e) {
-        this._error = `${e.message}`.trim();
-      }
-    } else {
-      this._error = `${event.detail.errorMsg}`.trim();
-    }
   }
 }

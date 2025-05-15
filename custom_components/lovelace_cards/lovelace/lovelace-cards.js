@@ -620,15 +620,15 @@ function e(e2, r2) {
     } });
   };
 }
-const styles$i = css``;
-var __defProp$j = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$j = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+const styles$j = css``;
+var __defProp$k = Object.defineProperty;
+var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
+var __decorateClass$k = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$j(target, key, result);
+  if (kind && result) __defProp$k(target, key, result);
   return result;
 };
 let IconError = class extends LitElement {
@@ -666,25 +666,25 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = styles$i;
-__decorateClass$j([
+IconError.styles = styles$j;
+__decorateClass$k([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
-__decorateClass$j([
+__decorateClass$k([
   n2({ attribute: "color", type: String })
 ], IconError.prototype, "color", 2);
-IconError = __decorateClass$j([
+IconError = __decorateClass$k([
   t$1("lc-icon-error")
 ], IconError);
-const styles$h = css``;
-var __defProp$i = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$i = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+const styles$i = css``;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$i(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 let IconSuccess = class extends LitElement {
@@ -715,25 +715,25 @@ let IconSuccess = class extends LitElement {
     `;
   }
 };
-IconSuccess.styles = styles$h;
-__decorateClass$i([
+IconSuccess.styles = styles$i;
+__decorateClass$j([
   n2({ attribute: "size", type: Number })
 ], IconSuccess.prototype, "size", 2);
-__decorateClass$i([
+__decorateClass$j([
   n2({ attribute: "color", type: String })
 ], IconSuccess.prototype, "color", 2);
-IconSuccess = __decorateClass$i([
+IconSuccess = __decorateClass$j([
   t$1("lc-icon-success")
 ], IconSuccess);
-const styles$g = css``;
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+const styles$h = css``;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 let IconSpinner = class extends LitElement {
@@ -759,14 +759,14 @@ let IconSpinner = class extends LitElement {
     `;
   }
 };
-IconSpinner.styles = styles$g;
-__decorateClass$h([
+IconSpinner.styles = styles$h;
+__decorateClass$i([
   n2({ attribute: "size", type: Number })
 ], IconSpinner.prototype, "size", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: "color", type: String })
 ], IconSpinner.prototype, "color", 2);
-IconSpinner = __decorateClass$h([
+IconSpinner = __decorateClass$i([
   t$1("lc-icon-spinner")
 ], IconSpinner);
 function fireEvent(node, type2, detail, options = {}) {
@@ -780,7 +780,7 @@ function fireEvent(node, type2, detail, options = {}) {
   node.dispatchEvent(event);
   return event;
 }
-const styles$f = css`:host {
+const styles$g = css`:host {
   display: block;
 }
 
@@ -811,14 +811,14 @@ const styles$f = css`:host {
   margin-inline-end: 71px;
   direction: var(--direction);
 }`;
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
 let FooterButtonsEditor = class extends LitElement {
@@ -936,20 +936,20 @@ let FooterButtonsEditor = class extends LitElement {
     fireEvent(this, "buttons-changed", { buttons });
   }
 };
-FooterButtonsEditor.styles = styles$f;
-__decorateClass$g([
+FooterButtonsEditor.styles = styles$g;
+__decorateClass$h([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "hass", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "buttons", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2()
 ], FooterButtonsEditor.prototype, "label", 2);
-FooterButtonsEditor = __decorateClass$g([
+FooterButtonsEditor = __decorateClass$h([
   t$1("lc-footer-buttons-editor")
 ], FooterButtonsEditor);
-const styles$e = css`.container {
+const styles$f = css`.container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-auto-rows: auto;
@@ -957,6 +957,16 @@ const styles$e = css`.container {
 }
 .container .row-full {
   grid-column: span 2/span 2;
+}
+.container hr {
+  grid-column: span 2/span 2;
+  width: 100%;
+  border-color: var(--entities-divider-color, var(--divider-color));
+}
+.container .description {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  line-height: 1.2;
 }
 .container .enable-confirm {
   display: flex;
@@ -1439,17 +1449,16 @@ const ButtonConfigSchema = object({
   target: optional(TargetConfigSchema),
   confirmation: optional(ConfirmationConfigSchema)
 });
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
-const COLORS = ["primary", "accent", "danger", "warning", "success", "info"];
 let FooterButtonEditor = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -1457,6 +1466,9 @@ let FooterButtonEditor = class extends LitElement {
   }
   get hasError() {
     return !!this._error;
+  }
+  get hasWarning() {
+    return false;
   }
   get GUImode() {
     return this._guiMode;
@@ -1486,6 +1498,26 @@ let FooterButtonEditor = class extends LitElement {
     }
     return this._confirmationText || "";
   }
+  get actionId() {
+    if (this._actionName && this._actionDomain) {
+      return `${this._actionDomain}.${this._actionName}`;
+    }
+    return void 0;
+  }
+  set actionId(value) {
+    if (value) {
+      const [domain, name] = value.split(".", 2);
+      this._actionDomain = domain || "";
+      this._actionName = name || "";
+    } else {
+      this._actionDomain = void 0;
+      this._actionName = void 0;
+    }
+  }
+  get service() {
+    if (!this._actionDomain || !this._actionName || !this.hass || !(this._actionDomain in this.hass.services)) return;
+    return this.hass.services[this._actionDomain][this._actionName];
+  }
   toggleMode() {
     this.GUImode = !this.GUImode;
   }
@@ -1493,8 +1525,17 @@ let FooterButtonEditor = class extends LitElement {
     var _a;
     (_a = this._yamlEditor) == null ? void 0 : _a.focus();
   }
+  willUpdate(_changed) {
+    var _a, _b;
+    super.willUpdate(_changed);
+    if (_changed.has("value")) {
+      if (((_a = this.value) == null ? void 0 : _a.action) !== this.actionId) {
+        this.actionId = (_b = this.value) == null ? void 0 : _b.action;
+      }
+    }
+  }
   render() {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     if (!this.hass || !this.value) return html``;
     if (!this._guiMode) {
       return this._renderYamlEditor();
@@ -1502,24 +1543,36 @@ let FooterButtonEditor = class extends LitElement {
     const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
     return html`
       <div class="container">
+        <!-- Action Selector-->
         <lc-action-selector
           class="row-full"
           .value=${(_a = this.value) == null ? void 0 : _a.action}
           .hass=${this.hass}
           .configValue=${"action"}
+          .helper=${(_b = this.service) == null ? void 0 : _b.description}
           @value-changed=${this._valueChanged}
         ></lc-action-selector>
 
+        <!-- Action Target Selector -->
+        ${this._renderServiceTargetSelector()}
+
+        <!-- Action Data Field -->
+        ${this._renderServiceDataFields()}
+
+        <hr />
+
+        <!-- Tooltip -->
         <ha-textfield
           class="input"
           .label="${this.hass.localize("component.lovelace_cards.entity_component._.button_tooltip")} ${optional2}"
-          .value=${((_b = this.value) == null ? void 0 : _b.tooltip) || ""}
+          .value=${((_c = this.value) == null ? void 0 : _c.tooltip) || ""}
           .configValue=${"tooltip"}
           @input=${this._valueChanged}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
+        <!-- Icon -->
         <ha-icon-picker
           .hass=${this.hass}
           .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")} ${optional2}"
@@ -1532,6 +1585,7 @@ let FooterButtonEditor = class extends LitElement {
         >
         </ha-icon-picker>
 
+        <!-- Enable confirmation -->
         <div class="row-full enable-confirm">
           <span>${this.hass.localize("component.lovelace_cards.entity_component._.show_confirmation_dialog")}</span>
 
@@ -1541,34 +1595,76 @@ let FooterButtonEditor = class extends LitElement {
           ></lc-switch>
         </div>
 
+        <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
           .label="${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")} ${optional2}"
           .value=${this.confirmationText}
           .configValue=${"confirmation"}
-          .disabled=${!!((_c = this.value) == null ? void 0 : _c.confirmation)}
+          .disabled=${!((_d = this.value) == null ? void 0 : _d.confirmation)}
           @input=${this._valueChanged}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">${this.hass.localize("component.lovelace_cards.entity_component._.button_color")} ${optional2}</div>
+        <div class="row-full">
+          ${this.hass.localize("component.lovelace_cards.entity_component._.button_color")} ${optional2}
+        </div>
 
-        ${COLORS.map((color) => {
-      var _a2;
-      return html`
-          <lc-radio 
-            id=${`color-${color}`} 
-            name="color" 
-            .label=${this.hass.localize(`component.lovelace_cards.entity_component._.color_${color}`)}
-            .value=${color} 
-            .checked=${((_a2 = this.value) == null ? void 0 : _a2.color) === color}
-            @change=${this._namedColorChanged}
-          ></lc-radio>
-        `;
-    })}
+        <!-- Select color -->
+        <lc-color-selector
+          class="row-full"
+          .hass=${this.hass}
+          .value=${this.value.color}
+          .configValue=${"color"}
+          @value-changed=${this._valueChanged}
+        ></lc-color-selector>
       </div>
     `;
+  }
+  _renderServiceTargetSelector() {
+    var _a;
+    const service = this.service;
+    if (!service || !this.hass) return html``;
+    const targets = service.target ? Object.keys(service.target) : [];
+    if (!targets.length) return html``;
+    return html`
+      <div class="row-full">
+        <ha-selector
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.choose_action_target")}
+          .hass=${this.hass}
+          .selector=${{ target: { ...service.target } }}
+          @value-changed=${this._valueChanged}
+          .configValue=${"target"}
+          .value=${(_a = this.value) == null ? void 0 : _a.target}
+        ></ha-selector>
+      </div>
+    `;
+  }
+  _renderServiceDataFields() {
+    const service = this.service;
+    if (!service || !this.hass) return html``;
+    const fieldsIds = service.fields ? Object.keys(service.fields) : [];
+    if (!fieldsIds.length) return html``;
+    return html`${fieldsIds.map((fieldId) => {
+      var _a, _b;
+      const fields = service.fields[fieldId];
+      if (!fields.required) return html``;
+      return html`
+          <div class="row-full">
+            <ha-selector
+              .label=${fields.name}
+              .helper=${fields.description}
+              .hass=${this.hass}
+              .selector=${fields.selector}
+              @value-changed=${this._valueChanged}
+              .configValue=${"data"}
+              .dataField=${fieldId}
+              .value=${((_b = (_a = this.value) == null ? void 0 : _a.data) == null ? void 0 : _b[fieldId]) || ""}
+            ></ha-selector>
+          </div>
+        `;
+    })}`;
   }
   _renderYamlEditor() {
     return html`
@@ -1585,6 +1681,22 @@ let FooterButtonEditor = class extends LitElement {
           <div class="error">${this._error}</div>` : null}
       </div>
     `;
+  }
+  _handleYAMLChanged(event) {
+    event.stopPropagation();
+    const config = event.detail.value;
+    if (event.detail.isValid) {
+      try {
+        assert(config, ButtonConfigSchema);
+        this.value = config;
+        this._error = void 0;
+        fireEvent(this, "config-changed", { config });
+      } catch (e2) {
+        this._error = `${e2.message}`.trim();
+      }
+    } else {
+      this._error = `${event.detail.errorMsg}`.trim();
+    }
   }
   _toggleConfirmSwitch(event) {
     var _a;
@@ -1606,60 +1718,88 @@ let FooterButtonEditor = class extends LitElement {
     fireEvent(this, "config-changed", { config });
   }
   _valueChanged(event) {
-    const value = event.target.value;
+    var _a, _b;
     const configValue = event.target.configValue;
+    const value = event.target.value;
     const config = { ...this.value };
-    if (configValue === "confirmation") {
+    if (configValue === "action") {
+      const [domain, name] = value.split(".", 2);
+      const service = (_a = this.hass.services[domain]) == null ? void 0 : _a[name];
+      this._error = void 0;
+      if (!service) {
+        this._error = this.hass.localize("ui.errors.config.configuration_error");
+        return;
+      }
+      if (service.target && Object.keys(service.target).length) {
+        config.target = {
+          entity_id: [],
+          device_id: [],
+          area_id: [],
+          floor_id: [],
+          label_id: []
+        };
+      } else {
+        Reflect.deleteProperty(config, "target");
+      }
+      if (service.fields && Object.keys(service.fields).length) {
+        config.data = {};
+      } else {
+        Reflect.deleteProperty(config, "data");
+      }
+      config.action = value;
+    } else if (configValue === "confirmation") {
       config.confirmation = value ? { text: value } : true;
+    } else if (configValue === "target") {
+      const updated = event.detail.value;
+      config.target = {
+        entity_id: updated.entity_id.length ? Array.from(new Set(updated.entity_id)) : [],
+        device_id: updated.device_id.length ? Array.from(new Set(updated.device_id)) : [],
+        area_id: updated.area_id.length ? Array.from(new Set(updated.area_id)) : [],
+        floor_id: updated.floor_id.length ? Array.from(new Set(updated.floor_id)) : [],
+        label_id: updated.label_id.length ? Array.from(new Set(updated.label_id)) : []
+      };
+    } else if (configValue === "data") {
+      const dataField = event.target.dataField;
+      config.data = { ...((_b = this.value) == null ? void 0 : _b.data) || {} };
+      config.data[dataField] = event.detail.value;
     } else {
       config[configValue] = value;
     }
     fireEvent(this, "config-changed", { config });
   }
-  _namedColorChanged(event) {
-    const config = { ...this.value, color: event.detail.value };
-    fireEvent(this, "config-changed", { config });
-  }
-  _handleYAMLChanged(event) {
-    event.stopPropagation();
-    const config = event.detail.value;
-    if (event.detail.isValid) {
-      try {
-        assert(config, ButtonConfigSchema);
-        this.value = config;
-        this._error = void 0;
-        fireEvent(this, "config-changed", { config });
-      } catch (e2) {
-        this._error = `${e2.message}`.trim();
-      }
-    } else {
-      this._error = `${event.detail.errorMsg}`.trim();
-    }
-  }
 };
-FooterButtonEditor.styles = styles$e;
-__decorateClass$f([
+FooterButtonEditor.styles = styles$f;
+__decorateClass$g([
   n2({ attribute: false })
 ], FooterButtonEditor.prototype, "hass", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], FooterButtonEditor.prototype, "value", 2);
-__decorateClass$f([
+__decorateClass$g([
   e("ha-yaml-editor")
 ], FooterButtonEditor.prototype, "_yamlEditor", 2);
-__decorateClass$f([
+__decorateClass$g([
+  r()
+], FooterButtonEditor.prototype, "_actionDomain", 2);
+__decorateClass$g([
+  r()
+], FooterButtonEditor.prototype, "_actionName", 2);
+__decorateClass$g([
+  r()
+], FooterButtonEditor.prototype, "_targetSelector", 2);
+__decorateClass$g([
   r()
 ], FooterButtonEditor.prototype, "_guiSupported", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], FooterButtonEditor.prototype, "_error", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], FooterButtonEditor.prototype, "_guiMode", 2);
-FooterButtonEditor = __decorateClass$f([
+FooterButtonEditor = __decorateClass$g([
   t$1("lc-footer-button-editor")
 ], FooterButtonEditor);
-const styles$d = css`.header {
+const styles$e = css`.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1670,14 +1810,14 @@ const styles$d = css`.header {
   align-items: center;
   font-size: 18px;
 }`;
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
 let HuiSubElementEditor = class extends LitElement {
@@ -1771,60 +1911,26 @@ let HuiSubElementEditor = class extends LitElement {
     this.config.elementConfig = ev.detail.config;
   }
 };
-HuiSubElementEditor.styles = styles$d;
-__decorateClass$e([
+HuiSubElementEditor.styles = styles$e;
+__decorateClass$f([
   n2({ attribute: false })
 ], HuiSubElementEditor.prototype, "hass", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], HuiSubElementEditor.prototype, "config", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], HuiSubElementEditor.prototype, "_guiModeAvailable", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], HuiSubElementEditor.prototype, "_guiMode", 2);
-__decorateClass$e([
+__decorateClass$f([
   e(".editor")
 ], HuiSubElementEditor.prototype, "_editorElement", 2);
-HuiSubElementEditor = __decorateClass$e([
+HuiSubElementEditor = __decorateClass$f([
   t$1("lc-sub-element-editor")
 ], HuiSubElementEditor);
-const styles$c = css`:host {
-  --lc-dropdown-item-height: 72px;
-  --lc-dropdown-items-count: 5;
-  --lc-dropdown-width: 300px;
-  --lc-dropdown-top: 0;
-  --lc-dropdown-left: 0;
-  --lc-dropdown-border-radius: 0;
-}
-
-.dropdown {
-  top: var(--lc-dropdown-top);
-  left: var(--lc-dropdown-left);
-  width: var(--lc-dropdown-width);
-  height: var(--lc-dropdown-height);
-  max-height: var(--lc-dropdown-height);
-  background-color: var(--material-background-color);
-  border-radius: var(--lc-dropdown-border-radius);
-  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  position: fixed;
-  z-index: 99999;
-}
-
-.scroller {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  display: block;
-}
-
-.list-items {
-  padding-left: 0;
-  margin: 0;
-}`;
-const styles$b = css`:host {
+const styles$d = css`:host {
   height: var(--lc-dropdown-item-height);
   width: auto;
   padding: 0 16px;
@@ -1832,18 +1938,17 @@ const styles$b = css`:host {
   color: var(--primary-text-color);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  scroll-snap-align: start end;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
+  transition: background-color 0.2s ease-out;
   outline: 0;
 }
-:host[focused] {
-  outline: none;
-}
-:host[selected] {
-  color: var(--primary-color);
-  --mdc-ripple-color: var(--primary-color);
+
+:host(:hover) {
+  background-color: var(--material-secondary-background-color);
 }
 
 :host([selected]) {
@@ -1871,68 +1976,15 @@ const styles$b = css`:host {
   margin-top: 6px;
   font-size: 12px;
   color: var(--secondary-text-color);
-}
-
-/**
-:host([focused]) {
-
-}
-
-@media (any-hover: hover) {
-  :host(:hover:not([disabled])) {
-    background-color: var(--material-secondary-background-color);
-  }
-
-}
-
-:host([focused]:not([disabled])) {
-  background-color: var(--material-divider-color);
-}
-
-:host([disabled]) {
-  color: var(--material-disabled-text-color);
-  cursor: default;
-  pointer-events: none;
-}
-
-:host([focused]:not([disabled])) {
-  background-color: rgba(var(--rgb-primary-text-color, 0, 0, 0), .12)
-}
-
-:host([selected]:not([disabled])) {
-  background-color: transparent;
-  color: var(--mdc-theme-primary);
-  --mdc-ripple-color: var(--mdc-theme-primary);
-  --mdc-theme-text-primary-on-background: var(--mdc-theme-primary)
-}
-
-:host([selected]:not([disabled])):before {
-  background-color: var(--mdc-theme-primary);
-  opacity: .12;
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%
-}
-
-:host([selected][focused]:not([disabled])):before {
-  opacity: .24
-}
-
-:host(:hover:not([disabled])) {
-  background-color: transparent
-}
-**/`;
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+}`;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$e(target, key, result);
   return result;
 };
 let DropdownListItem = class extends LitElement {
@@ -1953,23 +2005,23 @@ let DropdownListItem = class extends LitElement {
     `;
   }
 };
-DropdownListItem.styles = styles$b;
-__decorateClass$d([
+DropdownListItem.styles = styles$d;
+__decorateClass$e([
   n2()
 ], DropdownListItem.prototype, "value", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: "selected", reflect: true, type: Boolean })
 ], DropdownListItem.prototype, "selected", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2()
 ], DropdownListItem.prototype, "label", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2()
 ], DropdownListItem.prototype, "text", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2()
 ], DropdownListItem.prototype, "icon", 2);
-DropdownListItem = __decorateClass$d([
+DropdownListItem = __decorateClass$e([
   t$1("lc-dropdown-list-item")
 ], DropdownListItem);
 function getElementRect(element) {
@@ -1984,163 +2036,6 @@ function getElementRect(element) {
     height: rect.height
   };
 }
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
-  return result;
-};
-let Dropdown = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.count = 5;
-    this.itemHeight = 72;
-    this.inert = false;
-    this._isLessThanMax = false;
-  }
-  setConfig(config) {
-    var _a;
-    if (!((_a = config.items) == null ? void 0 : _a.length)) return;
-    this.value = config.value;
-    this._ref = config.ref;
-    this._allItems = config.items;
-    this._items = config.items;
-    this._positioning();
-  }
-  connectedCallback() {
-    super.connectedCallback();
-    this._wheelCallback = this._onWheel.bind(this);
-    window.addEventListener("wheel", this._wheelCallback);
-  }
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener("wheel", this._wheelCallback);
-    this._wheelCallback = void 0;
-  }
-  filter(value) {
-    value = (value == null ? void 0 : value.trim().toLowerCase()) || "";
-    if (!value || !this._allItems) {
-      this._items = this._allItems || [];
-    } else {
-      this._items = this._allItems.filter((item) => {
-        return item.value.toLowerCase().includes(value) || item.label && item.label.toLowerCase().includes(value);
-      });
-    }
-    if (this._items.length < this.count || this._isLessThanMax) {
-      this._isLessThanMax = this._items.length < this.count;
-      this._positioning();
-    }
-  }
-  willUpdate(_changed) {
-    var _a;
-    super.willUpdate(_changed);
-    if (_changed.has("_items") || _changed.has("count") || _changed.has("itemHeight")) {
-      const height = this.itemHeight * Math.min(this.count, ((_a = this._items) == null ? void 0 : _a.length) || 0);
-      this.style.setProperty("--lc-dropdown-height", `${height}px`);
-    }
-  }
-  render() {
-    if (!this._items) return html``;
-    return html`
-      <div class="dropdown" @click=${(event) => event.stopPropagation()}>
-        <div class="scroller">
-          <ul class="list-items">
-            ${this._items.map((item) => this._renderItem(item))}
-          </ul>
-        </div>
-      </div>
-    `;
-  }
-  _renderItem(item) {
-    return html`
-      <lc-dropdown-list-item
-        .value=${item.value}
-        .selected=${item.value === this.value}
-        .icon=${item.icon}
-        .label=${item.label}
-        .text=${item.text}
-        @click=${(event) => this._onChange(event, item.value)}
-      ></lc-dropdown-list-item>
-    `;
-  }
-  _onChange(event, value) {
-    event.stopPropagation();
-    fireEvent(this, "value-changed", { value });
-  }
-  _onWheel() {
-    let x;
-    let y2;
-    const tryPosition = () => {
-      const result = this._positioning();
-      if (!result) return;
-      if (x !== result.x || y2 !== result.y) {
-        x = result.x;
-        y2 = result.y;
-        requestAnimationFrame(tryPosition);
-      }
-    };
-    requestAnimationFrame(tryPosition);
-  }
-  _positioning() {
-    var _a;
-    if (!this._ref || !this._items || !this.count) return null;
-    const { x, y: y2, width, height } = getElementRect(this._ref);
-    const windowHeight = ((_a = window.visualViewport) == null ? void 0 : _a.height) || window.innerHeight;
-    const dropdownHeight = this.itemHeight * Math.min(this.count, this._items.length);
-    const isBellow = windowHeight < y2 + height + dropdownHeight;
-    const top2 = isBellow ? y2 - dropdownHeight : y2 + height;
-    this.style.setProperty("--lc-dropdown-top", `${top2}px`);
-    this.style.setProperty("--lc-dropdown-left", `${x}px`);
-    this.style.setProperty("--lc-dropdown-width", `${width}px`);
-    this.style.setProperty("--lc-dropdown-border-radius", isBellow ? ".5rem .5rem 0 0" : "0 0 .5rem .5rem");
-    return { y: top2, x };
-  }
-};
-Dropdown.styles = styles$c;
-__decorateClass$c([
-  n2()
-], Dropdown.prototype, "value", 2);
-__decorateClass$c([
-  n2()
-], Dropdown.prototype, "count", 2);
-__decorateClass$c([
-  n2({ attribute: "item-height" })
-], Dropdown.prototype, "itemHeight", 2);
-__decorateClass$c([
-  n2({ attribute: "inert", type: Boolean })
-], Dropdown.prototype, "inert", 2);
-__decorateClass$c([
-  r()
-], Dropdown.prototype, "_allItems", 2);
-__decorateClass$c([
-  r()
-], Dropdown.prototype, "_items", 2);
-Dropdown = __decorateClass$c([
-  t$1("lc-dropdown")
-], Dropdown);
-const styles$a = css`:host {
-  display: block;
-}
-:host[opened] .toggle-button {
-  color: var(--primary-color);
-}
-
-.action-selector {
-  position: relative;
-}
-.action-selector .input {
-  width: 100%;
-}
-.action-selector .toggle-button {
-  right: 1rem;
-  top: 1rem;
-  position: absolute;
-  color: var(--input-dropdown-icon-color);
-}`;
 const DEFAULT_SERVICE_ICON = "mdi:room-service";
 const DOMAIN_ICONS = {
   air_quality: "mdi:air-filter",
@@ -2193,8 +2088,10 @@ const DOMAIN_ICONS = {
   vacuum: "mdi:robot-vacuum",
   wake_word: "mdi:chat-sleep",
   weather: "mdi:weather-partly-cloudy",
-  zone: "mdi:map-marker-radius"
+  zone: "mdi:map-marker-radius",
+  fan: "mdi:fan"
 };
+const OFF_SUPPORTS = ["automation", "fan", "light", "input_boolean"];
 function getServiceIcon(service) {
   const [domain, serviceName] = service.split(".", 2);
   if (serviceName === "pause") {
@@ -2204,16 +2101,317 @@ function getServiceIcon(service) {
     return "mdi:reload";
   }
   const iconName = DOMAIN_ICONS[domain];
+  if (iconName && /_off$/.test(serviceName) && OFF_SUPPORTS.includes(domain)) {
+    return iconName + "-off";
+  }
   return iconName || DEFAULT_SERVICE_ICON;
 }
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+const styles$c = css`:host {
+  --lc-dropdown-item-height: 72px;
+  --lc-dropdown-items-count: 5;
+  --lc-dropdown-width: 300px;
+  --lc-dropdown-top: 0;
+  --lc-dropdown-left: 0;
+  --lc-dropdown-border-radius: 0;
+}
+
+.dropdown {
+  top: var(--lc-dropdown-top);
+  left: var(--lc-dropdown-left);
+  width: var(--lc-dropdown-width);
+  height: var(--lc-dropdown-height);
+  max-height: var(--lc-dropdown-height);
+  background-color: var(--material-background-color);
+  border-radius: var(--lc-dropdown-border-radius);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  position: fixed;
+  z-index: 99999;
+}
+
+.scroller {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: block;
+}
+
+.list-items {
+  padding-left: 0;
+  margin: 0;
+}`;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
+  if (kind && result) __defProp$d(target, key, result);
+  return result;
+};
+const LIST_ITEM_HEIGHT = 72;
+const LIST_MAX_DISPLAY = 5;
+let ActionDropdown = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.opened = false;
+    this._domains = [];
+    this._items = [];
+    this._idToIndex = {};
+    this._callbacks = {};
+  }
+  willUpdate(_changed) {
+    var _a;
+    super.willUpdate(_changed);
+    if (_changed.has("services")) {
+      this._recomputeListItems();
+      if (this._content) {
+        this._content.items = this._items;
+      }
+    }
+    if (_changed.has("search") && this._content) {
+      const search = ((_a = this.search) == null ? void 0 : _a.trim().toLowerCase()) || "";
+      if (search) {
+        this._content.items = this._items.filter((item) => {
+          return item.value.toLowerCase().includes(search) || item.label && item.label.toLowerCase().includes(search);
+        });
+      } else {
+        this._content.items = this._items;
+      }
+      this._positioning();
+    }
+  }
+  updated(_changed) {
+    super.updated(_changed);
+    if (_changed.has("opened")) {
+      if (this.opened) {
+        this._showDropdown();
+      } else {
+        this._hideDropdown();
+      }
+    }
+  }
+  _showDropdown() {
+    this._content = document.createElement("lc-action-dropdown-content");
+    this._content.items = this._items;
+    this._content.activeIndex = this.value ? this._idToIndex[this.value] : null;
+    this._content.addEventListener("value-changed", this._onChange.bind(this));
+    document.body.append(this._content);
+    this._callbacks["wheel"] = this._onWheel.bind(this);
+    window.addEventListener("wheel", this._callbacks["wheel"]);
+    requestAnimationFrame(() => {
+      this._callbacks["window-click"] = () => fireEvent(this, "dismiss");
+      window.addEventListener("click", this._callbacks["window-click"]);
+      this._positioning();
+    });
+  }
+  _hideDropdown() {
+    var _a;
+    window.removeEventListener("wheel", this._callbacks["wheel"]);
+    Reflect.deleteProperty(this._callbacks, "wheel");
+    window.removeEventListener("click", this._callbacks["window-click"]);
+    Reflect.deleteProperty(this._callbacks, "window-click");
+    (_a = this._content) == null ? void 0 : _a.remove();
+    this._content = void 0;
+  }
+  _onChange(event) {
+    event.stopPropagation();
+    fireEvent(this, "dismiss");
+    fireEvent(this, "value-changed", { value: event.detail.value });
+  }
+  _onWheel() {
+    let left;
+    let top2;
+    const tryPosition = () => {
+      const result = this._positioning();
+      if (!result) return;
+      if (left !== result.left || top2 !== result.top) {
+        left = result.left;
+        top2 = result.top;
+        requestAnimationFrame(tryPosition);
+      }
+    };
+    requestAnimationFrame(tryPosition);
+  }
+  _recomputeListItems() {
+    this._domains = this.services ? Object.keys(this.services) : [];
+    const items = [];
+    const idToIndex = {};
+    let index = 0;
+    for (let i2 = 0; i2 < this._domains.length; i2++) {
+      const domain = this._domains[i2];
+      const services = this.services[domain];
+      const servicesNames = Object.keys(services);
+      for (let j = 0; j < servicesNames.length; j++) {
+        const serviceName = servicesNames[j];
+        const serviceId = `${domain}.${serviceName}`;
+        items.push({
+          index,
+          value: serviceId,
+          label: services[serviceName].name,
+          text: serviceId,
+          icon: getServiceIcon(serviceId)
+        });
+        idToIndex[serviceId] = index;
+        index++;
+      }
+    }
+    this._items = items;
+    this._idToIndex = idToIndex;
+  }
+  _positioning() {
+    var _a;
+    if (!this._content) {
+      throw new Error("");
+    }
+    const { x, y: y2, width, height } = getElementRect(this.previousElementSibling);
+    const windowHeight = ((_a = window.visualViewport) == null ? void 0 : _a.height) || window.innerHeight;
+    const dropdownHeight = LIST_ITEM_HEIGHT * Math.min(LIST_MAX_DISPLAY, this._content.items.length);
+    const isBellow = windowHeight < y2 + height + dropdownHeight;
+    const top2 = isBellow ? y2 - dropdownHeight : y2 + height;
+    this._content.style.setProperty("--lc-dropdown-top", `${top2}px`);
+    this._content.style.setProperty("--lc-dropdown-left", `${x}px`);
+    this._content.style.setProperty("--lc-dropdown-width", `${width}px`);
+    this._content.style.setProperty("--lc-dropdown-height", `${dropdownHeight}px`);
+    this._content.style.setProperty("--lc-dropdown-border-radius", isBellow ? ".5rem .5rem 0 0" : "0 0 .5rem .5rem");
+    return {
+      top: top2,
+      left: x,
+      width,
+      isBellow
+    };
+  }
+};
+__decorateClass$d([
+  n2()
+], ActionDropdown.prototype, "value", 2);
+__decorateClass$d([
+  n2()
+], ActionDropdown.prototype, "search", 2);
+__decorateClass$d([
+  n2({ attribute: false })
+], ActionDropdown.prototype, "services", 2);
+__decorateClass$d([
+  n2({ attribute: "opened", reflect: true, type: Boolean })
+], ActionDropdown.prototype, "opened", 2);
+__decorateClass$d([
+  r()
+], ActionDropdown.prototype, "_domains", 2);
+__decorateClass$d([
+  r()
+], ActionDropdown.prototype, "_items", 2);
+__decorateClass$d([
+  r()
+], ActionDropdown.prototype, "_idToIndex", 2);
+ActionDropdown = __decorateClass$d([
+  t$1("lc-action-dropdown")
+], ActionDropdown);
+let ActionDropdownContent = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.items = [];
+    this.activeIndex = null;
+    this.inert = false;
+  }
+  firstUpdated(_changed) {
+    var _a;
+    super.updated(_changed);
+    if (this.activeIndex != null) {
+      const scroller = (_a = this.renderRoot.firstElementChild) == null ? void 0 : _a.firstElementChild;
+      if (scroller) {
+        ((_scroller, _scrollTo) => {
+          requestAnimationFrame(() => _scroller.scrollTo(0, _scrollTo));
+        })(scroller, this.activeIndex * LIST_ITEM_HEIGHT);
+      }
+    }
+  }
+  render() {
+    if (!this.items) return html``;
+    return html`
+      <div class="dropdown" @click=${(event) => event.stopPropagation()} @wheel=${(event) => event.stopPropagation()}>
+        <div class="scroller">
+          <ul class="list-items">
+            ${this.items.map((item) => this._renderItem(item))}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+  _renderItem(item) {
+    return html`
+      <lc-dropdown-list-item
+        .value=${item.value}
+        .selected=${this.activeIndex != null && item.index === this.activeIndex}
+        .icon=${item.icon}
+        .label=${item.label}
+        .text=${item.text}
+        @click=${this._onClick}
+      ></lc-dropdown-list-item>
+    `;
+  }
+  _onClick(event) {
+    event.stopPropagation();
+    console.log(event.target.value);
+    fireEvent(this, "value-changed", { value: event.target.value }, { bubbles: true });
+  }
+};
+ActionDropdownContent.styles = styles$c;
+__decorateClass$d([
+  n2({ attribute: false })
+], ActionDropdownContent.prototype, "items", 2);
+__decorateClass$d([
+  n2()
+], ActionDropdownContent.prototype, "activeIndex", 2);
+__decorateClass$d([
+  n2({ attribute: "inert", type: Boolean })
+], ActionDropdownContent.prototype, "inert", 2);
+ActionDropdownContent = __decorateClass$d([
+  t$1("lc-action-dropdown-content")
+], ActionDropdownContent);
+const styles$b = css`:host {
+  display: block;
+}
+:host[opened] .toggle-button {
+  color: var(--primary-color);
+}
+
+.action-selector {
+  position: relative;
+}
+.action-selector .input {
+  width: 100%;
+}
+.action-selector .toggle-button {
+  right: 1rem;
+  top: 1rem;
+  position: absolute;
+  color: var(--input-dropdown-icon-color);
+}`;
+const CODE_COMPONENTS = {
+  homeassistant: "Home Assistant Core Integration"
+};
+function formatActionName(domain, service, localize) {
+  const serviceName = service.name;
+  let componentName;
+  if (domain in CODE_COMPONENTS) {
+    componentName = CODE_COMPONENTS[domain];
+  } else {
+    componentName = localize(`component.${domain}.entity_component._.name`);
+  }
+  if (!componentName) {
+    componentName = domain.split(/[-_]/g).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+  return `${componentName}: ${serviceName}`;
+}
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$c(target, key, result);
   return result;
 };
 let ActionSelector = class extends LitElement {
@@ -2222,30 +2420,39 @@ let ActionSelector = class extends LitElement {
     this.disabled = false;
     this.required = false;
     this.opened = false;
+    this._valueFormatted = "";
+    this._search = "";
+    this._focused = false;
   }
   willUpdate(_changed) {
     var _a, _b, _c;
     super.willUpdate(_changed);
     if (_changed.has("value")) {
+      this._valueFormatted = "";
       if (this.value) {
         const [domain, action] = this.value.split(".");
         const service = action && ((_c = (_b = (_a = this.hass) == null ? void 0 : _a.services) == null ? void 0 : _b[domain]) == null ? void 0 : _c[action]) || void 0;
-        this._name = (service == null ? void 0 : service.name) || this.value || "";
-      } else {
-        this._name = "";
+        if (service) {
+          this._valueFormatted = formatActionName(domain, service, this.hass.localize);
+        }
       }
     }
   }
   render() {
     if (!this.hass) return html``;
     return html`
-      <div class="action-selector" @click=${this._openDropdown}>
+      <div class="action-selector" @click=${(event) => event.stopPropagation()}>
         <ha-textfield
           class="input"
           .label=${this.hass.localize("ui.components.service-picker.action")}
-          .value=${this._name || this.value || ""}
-          .configValue=${"title"}
-          @input=${this._valueChanged}
+          .value=${this._focused ? this._search : this._valueFormatted}
+          .errorMessage=${this._errorMessage}
+          .invalid=${!!this._errorMessage}
+          .helper=${this.helper}
+          helperPersistent
+          @input=${this._onInput}
+          @focus=${this._onFocus}
+          @blur=${this._onBlur}
         >
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
@@ -2259,81 +2466,108 @@ let ActionSelector = class extends LitElement {
           ?disabled=${this.disabled}
         ></ha-icon>
       </div>
+      <lc-action-dropdown
+        .value=${this.value}
+        .services=${this.hass.services}
+        .opened=${this.opened}
+        .search=${this._search}
+        @dismiss=${() => this.opened = false}
+        @value-changed=${this._onValueChanged}
+      ></lc-action-dropdown>
     `;
   }
-  _openDropdown(event) {
-    var _a;
+  _onBlur(event) {
     event.stopPropagation();
-    if (this.opened || !this.hass) return;
-    this.opened = true;
-    (_a = this._textfield) == null ? void 0 : _a.focus();
-    const items = [];
-    const domains = Object.keys(this.hass.services);
-    for (const domain of domains) {
-      const services = this.hass.services[domain];
-      const servicesNames = Object.keys(services);
-      for (const serviceName of servicesNames) {
-        const serviceId = `${domain}.${serviceName}`;
-        items.push({
-          value: serviceId,
-          label: services[serviceName].name,
-          text: serviceId,
-          icon: getServiceIcon(serviceId)
-        });
-      }
-    }
-    const close = () => {
-      var _a2;
-      this.opened = false;
-      (_a2 = this._dropdown) == null ? void 0 : _a2.remove();
-      window.removeEventListener("click", close);
-    };
-    this._dropdown = document.createElement("lc-dropdown");
-    this._dropdown.setConfig({
-      items,
-      ref: this,
-      value: this.value
-    });
-    this._dropdown.addEventListener("value-changed", (event2) => {
-      this.value = event2.detail.value;
-      close();
-      fireEvent(this, "value-changed", { value: event2.detail.value });
-    });
-    document.body.append(this._dropdown);
-    requestAnimationFrame(() => {
-      window.addEventListener("click", close);
-    });
+    this._focused = false;
   }
-  _valueChanged() {
-    if (!this._dropdown || !this._textfield) return;
-    this._dropdown.filter(this._textfield.value);
+  _onFocus(event) {
+    event.stopPropagation();
+    this._focused = true;
+    this.opened = true;
+  }
+  _onInput(event) {
+    this._search = event.target.value;
+  }
+  _onValueChanged(event) {
+    this.value = event.detail.value;
+    this._search = "";
   }
 };
-ActionSelector.styles = styles$a;
-__decorateClass$b([
+ActionSelector.styles = styles$b;
+__decorateClass$c([
   n2({ attribute: false })
 ], ActionSelector.prototype, "hass", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2()
 ], ActionSelector.prototype, "value", 2);
-__decorateClass$b([
-  n2({ type: Boolean })
+__decorateClass$c([
+  n2()
+], ActionSelector.prototype, "helper", 2);
+__decorateClass$c([
+  n2({ attribute: "disabled", type: Boolean, reflect: true })
 ], ActionSelector.prototype, "disabled", 2);
-__decorateClass$b([
-  n2({ type: Boolean })
+__decorateClass$c([
+  n2({ attribute: "required", type: Boolean, reflect: true })
 ], ActionSelector.prototype, "required", 2);
-__decorateClass$b([
-  n2({ type: Boolean, reflect: true })
+__decorateClass$c([
+  n2({ attribute: "opened", type: Boolean, reflect: true })
 ], ActionSelector.prototype, "opened", 2);
-__decorateClass$b([
-  e(".input")
-], ActionSelector.prototype, "_textfield", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
-], ActionSelector.prototype, "_name", 2);
-ActionSelector = __decorateClass$b([
+], ActionSelector.prototype, "_valueFormatted", 2);
+__decorateClass$c([
+  r()
+], ActionSelector.prototype, "_errorMessage", 2);
+__decorateClass$c([
+  r()
+], ActionSelector.prototype, "_search", 2);
+__decorateClass$c([
+  r()
+], ActionSelector.prototype, "_focused", 2);
+ActionSelector = __decorateClass$c([
   t$1("lc-action-selector")
 ], ActionSelector);
+const styles$a = css`.color-selector .buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;
+  gap: 10px;
+}
+.color-selector .buttons .color-button {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  text-transform: capitalize;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.color-selector .buttons .color-button:before {
+  content: " ";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 0.75rem;
+  background-color: var(--lc-color-button);
+}
+.color-selector .more-button {
+  margin: 14px 0 8px;
+  text-align: center;
+}
+.color-selector .more-button button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: var(--secondary-text-color);
+}
+.color-selector .more-button button:hover {
+  text-decoration: underline;
+}
+.color-selector .color-input {
+  margin-top: 1rem;
+  width: 100%;
+}`;
 function formatColors(value, defaultColor = "var(--primary-color)") {
   if (!value) return defaultColor;
   switch (value) {
@@ -2350,11 +2584,203 @@ function formatColors(value, defaultColor = "var(--primary-color)") {
       return "var(--warning-color)";
     case "success":
       return "var(--success-color)";
+    case "disabled":
+      return "var(--disabled-color)";
     case "info":
       return "var(--info-color)";
+    case "red":
+      return "var(--red-color)";
+    case "pink":
+      return "var(--pink-color)";
+    case "purple":
+      return "var(--purple-color)";
+    case "deep-purple":
+      return "var(--deep-purple-color)";
+    case "indigo":
+      return "var(--indigo-color)";
+    case "blue":
+      return "var(--blue-color)";
+    case "light-blue":
+      return "var(--light-blue-color)";
+    case "cyan":
+      return "var(--cyan-color)";
+    case "teal":
+      return "var(--teal-color)";
+    case "green":
+      return "var(--green-color)";
+    case "light-green":
+      return "var(--light-green-color)";
+    case "lime":
+      return "var(--lime-color)";
+    case "yellow":
+      return "var(--yellow-color)";
+    case "amber":
+      return "var(--amber-color)";
+    case "orange":
+      return "var(--orange-color)";
+    case "deep-orange":
+      return "var(--deep-orange-color)";
+    case "brown":
+      return "var(--brown-color)";
+    case "light-grey":
+      return "var(--light-grey-color)";
+    case "grey":
+      return "var(--grey-color)";
+    case "dark-grey":
+      return "var(--dark-grey-color)";
+    case "blue-grey":
+      return "var(--blue-grey-color)";
+    case "black":
+      return "var(--black-color)";
+    case "white":
+      return "var(--white-color)";
   }
   return value;
 }
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$b(target, key, result);
+  return result;
+};
+const COLORS = [
+  "primary",
+  "accent",
+  "danger",
+  "warning",
+  "success",
+  "info",
+  "disabled",
+  "red",
+  "pink",
+  "purple",
+  "deep-purple",
+  "indigo",
+  "blue",
+  "light-blue",
+  "cyan",
+  "teal",
+  "green",
+  "light-green",
+  "lime",
+  "yellow",
+  "amber",
+  "orange",
+  "deep-orange",
+  "brown",
+  "light-grey",
+  "grey",
+  "dark-grey",
+  "blue-grey",
+  "black",
+  "white"
+];
+let ColorSelector = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.value = COLORS[0];
+    this._isMore = false;
+  }
+  get colors() {
+    if (this.isMore) {
+      return COLORS;
+    }
+    return COLORS.slice(0, 6);
+  }
+  get isMore() {
+    const index = COLORS.indexOf(this.value);
+    return index > 5 ? true : this._isMore;
+  }
+  set isMore(value) {
+    this._isMore = value;
+  }
+  render() {
+    var _a, _b, _c;
+    return html`
+      <div class="color-selector">
+        <div class="buttons">
+          ${this.colors.map((color) => html`
+            <button
+              type="button"
+              class=${`color-button${this.value === color ? " active" : ""}`}
+              style=${`--lc-color-button: ${formatColors(color)}; opacity: ${this.value === color ? "1" : "0.3"};`}
+              @click=${() => this._handleSelect(color)}
+            >
+              <span>${color}</span>
+            </button>
+          `)}
+        </div>
+
+        <div class="more-button">
+          ${!this.isMore ? html`
+            <button @click=${() => this.isMore = true}>
+              ${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.more_theme_colors")}
+            </button>
+          ` : null}
+        </div>
+
+        <ha-textfield
+          class="color-input"
+          .label=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.type_your_color")}
+          .value=${COLORS.includes(this.value) ? "" : this.value}
+          .configValue=${"confirmation"}
+          .helper=${(_c = this.hass) == null ? void 0 : _c.localize("component.lovelace_cards.entity_component._.supports_color_format")}
+          .errorMessage=${this._errorMessage}
+          .invalid=${!!this._errorMessage}
+          @input=${this._handleCustom}
+        >
+          <slot name="icon" slot="leadingIcon"></slot>
+        </ha-textfield>
+
+        <ha-color-picker></ha-color-picker>
+      </div>
+    `;
+  }
+  _handleSelect(color) {
+    this.value = color;
+    fireEvent(this, "value-changed", { value: color });
+  }
+  _handleCustom(event) {
+    var _a;
+    const value = event.target.value;
+    if (COLORS.includes(this.value)) {
+      this._prevColor = this.value;
+    }
+    if (value) {
+      this.value = value;
+    } else {
+      this.value = this._prevColor || COLORS[0];
+    }
+    this._errorMessage = CSS.supports("color", value) ? void 0 : (_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.unsupported_color_format");
+    fireEvent(this, "value-changed", { value });
+  }
+};
+ColorSelector.styles = styles$a;
+__decorateClass$b([
+  n2({ attribute: false })
+], ColorSelector.prototype, "hass", 2);
+__decorateClass$b([
+  n2({ attribute: "value", reflect: true, type: String })
+], ColorSelector.prototype, "value", 2);
+__decorateClass$b([
+  r()
+], ColorSelector.prototype, "_custom", 2);
+__decorateClass$b([
+  r()
+], ColorSelector.prototype, "_errorMessage", 2);
+__decorateClass$b([
+  r()
+], ColorSelector.prototype, "colors", 1);
+__decorateClass$b([
+  r()
+], ColorSelector.prototype, "_isMore", 2);
+ColorSelector = __decorateClass$b([
+  t$1("lc-color-selector")
+], ColorSelector);
 const styles$9 = css`:host {
   --lc-button-size: 40px;
   --lc-button-icon-size: 24px;
@@ -4124,12 +4550,10 @@ let EntitiesCardConfig = class extends LitElement {
       ...this._subElementEditorConfig,
       elementConfig: value
     };
-    console.log(this._subElementEditorConfig);
     fireEvent(this, "config-changed", { config: this._config });
   }
   _editDetailElement(event) {
     this._subElementEditorConfig = event.detail.subElementConfig;
-    console.log(this._subElementEditorConfig);
   }
   _handleButtonsChanged(ev) {
     const buttons = ev.detail.buttons;
@@ -4139,12 +4563,6 @@ let EntitiesCardConfig = class extends LitElement {
       buttons
     };
     fireEvent(this, "config-changed", { config: this._config });
-  }
-  _handleConfigChanged(ev) {
-    console.log(ev);
-  }
-  _handleGUIModeChanged(ev) {
-    console.log(ev);
   }
   _goBack() {
     this._subElementEditorConfig = void 0;
@@ -4471,6 +4889,7 @@ let ServiceCardConfig = class extends LitElement {
     assert(config, ServiceCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities, { domains: ["sensor"] });
+    this._configButtons = config.buttons;
   }
   async firstUpdated(_changedProperties) {
     super.firstUpdated(_changedProperties);
@@ -4483,13 +4902,13 @@ let ServiceCardConfig = class extends LitElement {
     }
     if (this._subElementEditorConfig) {
       return html`
-        <hui-sub-element-editor
+        <lc-sub-element-editor
           .hass=${this.hass}
           .config=${this._subElementEditorConfig}
           @go-back=${this._goBack}
           @config-changed=${this._handleSubElementChanged}
         >
-        </hui-sub-element-editor>
+        </lc-sub-element-editor>
       `;
     }
     const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
@@ -4515,6 +4934,13 @@ let ServiceCardConfig = class extends LitElement {
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></hui-entities-card-row-editor>
+
+      <lc-footer-buttons-editor
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+        @buttons-changed=${this._handleButtonsChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-footer-buttons-editor>
     `;
   }
   _valueChanged(ev) {
@@ -4566,15 +4992,27 @@ let ServiceCardConfig = class extends LitElement {
     }
     const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
     const value = ev.detail.config;
-    if (configValue === "row") {
-      const newConfigEntities = this._configEntities.concat();
-      if (!value) {
-        newConfigEntities.splice(this._subElementEditorConfig.index, 1);
-        this._goBack();
+    if (configValue === "footer-button") {
+      const index = this._subElementEditorConfig.index;
+      const buttons = [...this._configButtons || []];
+      if (value) {
+        buttons[index] = value;
       } else {
-        newConfigEntities[this._subElementEditorConfig.index] = value;
+        buttons.splice(index, 1);
+        this._goBack();
       }
-      this._config = { ...this._config, entities: newConfigEntities };
+      this._config = { ...this._config, buttons };
+      this._configButtons = buttons;
+    } else if (configValue === "row") {
+      const index = this._subElementEditorConfig.index;
+      const entities = this._configEntities.concat();
+      if (value) {
+        entities[index] = value;
+      } else {
+        entities.splice(index, 1);
+        this._goBack();
+      }
+      this._config = { ...this._config, entities };
       this._configEntities = processEntities(this._config.entities, { domains: ["counter", "input_number", "number", "sensor"] });
     } else if (configValue) {
       if (value === "") {
@@ -4591,18 +5029,19 @@ let ServiceCardConfig = class extends LitElement {
       ...this._subElementEditorConfig,
       elementConfig: value
     };
-    console.log(this._subElementEditorConfig);
     fireEvent(this, "config-changed", { config: this._config });
   }
   _editDetailElement(ev) {
     this._subElementEditorConfig = ev.detail.subElementConfig;
-    console.log(this._subElementEditorConfig);
   }
-  _handleConfigChanged(ev) {
-    console.log(ev);
-  }
-  _handleGUIModeChanged(ev) {
-    console.log(ev);
+  _handleButtonsChanged(ev) {
+    const buttons = ev.detail.buttons;
+    this._configButtons = buttons;
+    this._config = {
+      ...this._config,
+      buttons
+    };
+    fireEvent(this, "config-changed", { config: this._config });
   }
   _goBack() {
     this._subElementEditorConfig = void 0;
@@ -4612,6 +5051,9 @@ let ServiceCardConfig = class extends LitElement {
   }
   get _theme() {
     return this._config.theme || "";
+  }
+  get _icon() {
+    return this._config.icon || "";
   }
 };
 ServiceCardConfig.styles = [styles$1, configElementStyle];
@@ -4624,6 +5066,9 @@ __decorateClass$1([
 __decorateClass$1([
   r()
 ], ServiceCardConfig.prototype, "_configEntities", 2);
+__decorateClass$1([
+  r()
+], ServiceCardConfig.prototype, "_configButtons", 2);
 __decorateClass$1([
   r()
 ], ServiceCardConfig.prototype, "_subElementEditorConfig", 2);

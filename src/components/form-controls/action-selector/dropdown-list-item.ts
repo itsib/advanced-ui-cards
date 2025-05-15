@@ -34,5 +34,3 @@ class DropdownListItem extends LitElement {
     `;
   }
 }
-
-// customElements.define('lc-dropdown-list-item', DropdownListItem);

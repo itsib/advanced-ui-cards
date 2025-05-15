@@ -21,18 +21,8 @@ import {
   type IGaugeConfigSchema,
 } from './service-card-schema';
 import styles from './service-card-config.scss';
-
-interface SubElementEditorConfig {
-  index?: number;
-  elementConfig?:
-    | LovelaceRowConfig
-    | LovelaceHeaderFooterConfig
-    | LovelaceCardFeatureConfig
-    | LovelaceElementConfig;
-  saveElementConfig?: (elementConfig: any) => void;
-  context?: any;
-  type: 'header' | 'footer' | 'row' | 'feature' | 'element' | 'heading-badge';
-}
+import { IButtonConfigSchema } from '../../schemas/button-config-schema';
+import { SubElementEditorConfig } from '../../components';
 
 interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
@@ -48,15 +38,18 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
 
   @state() private _configEntities?: IGaugeConfigSchema[];
 
+  @state() private _configButtons?: IButtonConfigSchema[];
+
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
   setConfig(config: IServiceCardConfigSchema): void {
     assert(config, ServiceCardConfigSchema);
     this._config = config;
     this._configEntities = processEntities(config.entities, { domains: ['sensor'] });
+    this._configButtons = config.buttons;
   }
 
-  protected async firstUpdated(_changedProperties: PropertyValues) {
+  async firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
 
     const utils = await window.parent.loadCardHelpers();
@@ -71,13 +64,13 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
 
     if (this._subElementEditorConfig) {
       return html`
-        <hui-sub-element-editor
+        <lc-sub-element-editor
           .hass=${this.hass}
           .config=${this._subElementEditorConfig}
           @go-back=${this._goBack}
           @config-changed=${this._handleSubElementChanged}
         >
-        </hui-sub-element-editor>
+        </lc-sub-element-editor>
       `;
     }
 
@@ -105,6 +98,13 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></hui-entities-card-row-editor>
+
+      <lc-footer-buttons-editor
+        .hass=${this.hass}
+        .buttons=${this._configButtons}
+        @buttons-changed=${this._handleButtonsChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-footer-buttons-editor>
     `;
   }
 
@@ -169,16 +169,29 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
     const configValue = this._subElementEditorConfig?.type;
     const value = ev.detail.config;
 
-    if (configValue === 'row') {
-      const newConfigEntities = this._configEntities!.concat();
-      if (!value) {
-        newConfigEntities.splice(this._subElementEditorConfig!.index!, 1);
-        this._goBack();
+     // Buttons
+    if (configValue === 'footer-button') {
+      const index = this._subElementEditorConfig!.index!;
+      const buttons: IButtonConfigSchema[] = [...(this._configButtons || [])];
+      if (value) {
+        buttons[index] = value;
       } else {
-        newConfigEntities[this._subElementEditorConfig!.index!] = value;
+        buttons.splice(index, 1);
+        this._goBack();
       }
-
-      this._config = { ...this._config!, entities: newConfigEntities };
+      this._config = { ...this._config!, buttons };
+      this._configButtons = buttons;
+    }
+    else if (configValue === 'row') {
+      const index = this._subElementEditorConfig!.index!;
+      const entities = this._configEntities!.concat();
+      if (value) {
+        entities[index] = value;
+      } else {
+        entities.splice(index, 1);
+        this._goBack();
+      }
+      this._config = { ...this._config!, entities: entities };
       this._configEntities = processEntities(this._config!.entities, { domains: ['counter', 'input_number', 'number', 'sensor'] });
     } else if (configValue) {
       if (value === '') {
@@ -196,22 +209,24 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
       ...this._subElementEditorConfig!,
       elementConfig: value,
     };
-    console.log(this._subElementEditorConfig);
 
     fireEvent(this, 'config-changed', { config: this._config });
   }
 
   private _editDetailElement(ev: HASSDomEvent<EditDetailElementEvent>): void {
     this._subElementEditorConfig = ev.detail.subElementConfig;
-    console.log(this._subElementEditorConfig);
   }
 
-  private _handleConfigChanged(ev: any) {
-    console.log(ev);
-  }
+  private _handleButtonsChanged(ev: CustomEvent) {
+    const buttons = ev.detail.buttons;
 
-  private _handleGUIModeChanged(ev: any) {
-    console.log(ev);
+    this._configButtons = buttons;
+    this._config = {
+      ...this._config!,
+      buttons: buttons as IButtonConfigSchema[],
+    }
+
+    fireEvent(this, 'config-changed', { config: this._config });
   }
 
   private _goBack(): void {
@@ -224,6 +239,10 @@ class ServiceCardConfig extends LitElement implements LovelaceCardEditor {
 
   get _theme(): string {
     return this._config!.theme || '';
+  }
+
+  get _icon(): string {
+    return this._config!.icon || '';
   }
 }
 

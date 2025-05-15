@@ -6,9 +6,9 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { processEntities } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { EntitiesCardConfigSchema, IEntitiesCardConfigSchema } from './entities-card-schema';
-import styles from './entities-card-config.scss';
 import { IButtonConfigSchema } from '../../schemas/button-config-schema';
 import { SubElementEditorConfig } from '../../components';
+import styles from './entities-card-config.scss';
 
 interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
@@ -35,7 +35,7 @@ class EntitiesCardConfig extends LitElement implements LovelaceCardEditor {
     this._configButtons = config.buttons;
   }
 
-  protected async firstUpdated(_changedProperties: PropertyValues) {
+  async firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
 
     const utils = await window.parent.loadCardHelpers();
@@ -213,14 +213,12 @@ class EntitiesCardConfig extends LitElement implements LovelaceCardEditor {
       ...this._subElementEditorConfig!,
       elementConfig: value,
     };
-    console.log(this._subElementEditorConfig);
 
     fireEvent(this, 'config-changed', { config: this._config });
   }
 
   private _editDetailElement(event: HASSDomEvent<EditDetailElementEvent>): void {
     this._subElementEditorConfig = event.detail.subElementConfig;
-    console.log(this._subElementEditorConfig);
   }
 
   private _handleButtonsChanged(ev: CustomEvent) {
@@ -233,14 +231,6 @@ class EntitiesCardConfig extends LitElement implements LovelaceCardEditor {
     }
 
     fireEvent(this, 'config-changed', { config: this._config });
-  }
-
-  private _handleConfigChanged(ev: any) {
-    console.log(ev);
-  }
-
-  private _handleGUIModeChanged(ev: any) {
-    console.log(ev);
   }
 
   private _goBack(): void {
