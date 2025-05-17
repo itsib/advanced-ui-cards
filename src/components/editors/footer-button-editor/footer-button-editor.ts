@@ -1,10 +1,14 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
+import { assert } from 'superstruct';
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import styles from './footer-button-editor.scss';
-import { HassService, HomeAssistant, Selector, TargetSelector } from 'types';
-import { ButtonConfigSchema, IButtonConfigSchema } from '../../../schemas/button-config-schema';
+import { HassService, HomeAssistant, IButtonConfigSchema } from 'types';
+import { ButtonConfigSchema } from '../../../schemas/button-config-schema';
 import { fireEvent } from '../../../utils/fire-event';
-import { array, assert, optional, string, union } from 'superstruct';
+import styles from './footer-button-editor.scss';
+import { serviceToSelectOption } from '../../../utils/object-to-select-option';
+import { ISelectOption } from '../../form-controls';
+import { formatActionName } from '../../../utils/format-action-name';
+import { formatColors } from '../../../utils/format-colors';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -18,6 +22,11 @@ declare global {
     };
   }
 }
+
+const COLORS: ISelectOption[] = [
+  { value: formatColors('primary'), label: 'Primary' },
+  { value: formatColors('secondary'), label: 'Secondary' },
+];
 
 @customElement('lc-footer-button-editor')
 class FooterButtonEditor extends LitElement {
@@ -33,13 +42,13 @@ class FooterButtonEditor extends LitElement {
   private _yamlEditor?: HTMLInputElement;
 
   @state()
+  private _options: ISelectOption[] = [];
+
+  @state()
   private _actionDomain?: string;
 
   @state()
   private _actionName?: string;
-
-  @state()
-  private _targetSelector?: TargetSelector;
 
   @state()
   private _guiSupported?: boolean;
@@ -144,19 +153,23 @@ class FooterButtonEditor extends LitElement {
       return this._renderYamlEditor();
     }
 
-    const optional = `(${this.hass!.localize('ui.panel.lovelace.editor.card.config.optional')})`;
-
     return html`
       <div class="container">
         <!-- Action Selector-->
-        <lc-action-selector
+        <lc-select
           class="row-full"
           .value=${this.value?.action}
-          .hass=${this.hass}
+          .label="${this.hass!.localize('component.lovelace_cards.entity_component._.editor.action')} *"
+          .options=${this._options}
           .configValue=${'action'}
+          .getValue=${(value: string) => {
+            const [domain, action] = value.split('.');
+            const service = action && this.hass?.services?.[domain]?.[action] || undefined;
+            return service ? formatActionName(domain, service, this.hass!.localize) : value;
+          }}
           .helper=${this.service?.description}
           @value-changed=${this._valueChanged}
-        ></lc-action-selector>
+        ></lc-select>
 
         <!-- Action Target Selector -->
         ${this._renderServiceTargetSelector()}
@@ -169,7 +182,7 @@ class FooterButtonEditor extends LitElement {
         <!-- Tooltip -->
         <ha-textfield
           class="input"
-          .label="${this.hass.localize('component.lovelace_cards.entity_component._.button_tooltip')} ${optional}"
+          .label=${this.hass.localize('component.lovelace_cards.entity_component._.button_tooltip')}
           .value=${this.value?.tooltip || ''}
           .configValue=${'tooltip'}
           @input=${this._valueChanged}
@@ -180,7 +193,7 @@ class FooterButtonEditor extends LitElement {
         <!-- Icon -->
         <ha-icon-picker
           .hass=${this.hass}
-          .label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.icon')} ${optional}"
+          .label=${this.hass.localize('ui.panel.lovelace.editor.card.generic.icon')}
           .value=${this.value.icon}
           .required=${false}
           .disabled=${false}
@@ -203,7 +216,7 @@ class FooterButtonEditor extends LitElement {
         <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
-          .label="${this.hass.localize('component.lovelace_cards.entity_component._.confirm_text')} ${optional}"
+          .label="${this.hass.localize('component.lovelace_cards.entity_component._.confirm_text')}"
           .value=${this.confirmationText}
           .configValue=${'confirmation'}
           .disabled=${!this.value?.confirmation}
@@ -212,20 +225,26 @@ class FooterButtonEditor extends LitElement {
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">
-          ${this.hass.localize('component.lovelace_cards.entity_component._.button_color')} ${optional}
-        </div>
-
         <!-- Select color -->
-        <lc-color-selector
+        <ha-selector
           class="row-full"
           .hass=${this.hass}
+          .label=${this.hass.localize('component.lovelace_cards.entity_component._.button_color')}
           .value=${this.value.color}
           .configValue=${'color'}
+          .selector=${{ ui_color: {} }}
+          .localize=${this.hass.localize}
           @value-changed=${this._valueChanged}
-        ></lc-color-selector>
+        ></ha-selector>
       </div>
     `;
+  }
+
+  firstUpdated(_changed: PropertyValues) {
+    super.firstUpdated(_changed);
+
+    if (!this.hass) return;
+    this._options = serviceToSelectOption(this.hass);
   }
 
   private _renderServiceTargetSelector(): TemplateResult | null {
@@ -338,7 +357,7 @@ class FooterButtonEditor extends LitElement {
 
   private _valueChanged(event: CustomEvent) {
     const configValue = (event.target as any).configValue;
-    const value = (event.target as any).value;
+    const value = ['target', 'color', 'data'].includes(configValue) ? event.detail.value : (event.target as any).value;
     const config = { ...this.value! };
 
     if (configValue === 'action') {
@@ -372,19 +391,18 @@ class FooterButtonEditor extends LitElement {
     } else if (configValue === 'confirmation') {
       config.confirmation = value ? { text: value } : true;
     } else if (configValue === 'target') {
-      const updated = event.detail.value;
       config.target = {
-        entity_id: updated.entity_id.length ? Array.from(new Set(updated.entity_id)) : [],
-        device_id: updated.device_id.length ? Array.from(new Set(updated.device_id)) : [],
-        area_id: updated.area_id.length ? Array.from(new Set(updated.area_id)) : [],
-        floor_id: updated.floor_id.length ? Array.from(new Set(updated.floor_id)) : [],
-        label_id: updated.label_id.length ? Array.from(new Set(updated.label_id)) : [],
+        entity_id: value.entity_id.length ? Array.from(new Set(value.entity_id)) : [],
+        device_id: value.device_id.length ? Array.from(new Set(value.device_id)) : [],
+        area_id: value.area_id.length ? Array.from(new Set(value.area_id)) : [],
+        floor_id: value.floor_id.length ? Array.from(new Set(value.floor_id)) : [],
+        label_id: value.label_id.length ? Array.from(new Set(value.label_id)) : [],
       };
     } else if (configValue === 'data') {
       const dataField = (event.target as any).dataField;
 
       config.data = { ...(this.value?.data || {}) };
-      config.data[dataField] = event.detail.value;
+      config.data[dataField] = value;
     } else {
       config[configValue] = value;
     }

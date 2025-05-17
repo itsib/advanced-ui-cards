@@ -7,7 +7,41 @@
   },
   "entity_component": {
     "_": {
-      "button_action": "Button Action Config",
+      "editor": {
+        "optional": "Optional",
+        "required": "Required",
+        "title": "Title",
+        "name": "Name",
+        "icon": "Icon",
+        "entities": "Entities",
+        "action": "Action",
+        "choose_action": "Choose Action",
+        "choose_entity": "Choose Entity",
+        "buttons": "Buttons",
+        "remove_button": "Remove Button",
+        "configure_button": "Configure Button",
+        "remove_entity": "Remove Entity",
+        "configure_entity": "Configure Entity",
+        "entity": "Entity",
+        "divider": "Divider",
+        "secondary_information": "Secondary Information",
+        "entity_config_caption": "{entityType} Config",
+        "button_config_caption": "Button Action Config",
+        "entity_type_entity": "Entity",
+        "entity_type_divider": "Divider",
+        "secondary_info": {
+          "options": {
+            "none": "No secondary info",
+            "entity-id": "Entity ID",
+            "last-changed": "Last changed",
+            "last-updated": "Last updated",
+            "brightness": "Brightness",
+            "last-triggered": "Last Triggered",
+            "tilt-position": "Tilt Position",
+            "position": "Position"
+          }
+        }
+      },
       "button_tooltip": "Tooltip",
       "confirm_text": "Confirm Text",
       "button_color": "Button Color",

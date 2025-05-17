@@ -1,10 +1,12 @@
-import { html, LitElement, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import type { HomeAssistant } from 'types';
-import { IButtonConfigSchema } from '../../../schemas/button-config-schema';
+import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import type { HomeAssistant, IButtonConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
-import styles from './footer-buttons-editor.scss';
 import { SubElementEditorConfig } from '../sub-element-editor/sub-element-editor';
+import { ISelectOption } from '../../form-controls';
+import { formatActionName } from '../../../utils/format-action-name';
+import { serviceToSelectOption } from '../../../utils/object-to-select-option';
+import styles from './footer-buttons-editor.scss';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -13,8 +15,8 @@ declare global {
 
   interface HASSDomEvents {
     'edit-detail-element': {
-      subElementConfig: SubElementEditorConfig<IButtonConfigSchema>;
-    }
+      subElementConfig: SubElementEditorConfig<IButtonConfigSchema | IEntityConfigSchema>;
+    };
   }
 }
 
@@ -22,63 +24,78 @@ declare global {
 class FooterButtonsEditor extends LitElement {
   static styles = styles;
 
-  @property({ attribute: false }) hass?: HomeAssistant;
+  @property({ attribute: false })
+  hass?: HomeAssistant;
 
-  @property({ attribute: false }) buttons?: IButtonConfigSchema[];
+  @property({ attribute: false })
+  buttons?: IButtonConfigSchema[];
 
-  @property() label?: string;
+  @state()
+  options: ISelectOption[] = [];
+
+  firstUpdated(_changed: PropertyValues) {
+    super.firstUpdated(_changed);
+
+    if (!this.hass) return;
+    this.options = serviceToSelectOption(this.hass);
+  }
 
   render() {
     if (!this.hass) return html``;
 
     return html`
       <h3>
-        <span>${this.hass!.localize('ui.panel.lovelace.editor.card.generic.actions')}</span>
-        <span>&nbsp;</span>
-        <span>(${this.hass!.localize('ui.panel.lovelace.editor.card.config.optional')})</span>
+        <span>${this.hass!.localize('component.lovelace_cards.entity_component._.editor.buttons')}</span>
       </h3>
-      
-      ${this._renderButtons()}
 
-      <lc-action-selector
-        class="add-entity"
-        .hass=${this.hass}
+      ${this._renderButtonsConfigs()}
+
+      <lc-select
+        class="add-button"
+        .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_action')}
+        .options=${this.options}
         @value-changed=${this._addButton}
-      ></lc-action-selector>
+      ></lc-select>
     `;
   }
 
-  private _renderButtons(): TemplateResult {
+  private _renderButtonsConfigs(): TemplateResult {
     if (!this.buttons) return html``;
 
     return html`
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="buttons">
-          ${this.buttons.map((button, index) => this._renderButton(index, button))}
+          ${this.buttons.map((button, index) => this._renderButtonConfig(index, button))}
         </div>
       </ha-sortable>
     `;
   }
 
-  private _renderButton(index: number, button: IButtonConfigSchema): TemplateResult {
+  private _renderButtonConfig(index: number, button: IButtonConfigSchema): TemplateResult {
     return html`
       <div class="button-config">
         <div class="handle">
           <ha-icon icon="mdi:drag" class="icon"></ha-icon>
         </div>
 
-        <lc-action-selector
+        <lc-select
           class="edit-button"
           .index=${index}
-          .hass=${this.hass}
+          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.button')}
+          .getValue=${(value: string) => {
+            const [domain, action] = value.split('.');
+            const service = action && this.hass?.services?.[domain]?.[action] || undefined;
+            return service ? formatActionName(domain, service, this.hass!.localize) : value;
+          }}
+          .options=${this.options}
           .value=${button.action}
           @value-changed=${this._changeValue}
-        ></lc-action-selector>
+        ></lc-select>
 
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass!.localize('ui.components.entity.entity-picker.clear')}
+          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_button')}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -87,7 +104,7 @@ class FooterButtonsEditor extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass!.localize('ui.components.entity.entity-picker.edit')}
+          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_button')}
           class="action-button"
           @click=${this._editRow}
           transparent
@@ -137,7 +154,7 @@ class FooterButtonsEditor extends LitElement {
     const index = (event.target as any).index;
     const buttons = this.buttons!.concat();
 
-    if (value === "" || value === undefined) {
+    if (value === '' || value === undefined) {
       buttons.splice(index, 1);
     } else {
       buttons[index] = {
@@ -160,4 +177,3 @@ class FooterButtonsEditor extends LitElement {
     fireEvent(this, 'buttons-changed', { buttons: buttons });
   }
 }
-

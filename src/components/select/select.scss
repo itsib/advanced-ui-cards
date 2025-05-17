@@ -1,12 +1,18 @@
 :host {
   display: block;
+}
 
-  &[opened] .toggle-button {
-    color: var(--primary-color);
+:host([opened]) {
+
+  .select {
+
+    .toggle-button {
+      color: var(--primary-color);
+    }
   }
 }
 
-.action-selector {
+.select {
   position: relative;
 
   .input {

@@ -6,3 +6,4 @@ export * from './ha-entity';
 export * from './ha-connection';
 export * from './ha-actions';
 export * from './ha-helper';
+export * from './schemas';

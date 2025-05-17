@@ -1,0 +1,10 @@
+
+
+.title-icon-fields {
+  display: flex;
+  gap: 16px;
+
+  & > * {
+    width: 50%;
+  }
+}

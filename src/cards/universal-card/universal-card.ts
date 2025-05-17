@@ -1,21 +1,28 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import { type EntityConfig, HomeAssistant, LovelaceCard, LovelaceCardEditor, LovelaceRowConfig } from 'types';
+import {
+  type EntityConfig,
+  HomeAssistant, IButtonConfigSchema, IEntityConfigSchema,
+  IGaugeConfigSchema,
+  LovelaceCard,
+  LovelaceCardEditor,
+  LovelaceRowConfig,
+} from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities } from '../../utils/entities-utils';
-import type { IServiceCardConfigSchema, IGaugeConfigSchema } from './service-card-schema';
-import { IButtonConfigSchema } from '../../schemas/button-config-schema';
+import type { IServiceCardConfigSchema,  } from './universal-card-schema';
+import {  } from '../../schemas/button-config-schema';
 import { getNumberValueWithUnit } from '../../utils/format-number-value';
 import { formatEntityName } from '../../utils/format-entity-name';
 import { mainWindow } from '../../utils/get-main-window';
-import styles from './service-card.scss';
+import styles from './universal-card.scss';
 
-@customElement('lc-service-card')
-class ServiceCard extends LitElement implements LovelaceCard {
+@customElement('lc-universal-card')
+class UniversalCard extends LitElement implements LovelaceCard {
   static async getConfigElement(): Promise<LovelaceCardEditor> {
     const source = await customElements.whenDefined('hui-entities-card') as any;
     await source.getConfigElement();
 
-    return document.createElement('lc-service-card-config') as LovelaceCardEditor;
+    return document.createElement('lc-universal-card-config') as LovelaceCardEditor;
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {
@@ -47,7 +54,7 @@ class ServiceCard extends LitElement implements LovelaceCard {
 
   @state() private _createRowElement?: (config: LovelaceRowConfig) => HTMLElement;
 
-  private _configEntities?: LovelaceRowConfig[];
+  private _configEntities?: IEntityConfigSchema[];
 
   private _configGauges?: IGaugeConfigSchema[];
 
@@ -55,9 +62,10 @@ class ServiceCard extends LitElement implements LovelaceCard {
 
   async setConfig(config: IServiceCardConfigSchema) {
     this._config = config;
-    this._configEntities = processEntities<LovelaceRowConfig>(config.entities, { validateMode: 'skip' });
 
     this._configGauges = processEntities<IGaugeConfigSchema>(config.gauges, { validateMode: 'skip' });
+
+    this._configEntities = processEntities<IEntityConfigSchema>(config.entities, { validateMode: 'skip' });
 
     this._configButtons = config.buttons;
 
@@ -108,7 +116,7 @@ class ServiceCard extends LitElement implements LovelaceCard {
   }
 
   private _renderGauges(): TemplateResult {
-    if (!this._configGauges) {
+    if (!this._configGauges || !this._configGauges.length) {
       return html``;
     }
     const entities = this._configGauges.map(entity => this._renderGauge(entity));
@@ -148,17 +156,13 @@ class ServiceCard extends LitElement implements LovelaceCard {
       <div id="states" class="card-entities">${entities}</div>`;
   }
 
-  private _renderEntity(entityConf: LovelaceRowConfig): TemplateResult {
+  private _renderEntity(entityConf: IEntityConfigSchema): TemplateResult {
     if (!this._createRowElement) return html``;
     let config: EntityConfig;
 
     // Conditional entity state
-    if ((!('type' in entityConf) || entityConf.type === 'conditional') && 'state_color' in this._config!) {
+    if (!('type' in entityConf) && 'state_color' in this._config!) {
       config = { state_color: this._config.state_color, ...(entityConf as EntityConfig) } as EntityConfig;
-    }
-    // Entity is action
-    else if (entityConf.type === 'perform-action') {
-      config = { ...entityConf, type: 'call-service' } as EntityConfig;
     }
     // Simple entity
     else {
@@ -190,15 +194,15 @@ class ServiceCard extends LitElement implements LovelaceCard {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-service-card': ServiceCard;
+    'lc-universal-card': UniversalCard;
   }
 }
 
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'lc-service-card',
-  name: 'Service Status Card',
-  description: 'The card displays the status of the service or addon. It also allows you to trigger arbitrary actions.',
+  type: 'lc-universal-card',
+  name: 'Extended Card',
+  description: 'The universal card supports displaying many kinds of UI elements in one place. For example, if you need to display the status in the form of a row and a gauge with action buttons.',
   preview: true,
   configurable: true,
 });

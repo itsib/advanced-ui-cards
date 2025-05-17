@@ -1,12 +1,11 @@
 import { html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import type { HomeAssistant } from 'types';
+import type { HomeAssistant, IButtonConfigSchema } from 'types';
 import { ButtonStatus } from '../button-circle/button-circle';
 import { forwardHaptic } from '../../utils/haptic';
 import { isShowConfirmation } from '../../utils/handle-action';
 import { domainToName } from '../../utils/licalization';
 import { mainWindow } from '../../utils/get-main-window';
-import { IButtonConfigSchema } from '../../schemas/button-config-schema';
 import style from './footer-buttons.scss';
 
 @customElement('lc-footer-buttons')

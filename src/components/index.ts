@@ -1,6 +1,6 @@
 export * from './icons';
 export * from './editors';
-export * from './form-controls';
+export * from './select/select';
 export * from './button-circle/button-circle';
 export * from './footer-buttons/footer-buttons';
 export * from './popover/popover';

@@ -2,9 +2,9 @@
   display: block;
 }
 
-.buttons {
+.entities {
 
-  .button-config {
+  .entity-config {
     margin-top: 8px;
     display: flex;
     align-items: center;
@@ -15,8 +15,25 @@
       padding-inline-end: 8px;
     }
 
-    .edit-button {
+    .edit-entity {
       flex-grow: 1;
+    }
+
+    .divider-entity {
+      height: 56px;
+      flex-grow: 1;
+
+      .label {
+        margin-top: 10px;
+        font-size: 11px;
+        line-height: 1;
+        margin-left: 16px;
+        color: var(--secondary-text-color);
+      }
+
+      .divider {
+        border-color: var(--entities-divider-color, var(--divider-color));
+      }
     }
 
     .action-button {
@@ -26,7 +43,7 @@
   }
 }
 
-.add-button {
+.add-entity {
   margin-top: 8px;
   display: block;
   margin-left: 31px;

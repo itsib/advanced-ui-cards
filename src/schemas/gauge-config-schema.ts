@@ -1,0 +1,18 @@
+import { array, boolean, number, object, optional, string } from 'superstruct';
+
+const GaugeLevelConfigSchema = object({
+  level: number(),
+  color: string(),
+});
+
+export const GaugeConfigSchema = object({
+  entity: string(),
+  attribute: optional(string()),
+  name: optional(string()),
+  unit: optional(string()),
+  min: optional(number()),
+  max: optional(number()),
+  step: optional(number()),
+  digits: optional(boolean()),
+  levels: optional(array(GaugeLevelConfigSchema)),
+});

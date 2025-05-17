@@ -620,15 +620,15 @@ function e(e2, r2) {
     } });
   };
 }
-const styles$j = css``;
-var __defProp$k = Object.defineProperty;
-var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
-var __decorateClass$k = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
+const styles$i = css``;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$k(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 let IconError = class extends LitElement {
@@ -666,25 +666,25 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = styles$j;
-__decorateClass$k([
+IconError.styles = styles$i;
+__decorateClass$j([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
-__decorateClass$k([
+__decorateClass$j([
   n2({ attribute: "color", type: String })
 ], IconError.prototype, "color", 2);
-IconError = __decorateClass$k([
+IconError = __decorateClass$j([
   t$1("lc-icon-error")
 ], IconError);
-const styles$i = css``;
-var __defProp$j = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$j = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+const styles$h = css``;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$j(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 let IconSuccess = class extends LitElement {
@@ -715,25 +715,25 @@ let IconSuccess = class extends LitElement {
     `;
   }
 };
-IconSuccess.styles = styles$i;
-__decorateClass$j([
+IconSuccess.styles = styles$h;
+__decorateClass$i([
   n2({ attribute: "size", type: Number })
 ], IconSuccess.prototype, "size", 2);
-__decorateClass$j([
+__decorateClass$i([
   n2({ attribute: "color", type: String })
 ], IconSuccess.prototype, "color", 2);
-IconSuccess = __decorateClass$j([
+IconSuccess = __decorateClass$i([
   t$1("lc-icon-success")
 ], IconSuccess);
-const styles$h = css``;
-var __defProp$i = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$i = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+const styles$g = css``;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$i(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
 let IconSpinner = class extends LitElement {
@@ -759,14 +759,14 @@ let IconSpinner = class extends LitElement {
     `;
   }
 };
-IconSpinner.styles = styles$h;
-__decorateClass$i([
+IconSpinner.styles = styles$g;
+__decorateClass$h([
   n2({ attribute: "size", type: Number })
 ], IconSpinner.prototype, "size", 2);
-__decorateClass$i([
+__decorateClass$h([
   n2({ attribute: "color", type: String })
 ], IconSpinner.prototype, "color", 2);
-IconSpinner = __decorateClass$i([
+IconSpinner = __decorateClass$h([
   t$1("lc-icon-spinner")
 ], IconSpinner);
 function fireEvent(node, type2, detail, options = {}) {
@@ -780,7 +780,131 @@ function fireEvent(node, type2, detail, options = {}) {
   node.dispatchEvent(event);
   return event;
 }
-const styles$g = css`:host {
+const CODE_COMPONENTS = {
+  homeassistant: "Home Assistant Core Integration"
+};
+function formatActionName(domain, service, localize) {
+  const serviceName = service.name;
+  let componentName;
+  if (domain in CODE_COMPONENTS) {
+    componentName = CODE_COMPONENTS[domain];
+  } else {
+    componentName = localize(`component.${domain}.entity_component._.name`);
+  }
+  if (!componentName) {
+    componentName = domain.split(/[-_]/g).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+  return `${componentName}: ${serviceName}`;
+}
+const DEFAULT_SERVICE_ICON = "mdi:room-service";
+const DOMAIN_ICONS = {
+  air_quality: "mdi:air-filter",
+  alert: "mdi:alert",
+  automation: "mdi:robot",
+  calendar: "mdi:calendar",
+  climate: "mdi:thermostat",
+  configurator: "mdi:cog",
+  conversation: "mdi:forum-outline",
+  counter: "mdi:counter",
+  date: "mdi:calendar",
+  datetime: "mdi:calendar-clock",
+  demo: "mdi:home-assistant",
+  device_tracker: "mdi:account",
+  google_assistant: "mdi:google-assistant",
+  group: "mdi:google-circles-communities",
+  homeassistant: "mdi:home-assistant",
+  homekit: "mdi:home-automation",
+  image_processing: "mdi:image-filter-frames",
+  image: "mdi:image",
+  input_boolean: "mdi:toggle-switch",
+  input_button: "mdi:button-pointer",
+  input_datetime: "mdi:calendar-clock",
+  input_number: "mdi:ray-vertex",
+  input_select: "mdi:format-list-bulleted",
+  input_text: "mdi:form-textbox",
+  lawn_mower: "mdi:robot-mower",
+  light: "mdi:lightbulb",
+  notify: "mdi:comment-alert",
+  number: "mdi:ray-vertex",
+  persistent_notification: "mdi:bell",
+  person: "mdi:account",
+  plant: "mdi:flower",
+  proximity: "mdi:apple-safari",
+  remote: "mdi:remote",
+  scene: "mdi:palette",
+  schedule: "mdi:calendar-clock",
+  script: "mdi:script-text",
+  select: "mdi:format-list-bulleted",
+  sensor: "mdi:eye",
+  simple_alarm: "mdi:bell",
+  siren: "mdi:bullhorn",
+  stt: "mdi:microphone-message",
+  sun: "mdi:white-balance-sunny",
+  text: "mdi:form-textbox",
+  time: "mdi:clock",
+  timer: "mdi:timer-outline",
+  todo: "mdi:clipboard-list",
+  tts: "mdi:speaker-message",
+  vacuum: "mdi:robot-vacuum",
+  wake_word: "mdi:chat-sleep",
+  weather: "mdi:weather-partly-cloudy",
+  zone: "mdi:map-marker-radius",
+  fan: "mdi:fan"
+};
+const OFF_SUPPORTS = ["automation", "fan", "light", "input_boolean"];
+function getServiceIcon(service) {
+  const [domain, serviceName] = service.split(".", 2);
+  if (serviceName === "pause") {
+    return "mdi:pause";
+  }
+  if (serviceName === "reload") {
+    return "mdi:reload";
+  }
+  const iconName = DOMAIN_ICONS[domain];
+  if (iconName && /_off$/.test(serviceName) && OFF_SUPPORTS.includes(domain)) {
+    return iconName + "-off";
+  }
+  return iconName || DEFAULT_SERVICE_ICON;
+}
+function serviceToSelectOption(hass) {
+  const domains = Object.keys(hass.services);
+  const options = [];
+  for (let i2 = 0; i2 < domains.length; i2++) {
+    const domain = domains[i2];
+    const services = hass.services[domain];
+    const servicesNames = Object.keys(services);
+    for (let j = 0; j < servicesNames.length; j++) {
+      const serviceName = servicesNames[j];
+      const serviceId = `${domain}.${serviceName}`;
+      options.push({
+        value: serviceId,
+        label: services[serviceName].name,
+        secondLabel: serviceId,
+        icon: getServiceIcon(serviceId)
+      });
+    }
+  }
+  return options;
+}
+function entitiesToSelectOption(hass) {
+  const options = [];
+  for (const [entityId, entity] of Object.entries(hass.entities)) {
+    const stateObj = hass.states[entityId];
+    options.push({
+      value: entityId,
+      label: entity.name,
+      secondLabel: entityId,
+      icon: html`
+        <ha-state-icon
+          .hass=${hass}
+          .stateObj=${stateObj}
+        ></ha-state-icon>
+      `
+    });
+  }
+  return options;
+}
+const styles$f = css`:host {
   display: block;
 }
 
@@ -802,7 +926,7 @@ const styles$g = css`:host {
   color: var(--secondary-text-color);
 }
 
-.add-entity {
+.add-button {
   margin-top: 8px;
   display: block;
   margin-left: 31px;
@@ -811,64 +935,80 @@ const styles$g = css`:host {
   margin-inline-end: 71px;
   direction: var(--direction);
 }`;
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 let FooterButtonsEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.options = [];
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this.options = serviceToSelectOption(this.hass);
+  }
   render() {
     if (!this.hass) return html``;
     return html`
       <h3>
-        <span>${this.hass.localize("ui.panel.lovelace.editor.card.generic.actions")}</span>
-        <span>&nbsp;</span>
-        <span>(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})</span>
+        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.buttons")}</span>
       </h3>
-      
-      ${this._renderButtons()}
 
-      <lc-action-selector
-        class="add-entity"
-        .hass=${this.hass}
+      ${this._renderButtonsConfigs()}
+
+      <lc-select
+        class="add-button"
+        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_action")}
+        .options=${this.options}
         @value-changed=${this._addButton}
-      ></lc-action-selector>
+      ></lc-select>
     `;
   }
-  _renderButtons() {
+  _renderButtonsConfigs() {
     if (!this.buttons) return html``;
     return html`
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="buttons">
-          ${this.buttons.map((button, index) => this._renderButton(index, button))}
+          ${this.buttons.map((button, index) => this._renderButtonConfig(index, button))}
         </div>
       </ha-sortable>
     `;
   }
-  _renderButton(index, button) {
+  _renderButtonConfig(index, button) {
+    var _a;
     return html`
       <div class="button-config">
         <div class="handle">
           <ha-icon icon="mdi:drag" class="icon"></ha-icon>
         </div>
 
-        <lc-action-selector
+        <lc-select
           class="edit-button"
           .index=${index}
-          .hass=${this.hass}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.button")}
+          .getValue=${(value) => {
+      var _a2, _b, _c;
+      const [domain, action] = value.split(".");
+      const service = action && ((_c = (_b = (_a2 = this.hass) == null ? void 0 : _a2.services) == null ? void 0 : _b[domain]) == null ? void 0 : _c[action]) || void 0;
+      return service ? formatActionName(domain, service, this.hass.localize) : value;
+    }}
+          .options=${this.options}
           .value=${button.action}
           @value-changed=${this._changeValue}
-        ></lc-action-selector>
+        ></lc-select>
 
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass.localize("ui.components.entity.entity-picker.clear")}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_button")}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -877,7 +1017,7 @@ let FooterButtonsEditor = class extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass.localize("ui.components.entity.entity-picker.edit")}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_button")}
           class="action-button"
           @click=${this._editRow}
           transparent
@@ -936,55 +1076,19 @@ let FooterButtonsEditor = class extends LitElement {
     fireEvent(this, "buttons-changed", { buttons });
   }
 };
-FooterButtonsEditor.styles = styles$g;
-__decorateClass$h([
+FooterButtonsEditor.styles = styles$f;
+__decorateClass$g([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "hass", 2);
-__decorateClass$h([
+__decorateClass$g([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "buttons", 2);
-__decorateClass$h([
-  n2()
-], FooterButtonsEditor.prototype, "label", 2);
-FooterButtonsEditor = __decorateClass$h([
+__decorateClass$g([
+  r()
+], FooterButtonsEditor.prototype, "options", 2);
+FooterButtonsEditor = __decorateClass$g([
   t$1("lc-footer-buttons-editor")
 ], FooterButtonsEditor);
-const styles$f = css`.container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: auto;
-  gap: 16px;
-}
-.container .row-full {
-  grid-column: span 2/span 2;
-}
-.container hr {
-  grid-column: span 2/span 2;
-  width: 100%;
-  border-color: var(--entities-divider-color, var(--divider-color));
-}
-.container .description {
-  font-size: 12px;
-  color: var(--secondary-text-color);
-  line-height: 1.2;
-}
-.container .enable-confirm {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.container .color-radio {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.yaml-editor .error {
-  margin-top: 8px;
-  color: var(--error-color);
-  font-size: 13px;
-}`;
 class StructError extends TypeError {
   constructor(failure, failures) {
     let cached;
@@ -1409,19 +1513,6 @@ function union(Structs) {
     }
   });
 }
-function refine(struct, name, refiner) {
-  return new Struct({
-    ...struct,
-    *refiner(value, ctx) {
-      yield* struct.refiner(value, ctx);
-      const result = refiner(value, ctx);
-      const failures = toFailures(result, ctx, struct, value);
-      for (const failure of failures) {
-        yield { ...failure, refinement: name };
-      }
-    }
-  });
-}
 const ExemptionSchema = object({
   user: string()
 });
@@ -1449,19 +1540,126 @@ const ButtonConfigSchema = object({
   target: optional(TargetConfigSchema),
   confirmation: optional(ConfirmationConfigSchema)
 });
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+const styles$e = css`.container {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 16px;
+}
+.container .row-full {
+  grid-column: span 2/span 2;
+}
+.container hr {
+  grid-column: span 2/span 2;
+  width: 100%;
+  border-color: var(--entities-divider-color, var(--divider-color));
+}
+.container .description {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  line-height: 1.2;
+}
+.container .enable-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.container .color-radio {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.yaml-editor .error {
+  margin-top: 8px;
+  color: var(--error-color);
+  font-size: 13px;
+}`;
+function formatColors(value, defaultColor = "var(--primary-color)") {
+  if (!value) return defaultColor;
+  switch (value) {
+    case "primary":
+      return "var(--primary-color)";
+    case "accent":
+      return "var(--accent-color)";
+    case "error":
+    case "err":
+    case "danger":
+      return "var(--error-color)";
+    case "warning":
+    case "warn":
+      return "var(--warning-color)";
+    case "success":
+      return "var(--success-color)";
+    case "disabled":
+      return "var(--disabled-color)";
+    case "info":
+      return "var(--info-color)";
+    case "red":
+      return "var(--red-color)";
+    case "pink":
+      return "var(--pink-color)";
+    case "purple":
+      return "var(--purple-color)";
+    case "deep-purple":
+      return "var(--deep-purple-color)";
+    case "indigo":
+      return "var(--indigo-color)";
+    case "blue":
+      return "var(--blue-color)";
+    case "light-blue":
+      return "var(--light-blue-color)";
+    case "cyan":
+      return "var(--cyan-color)";
+    case "teal":
+      return "var(--teal-color)";
+    case "green":
+      return "var(--green-color)";
+    case "light-green":
+      return "var(--light-green-color)";
+    case "lime":
+      return "var(--lime-color)";
+    case "yellow":
+      return "var(--yellow-color)";
+    case "amber":
+      return "var(--amber-color)";
+    case "orange":
+      return "var(--orange-color)";
+    case "deep-orange":
+      return "var(--deep-orange-color)";
+    case "brown":
+      return "var(--brown-color)";
+    case "light-grey":
+      return "var(--light-grey-color)";
+    case "grey":
+      return "var(--grey-color)";
+    case "dark-grey":
+      return "var(--dark-grey-color)";
+    case "blue-grey":
+      return "var(--blue-grey-color)";
+    case "black":
+      return "var(--black-color)";
+    case "white":
+      return "var(--white-color)";
+  }
+  return value;
+}
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
-let FooterButtonEditor = class extends LitElement {
+let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
   constructor() {
     super(...arguments);
+    this._options = [];
     this._guiMode = true;
   }
   get hasError() {
@@ -1540,18 +1738,24 @@ let FooterButtonEditor = class extends LitElement {
     if (!this._guiMode) {
       return this._renderYamlEditor();
     }
-    const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
     return html`
       <div class="container">
         <!-- Action Selector-->
-        <lc-action-selector
+        <lc-select
           class="row-full"
           .value=${(_a = this.value) == null ? void 0 : _a.action}
-          .hass=${this.hass}
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.action")} *"
+          .options=${this._options}
           .configValue=${"action"}
+          .getValue=${(value) => {
+      var _a2, _b2, _c2;
+      const [domain, action] = value.split(".");
+      const service = action && ((_c2 = (_b2 = (_a2 = this.hass) == null ? void 0 : _a2.services) == null ? void 0 : _b2[domain]) == null ? void 0 : _c2[action]) || void 0;
+      return service ? formatActionName(domain, service, this.hass.localize) : value;
+    }}
           .helper=${(_b = this.service) == null ? void 0 : _b.description}
           @value-changed=${this._valueChanged}
-        ></lc-action-selector>
+        ></lc-select>
 
         <!-- Action Target Selector -->
         ${this._renderServiceTargetSelector()}
@@ -1564,7 +1768,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Tooltip -->
         <ha-textfield
           class="input"
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.button_tooltip")} ${optional2}"
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.button_tooltip")}
           .value=${((_c = this.value) == null ? void 0 : _c.tooltip) || ""}
           .configValue=${"tooltip"}
           @input=${this._valueChanged}
@@ -1575,7 +1779,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Icon -->
         <ha-icon-picker
           .hass=${this.hass}
-          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")} ${optional2}"
+          .label=${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")}
           .value=${this.value.icon}
           .required=${false}
           .disabled=${false}
@@ -1598,7 +1802,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")} ${optional2}"
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")}"
           .value=${this.confirmationText}
           .configValue=${"confirmation"}
           .disabled=${!((_d = this.value) == null ? void 0 : _d.confirmation)}
@@ -1607,20 +1811,24 @@ let FooterButtonEditor = class extends LitElement {
           <slot name="icon" slot="leadingIcon"></slot>
         </ha-textfield>
 
-        <div class="row-full">
-          ${this.hass.localize("component.lovelace_cards.entity_component._.button_color")} ${optional2}
-        </div>
-
         <!-- Select color -->
-        <lc-color-selector
+        <ha-selector
           class="row-full"
           .hass=${this.hass}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.button_color")}
           .value=${this.value.color}
           .configValue=${"color"}
+          .selector=${{ ui_color: {} }}
+          .localize=${this.hass.localize}
           @value-changed=${this._valueChanged}
-        ></lc-color-selector>
+        ></ha-selector>
       </div>
     `;
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this._options = serviceToSelectOption(this.hass);
   }
   _renderServiceTargetSelector() {
     var _a;
@@ -1720,7 +1928,7 @@ let FooterButtonEditor = class extends LitElement {
   _valueChanged(event) {
     var _a, _b;
     const configValue = event.target.configValue;
-    const value = event.target.value;
+    const value = ["target", "color", "data"].includes(configValue) ? event.detail.value : event.target.value;
     const config = { ...this.value };
     if (configValue === "action") {
       const [domain, name] = value.split(".", 2);
@@ -1750,232 +1958,98 @@ let FooterButtonEditor = class extends LitElement {
     } else if (configValue === "confirmation") {
       config.confirmation = value ? { text: value } : true;
     } else if (configValue === "target") {
-      const updated = event.detail.value;
       config.target = {
-        entity_id: updated.entity_id.length ? Array.from(new Set(updated.entity_id)) : [],
-        device_id: updated.device_id.length ? Array.from(new Set(updated.device_id)) : [],
-        area_id: updated.area_id.length ? Array.from(new Set(updated.area_id)) : [],
-        floor_id: updated.floor_id.length ? Array.from(new Set(updated.floor_id)) : [],
-        label_id: updated.label_id.length ? Array.from(new Set(updated.label_id)) : []
+        entity_id: value.entity_id.length ? Array.from(new Set(value.entity_id)) : [],
+        device_id: value.device_id.length ? Array.from(new Set(value.device_id)) : [],
+        area_id: value.area_id.length ? Array.from(new Set(value.area_id)) : [],
+        floor_id: value.floor_id.length ? Array.from(new Set(value.floor_id)) : [],
+        label_id: value.label_id.length ? Array.from(new Set(value.label_id)) : []
       };
     } else if (configValue === "data") {
       const dataField = event.target.dataField;
       config.data = { ...((_b = this.value) == null ? void 0 : _b.data) || {} };
-      config.data[dataField] = event.detail.value;
+      config.data[dataField] = value;
     } else {
       config[configValue] = value;
     }
     fireEvent(this, "config-changed", { config });
   }
 };
-FooterButtonEditor.styles = styles$f;
-__decorateClass$g([
+FooterButtonEditor$1.styles = styles$e;
+__decorateClass$f([
   n2({ attribute: false })
-], FooterButtonEditor.prototype, "hass", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "hass", 2);
+__decorateClass$f([
   n2({ attribute: false })
-], FooterButtonEditor.prototype, "value", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "value", 2);
+__decorateClass$f([
   e("ha-yaml-editor")
-], FooterButtonEditor.prototype, "_yamlEditor", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_yamlEditor", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_actionDomain", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_options", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_actionName", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_actionDomain", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_targetSelector", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_actionName", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_guiSupported", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_guiSupported", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_error", 2);
-__decorateClass$g([
+], FooterButtonEditor$1.prototype, "_error", 2);
+__decorateClass$f([
   r()
-], FooterButtonEditor.prototype, "_guiMode", 2);
-FooterButtonEditor = __decorateClass$g([
+], FooterButtonEditor$1.prototype, "_guiMode", 2);
+FooterButtonEditor$1 = __decorateClass$f([
   t$1("lc-footer-button-editor")
-], FooterButtonEditor);
-const styles$e = css`.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.back-title {
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-}`;
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
-  return result;
-};
-let HuiSubElementEditor = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this._guiModeAvailable = true;
-    this._guiMode = true;
-  }
-  render() {
-    return html`
-      ${this._renderHeader()}
-      ${this._renderEditor()}
-    `;
-  }
-  _renderHeader() {
-    var _a, _b;
-    if (!this.hass) return html``;
-    let title;
-    if (((_a = this.config) == null ? void 0 : _a.type) === "footer-button") {
-      title = this.hass.localize(`component.lovelace_cards.entity_component._.button_action`);
-    } else {
-      title = this.hass.localize(`ui.panel.lovelace.editor.sub-element-editor.types.${(_b = this.config) == null ? void 0 : _b.type}`);
-    }
-    return html`
-      <div class="header">
-        <div class="back-title">
-          <lc-button-circle
-            icon="lc:back"
-            .tooltip=${this.hass.localize("ui.common.back")}
-            @click=${this._goBack}
-            transparent
-          ></lc-button-circle>
-          <span slot="title">${title}</span>
-        </div>
-        <lc-button-circle
-          type="button"
-          role="button"
-          class="gui-mode-button"
-          @click=${this._toggleMode}
-          .icon=${this._guiMode ? "mdi:code-braces" : "mdi:list-box-outline"}
-          .disabled=${!this._guiModeAvailable}
-          .tooltip=${this.hass.localize(
-      this._guiMode ? "ui.panel.lovelace.editor.edit_card.show_code_editor" : "ui.panel.lovelace.editor.edit_card.show_visual_editor"
-    )}
-          transparent
-        ></lc-button-circle>
-      </div>`;
-  }
-  _renderEditor() {
-    const type2 = this.config.type;
-    switch (type2) {
-      case "row":
-        return html`
-          <hui-row-element-editor
-            class="editor"
-            .hass=${this.hass}
-            .value=${this.config.elementConfig}
-            .context=${this.config.context}
-            @config-changed=${this._handleConfigChanged}
-            @GUImode-changed=${this._handleGUIModeChanged}
-          ></hui-row-element-editor>
-        `;
-      case "footer-button":
-        return html`
-          <lc-footer-button-editor
-            class="editor"
-            .hass=${this.hass}
-            .value=${this.config.elementConfig}
-            .context=${this.config.context}
-            @config-changed=${this._handleConfigChanged}
-            @GUImode-changed=${this._handleGUIModeChanged}
-          ></lc-footer-button-editor>
-        `;
-      default:
-        return html``;
-    }
-  }
-  _goBack() {
-    fireEvent(this, "go-back");
-  }
-  _toggleMode() {
-    var _a;
-    (_a = this._editorElement) == null ? void 0 : _a.toggleMode();
-  }
-  _handleGUIModeChanged(ev) {
-    ev.stopPropagation();
-    this._guiMode = ev.detail.guiMode;
-    this._guiModeAvailable = ev.detail.guiModeAvailable;
-  }
-  _handleConfigChanged(ev) {
-    this.config.elementConfig = ev.detail.config;
-  }
-};
-HuiSubElementEditor.styles = styles$e;
-__decorateClass$f([
-  n2({ attribute: false })
-], HuiSubElementEditor.prototype, "hass", 2);
-__decorateClass$f([
-  n2({ attribute: false })
-], HuiSubElementEditor.prototype, "config", 2);
-__decorateClass$f([
-  r()
-], HuiSubElementEditor.prototype, "_guiModeAvailable", 2);
-__decorateClass$f([
-  r()
-], HuiSubElementEditor.prototype, "_guiMode", 2);
-__decorateClass$f([
-  e(".editor")
-], HuiSubElementEditor.prototype, "_editorElement", 2);
-HuiSubElementEditor = __decorateClass$f([
-  t$1("lc-sub-element-editor")
-], HuiSubElementEditor);
+], FooterButtonEditor$1);
 const styles$d = css`:host {
-  height: var(--lc-dropdown-item-height);
-  width: auto;
-  padding: 0 16px;
-  cursor: pointer;
-  color: var(--primary-text-color);
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  scroll-snap-align: start end;
+  display: block;
+}
+
+.entities .entity-config {
+  margin-top: 8px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
-  transition: background-color 0.2s ease-out;
-  outline: 0;
 }
-
-:host(:hover) {
-  background-color: var(--material-secondary-background-color);
+.entities .entity-config .handle {
+  padding-right: 8px;
+  cursor: grab;
+  padding-inline-end: 8px;
 }
-
-:host([selected]) {
-  color: var(--primary-color);
-  background-color: color-mix(in srgb, var(--primary-color) 10%, transparent 90%);
+.entities .entity-config .edit-entity {
+  flex-grow: 1;
 }
-
-.icon {
-  --mdc-icon-size: 24px;
-  --icon-primary-color: var(--secondary-text-color);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.entities .entity-config .divider-entity {
+  height: 56px;
+  flex-grow: 1;
 }
-
-.info {
+.entities .entity-config .divider-entity .label {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1;
   margin-left: 16px;
-}
-.info .label {
-  font-size: 14px;
-}
-.info .text {
-  margin-top: 6px;
-  font-size: 12px;
   color: var(--secondary-text-color);
+}
+.entities .entity-config .divider-entity .divider {
+  border-color: var(--entities-divider-color, var(--divider-color));
+}
+.entities .entity-config .action-button {
+  --lc-button-size: 36px;
+  color: var(--secondary-text-color);
+}
+
+.add-entity {
+  margin-top: 8px;
+  display: block;
+  margin-left: 31px;
+  margin-right: 71px;
+  margin-inline-start: 31px;
+  margin-inline-end: 71px;
+  direction: var(--direction);
 }`;
 var __defProp$e = Object.defineProperty;
 var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
@@ -1987,966 +2061,278 @@ var __decorateClass$e = (decorators, target, key, kind) => {
   if (kind && result) __defProp$e(target, key, result);
   return result;
 };
-let DropdownListItem = class extends LitElement {
+let EntitiesEditor = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.selected = false;
-  }
-  render() {
-    return html`
-      <div class="icon">
-        <ha-icon .icon=${this.icon}></ha-icon>
-      </div>
-      <div class="info">
-        <div class="label">${this.label || this.value}</div>
-        ${this.text ? html`<div class="text">${this.text}</div>` : null}
-        </div>
-      </div>
-    `;
-  }
-};
-DropdownListItem.styles = styles$d;
-__decorateClass$e([
-  n2()
-], DropdownListItem.prototype, "value", 2);
-__decorateClass$e([
-  n2({ attribute: "selected", reflect: true, type: Boolean })
-], DropdownListItem.prototype, "selected", 2);
-__decorateClass$e([
-  n2()
-], DropdownListItem.prototype, "label", 2);
-__decorateClass$e([
-  n2()
-], DropdownListItem.prototype, "text", 2);
-__decorateClass$e([
-  n2()
-], DropdownListItem.prototype, "icon", 2);
-DropdownListItem = __decorateClass$e([
-  t$1("lc-dropdown-list-item")
-], DropdownListItem);
-function getElementRect(element) {
-  const rect = element.getBoundingClientRect();
-  if (!rect) {
-    throw new Error("No possible compute rect");
-  }
-  return {
-    x: rect.x,
-    y: rect.y,
-    width: rect.width,
-    height: rect.height
-  };
-}
-const DEFAULT_SERVICE_ICON = "mdi:room-service";
-const DOMAIN_ICONS = {
-  air_quality: "mdi:air-filter",
-  alert: "mdi:alert",
-  automation: "mdi:robot",
-  calendar: "mdi:calendar",
-  climate: "mdi:thermostat",
-  configurator: "mdi:cog",
-  conversation: "mdi:forum-outline",
-  counter: "mdi:counter",
-  date: "mdi:calendar",
-  datetime: "mdi:calendar-clock",
-  demo: "mdi:home-assistant",
-  device_tracker: "mdi:account",
-  google_assistant: "mdi:google-assistant",
-  group: "mdi:google-circles-communities",
-  homeassistant: "mdi:home-assistant",
-  homekit: "mdi:home-automation",
-  image_processing: "mdi:image-filter-frames",
-  image: "mdi:image",
-  input_boolean: "mdi:toggle-switch",
-  input_button: "mdi:button-pointer",
-  input_datetime: "mdi:calendar-clock",
-  input_number: "mdi:ray-vertex",
-  input_select: "mdi:format-list-bulleted",
-  input_text: "mdi:form-textbox",
-  lawn_mower: "mdi:robot-mower",
-  light: "mdi:lightbulb",
-  notify: "mdi:comment-alert",
-  number: "mdi:ray-vertex",
-  persistent_notification: "mdi:bell",
-  person: "mdi:account",
-  plant: "mdi:flower",
-  proximity: "mdi:apple-safari",
-  remote: "mdi:remote",
-  scene: "mdi:palette",
-  schedule: "mdi:calendar-clock",
-  script: "mdi:script-text",
-  select: "mdi:format-list-bulleted",
-  sensor: "mdi:eye",
-  simple_alarm: "mdi:bell",
-  siren: "mdi:bullhorn",
-  stt: "mdi:microphone-message",
-  sun: "mdi:white-balance-sunny",
-  text: "mdi:form-textbox",
-  time: "mdi:clock",
-  timer: "mdi:timer-outline",
-  todo: "mdi:clipboard-list",
-  tts: "mdi:speaker-message",
-  vacuum: "mdi:robot-vacuum",
-  wake_word: "mdi:chat-sleep",
-  weather: "mdi:weather-partly-cloudy",
-  zone: "mdi:map-marker-radius",
-  fan: "mdi:fan"
-};
-const OFF_SUPPORTS = ["automation", "fan", "light", "input_boolean"];
-function getServiceIcon(service) {
-  const [domain, serviceName] = service.split(".", 2);
-  if (serviceName === "pause") {
-    return "mdi:pause";
-  }
-  if (serviceName === "reload") {
-    return "mdi:reload";
-  }
-  const iconName = DOMAIN_ICONS[domain];
-  if (iconName && /_off$/.test(serviceName) && OFF_SUPPORTS.includes(domain)) {
-    return iconName + "-off";
-  }
-  return iconName || DEFAULT_SERVICE_ICON;
-}
-const styles$c = css`:host {
-  --lc-dropdown-item-height: 72px;
-  --lc-dropdown-items-count: 5;
-  --lc-dropdown-width: 300px;
-  --lc-dropdown-top: 0;
-  --lc-dropdown-left: 0;
-  --lc-dropdown-border-radius: 0;
-}
-
-.dropdown {
-  top: var(--lc-dropdown-top);
-  left: var(--lc-dropdown-left);
-  width: var(--lc-dropdown-width);
-  height: var(--lc-dropdown-height);
-  max-height: var(--lc-dropdown-height);
-  background-color: var(--material-background-color);
-  border-radius: var(--lc-dropdown-border-radius);
-  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  position: fixed;
-  z-index: 99999;
-}
-
-.scroller {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  display: block;
-}
-
-.list-items {
-  padding-left: 0;
-  margin: 0;
-}`;
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
-  return result;
-};
-const LIST_ITEM_HEIGHT = 72;
-const LIST_MAX_DISPLAY = 5;
-let ActionDropdown = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.opened = false;
-    this._domains = [];
-    this._items = [];
-    this._idToIndex = {};
-    this._callbacks = {};
-  }
-  willUpdate(_changed) {
-    var _a;
-    super.willUpdate(_changed);
-    if (_changed.has("services")) {
-      this._recomputeListItems();
-      if (this._content) {
-        this._content.items = this._items;
-      }
-    }
-    if (_changed.has("search") && this._content) {
-      const search = ((_a = this.search) == null ? void 0 : _a.trim().toLowerCase()) || "";
-      if (search) {
-        this._content.items = this._items.filter((item) => {
-          return item.value.toLowerCase().includes(search) || item.label && item.label.toLowerCase().includes(search);
-        });
-      } else {
-        this._content.items = this._items;
-      }
-      this._positioning();
-    }
-  }
-  updated(_changed) {
-    super.updated(_changed);
-    if (_changed.has("opened")) {
-      if (this.opened) {
-        this._showDropdown();
-      } else {
-        this._hideDropdown();
-      }
-    }
-  }
-  _showDropdown() {
-    this._content = document.createElement("lc-action-dropdown-content");
-    this._content.items = this._items;
-    this._content.activeIndex = this.value ? this._idToIndex[this.value] : null;
-    this._content.addEventListener("value-changed", this._onChange.bind(this));
-    document.body.append(this._content);
-    this._callbacks["wheel"] = this._onWheel.bind(this);
-    window.addEventListener("wheel", this._callbacks["wheel"]);
-    requestAnimationFrame(() => {
-      this._callbacks["window-click"] = () => fireEvent(this, "dismiss");
-      window.addEventListener("click", this._callbacks["window-click"]);
-      this._positioning();
-    });
-  }
-  _hideDropdown() {
-    var _a;
-    window.removeEventListener("wheel", this._callbacks["wheel"]);
-    Reflect.deleteProperty(this._callbacks, "wheel");
-    window.removeEventListener("click", this._callbacks["window-click"]);
-    Reflect.deleteProperty(this._callbacks, "window-click");
-    (_a = this._content) == null ? void 0 : _a.remove();
-    this._content = void 0;
-  }
-  _onChange(event) {
-    event.stopPropagation();
-    fireEvent(this, "dismiss");
-    fireEvent(this, "value-changed", { value: event.detail.value });
-  }
-  _onWheel() {
-    let left;
-    let top2;
-    const tryPosition = () => {
-      const result = this._positioning();
-      if (!result) return;
-      if (left !== result.left || top2 !== result.top) {
-        left = result.left;
-        top2 = result.top;
-        requestAnimationFrame(tryPosition);
-      }
-    };
-    requestAnimationFrame(tryPosition);
-  }
-  _recomputeListItems() {
-    this._domains = this.services ? Object.keys(this.services) : [];
-    const items = [];
-    const idToIndex = {};
-    let index = 0;
-    for (let i2 = 0; i2 < this._domains.length; i2++) {
-      const domain = this._domains[i2];
-      const services = this.services[domain];
-      const servicesNames = Object.keys(services);
-      for (let j = 0; j < servicesNames.length; j++) {
-        const serviceName = servicesNames[j];
-        const serviceId = `${domain}.${serviceName}`;
-        items.push({
-          index,
-          value: serviceId,
-          label: services[serviceName].name,
-          text: serviceId,
-          icon: getServiceIcon(serviceId)
-        });
-        idToIndex[serviceId] = index;
-        index++;
-      }
-    }
-    this._items = items;
-    this._idToIndex = idToIndex;
-  }
-  _positioning() {
-    var _a;
-    if (!this._content) {
-      throw new Error("");
-    }
-    const { x, y: y2, width, height } = getElementRect(this.previousElementSibling);
-    const windowHeight = ((_a = window.visualViewport) == null ? void 0 : _a.height) || window.innerHeight;
-    const dropdownHeight = LIST_ITEM_HEIGHT * Math.min(LIST_MAX_DISPLAY, this._content.items.length);
-    const isBellow = windowHeight < y2 + height + dropdownHeight;
-    const top2 = isBellow ? y2 - dropdownHeight : y2 + height;
-    this._content.style.setProperty("--lc-dropdown-top", `${top2}px`);
-    this._content.style.setProperty("--lc-dropdown-left", `${x}px`);
-    this._content.style.setProperty("--lc-dropdown-width", `${width}px`);
-    this._content.style.setProperty("--lc-dropdown-height", `${dropdownHeight}px`);
-    this._content.style.setProperty("--lc-dropdown-border-radius", isBellow ? ".5rem .5rem 0 0" : "0 0 .5rem .5rem");
-    return {
-      top: top2,
-      left: x,
-      width,
-      isBellow
-    };
-  }
-};
-__decorateClass$d([
-  n2()
-], ActionDropdown.prototype, "value", 2);
-__decorateClass$d([
-  n2()
-], ActionDropdown.prototype, "search", 2);
-__decorateClass$d([
-  n2({ attribute: false })
-], ActionDropdown.prototype, "services", 2);
-__decorateClass$d([
-  n2({ attribute: "opened", reflect: true, type: Boolean })
-], ActionDropdown.prototype, "opened", 2);
-__decorateClass$d([
-  r()
-], ActionDropdown.prototype, "_domains", 2);
-__decorateClass$d([
-  r()
-], ActionDropdown.prototype, "_items", 2);
-__decorateClass$d([
-  r()
-], ActionDropdown.prototype, "_idToIndex", 2);
-ActionDropdown = __decorateClass$d([
-  t$1("lc-action-dropdown")
-], ActionDropdown);
-let ActionDropdownContent = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.items = [];
-    this.activeIndex = null;
-    this.inert = false;
+    this.options = [];
   }
   firstUpdated(_changed) {
-    var _a;
-    super.updated(_changed);
-    if (this.activeIndex != null) {
-      const scroller = (_a = this.renderRoot.firstElementChild) == null ? void 0 : _a.firstElementChild;
-      if (scroller) {
-        ((_scroller, _scrollTo) => {
-          requestAnimationFrame(() => _scroller.scrollTo(0, _scrollTo));
-        })(scroller, this.activeIndex * LIST_ITEM_HEIGHT);
-      }
-    }
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this.options = entitiesToSelectOption(this.hass);
   }
   render() {
-    if (!this.items) return html``;
+    if (!this.entities || !this.hass) return html``;
     return html`
-      <div class="dropdown" @click=${(event) => event.stopPropagation()} @wheel=${(event) => event.stopPropagation()}>
-        <div class="scroller">
-          <ul class="list-items">
-            ${this.items.map((item) => this._renderItem(item))}
-          </ul>
+      <h3>
+        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.entities")}</span>
+      </h3>
+
+      ${this._renderRowsConfigs()}
+
+      <lc-select
+        class="add-entity"
+        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
+        .options=${this.options}
+        @value-changed=${this._addEntity}
+      ></lc-select>
+    `;
+  }
+  _renderRowsConfigs() {
+    if (!this.entities) return html``;
+    return html`
+      <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
+        <div class="entities">
+          ${this.entities.map((entity, index) => this._renderRowConfig(index, entity))}
         </div>
-      </div>
+      </ha-sortable>
     `;
   }
-  _renderItem(item) {
+  _renderRowConfig(index, entity) {
     return html`
-      <lc-dropdown-list-item
-        .value=${item.value}
-        .selected=${this.activeIndex != null && item.index === this.activeIndex}
-        .icon=${item.icon}
-        .label=${item.label}
-        .text=${item.text}
-        @click=${this._onClick}
-      ></lc-dropdown-list-item>
-    `;
-  }
-  _onClick(event) {
-    event.stopPropagation();
-    console.log(event.target.value);
-    fireEvent(this, "value-changed", { value: event.target.value }, { bubbles: true });
-  }
-};
-ActionDropdownContent.styles = styles$c;
-__decorateClass$d([
-  n2({ attribute: false })
-], ActionDropdownContent.prototype, "items", 2);
-__decorateClass$d([
-  n2()
-], ActionDropdownContent.prototype, "activeIndex", 2);
-__decorateClass$d([
-  n2({ attribute: "inert", type: Boolean })
-], ActionDropdownContent.prototype, "inert", 2);
-ActionDropdownContent = __decorateClass$d([
-  t$1("lc-action-dropdown-content")
-], ActionDropdownContent);
-const styles$b = css`:host {
-  display: block;
-}
-:host[opened] .toggle-button {
-  color: var(--primary-color);
-}
-
-.action-selector {
-  position: relative;
-}
-.action-selector .input {
-  width: 100%;
-}
-.action-selector .toggle-button {
-  right: 1rem;
-  top: 1rem;
-  position: absolute;
-  color: var(--input-dropdown-icon-color);
-}`;
-const CODE_COMPONENTS = {
-  homeassistant: "Home Assistant Core Integration"
-};
-function formatActionName(domain, service, localize) {
-  const serviceName = service.name;
-  let componentName;
-  if (domain in CODE_COMPONENTS) {
-    componentName = CODE_COMPONENTS[domain];
-  } else {
-    componentName = localize(`component.${domain}.entity_component._.name`);
-  }
-  if (!componentName) {
-    componentName = domain.split(/[-_]/g).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-  }
-  return `${componentName}: ${serviceName}`;
-}
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
-  return result;
-};
-let ActionSelector = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.disabled = false;
-    this.required = false;
-    this.opened = false;
-    this._valueFormatted = "";
-    this._search = "";
-    this._focused = false;
-  }
-  willUpdate(_changed) {
-    var _a, _b, _c;
-    super.willUpdate(_changed);
-    if (_changed.has("value")) {
-      this._valueFormatted = "";
-      if (this.value) {
-        const [domain, action] = this.value.split(".");
-        const service = action && ((_c = (_b = (_a = this.hass) == null ? void 0 : _a.services) == null ? void 0 : _b[domain]) == null ? void 0 : _c[action]) || void 0;
-        if (service) {
-          this._valueFormatted = formatActionName(domain, service, this.hass.localize);
-        }
-      }
-    }
-  }
-  render() {
-    if (!this.hass) return html``;
-    return html`
-      <div class="action-selector" @click=${(event) => event.stopPropagation()}>
-        <ha-textfield
-          class="input"
-          .label=${this.hass.localize("ui.components.service-picker.action")}
-          .value=${this._focused ? this._search : this._valueFormatted}
-          .errorMessage=${this._errorMessage}
-          .invalid=${!!this._errorMessage}
-          .helper=${this.helper}
-          helperPersistent
-          @input=${this._onInput}
-          @focus=${this._onFocus}
-          @blur=${this._onBlur}
-        >
-          <slot name="icon" slot="leadingIcon"></slot>
-        </ha-textfield>
-
-        <ha-icon
-          role="button"
-          tabindex="-1"
-          aria-expanded=${this.opened ? "true" : "false"}
-          class="toggle-button"
-          .icon=${this.opened ? "mdi:menu-up" : "mdi:menu-down"}
-          ?disabled=${this.disabled}
-        ></ha-icon>
-      </div>
-      <lc-action-dropdown
-        .value=${this.value}
-        .services=${this.hass.services}
-        .opened=${this.opened}
-        .search=${this._search}
-        @dismiss=${() => this.opened = false}
-        @value-changed=${this._onValueChanged}
-      ></lc-action-dropdown>
-    `;
-  }
-  _onBlur(event) {
-    event.stopPropagation();
-    this._focused = false;
-  }
-  _onFocus(event) {
-    event.stopPropagation();
-    this._focused = true;
-    this.opened = true;
-  }
-  _onInput(event) {
-    this._search = event.target.value;
-  }
-  _onValueChanged(event) {
-    this.value = event.detail.value;
-    this._search = "";
-  }
-};
-ActionSelector.styles = styles$b;
-__decorateClass$c([
-  n2({ attribute: false })
-], ActionSelector.prototype, "hass", 2);
-__decorateClass$c([
-  n2()
-], ActionSelector.prototype, "value", 2);
-__decorateClass$c([
-  n2()
-], ActionSelector.prototype, "helper", 2);
-__decorateClass$c([
-  n2({ attribute: "disabled", type: Boolean, reflect: true })
-], ActionSelector.prototype, "disabled", 2);
-__decorateClass$c([
-  n2({ attribute: "required", type: Boolean, reflect: true })
-], ActionSelector.prototype, "required", 2);
-__decorateClass$c([
-  n2({ attribute: "opened", type: Boolean, reflect: true })
-], ActionSelector.prototype, "opened", 2);
-__decorateClass$c([
-  r()
-], ActionSelector.prototype, "_valueFormatted", 2);
-__decorateClass$c([
-  r()
-], ActionSelector.prototype, "_errorMessage", 2);
-__decorateClass$c([
-  r()
-], ActionSelector.prototype, "_search", 2);
-__decorateClass$c([
-  r()
-], ActionSelector.prototype, "_focused", 2);
-ActionSelector = __decorateClass$c([
-  t$1("lc-action-selector")
-], ActionSelector);
-const styles$a = css`.color-selector .buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: auto;
-  gap: 10px;
-}
-.color-selector .buttons .color-button {
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  font-size: 14px;
-  text-transform: capitalize;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-.color-selector .buttons .color-button:before {
-  content: " ";
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  margin-inline-end: 0.75rem;
-  background-color: var(--lc-color-button);
-}
-.color-selector .more-button {
-  margin: 14px 0 8px;
-  text-align: center;
-}
-.color-selector .more-button button {
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  color: var(--secondary-text-color);
-}
-.color-selector .more-button button:hover {
-  text-decoration: underline;
-}
-.color-selector .color-input {
-  margin-top: 1rem;
-  width: 100%;
-}`;
-function formatColors(value, defaultColor = "var(--primary-color)") {
-  if (!value) return defaultColor;
-  switch (value) {
-    case "primary":
-      return "var(--primary-color)";
-    case "accent":
-      return "var(--accent-color)";
-    case "error":
-    case "err":
-    case "danger":
-      return "var(--error-color)";
-    case "warning":
-    case "warn":
-      return "var(--warning-color)";
-    case "success":
-      return "var(--success-color)";
-    case "disabled":
-      return "var(--disabled-color)";
-    case "info":
-      return "var(--info-color)";
-    case "red":
-      return "var(--red-color)";
-    case "pink":
-      return "var(--pink-color)";
-    case "purple":
-      return "var(--purple-color)";
-    case "deep-purple":
-      return "var(--deep-purple-color)";
-    case "indigo":
-      return "var(--indigo-color)";
-    case "blue":
-      return "var(--blue-color)";
-    case "light-blue":
-      return "var(--light-blue-color)";
-    case "cyan":
-      return "var(--cyan-color)";
-    case "teal":
-      return "var(--teal-color)";
-    case "green":
-      return "var(--green-color)";
-    case "light-green":
-      return "var(--light-green-color)";
-    case "lime":
-      return "var(--lime-color)";
-    case "yellow":
-      return "var(--yellow-color)";
-    case "amber":
-      return "var(--amber-color)";
-    case "orange":
-      return "var(--orange-color)";
-    case "deep-orange":
-      return "var(--deep-orange-color)";
-    case "brown":
-      return "var(--brown-color)";
-    case "light-grey":
-      return "var(--light-grey-color)";
-    case "grey":
-      return "var(--grey-color)";
-    case "dark-grey":
-      return "var(--dark-grey-color)";
-    case "blue-grey":
-      return "var(--blue-grey-color)";
-    case "black":
-      return "var(--black-color)";
-    case "white":
-      return "var(--white-color)";
-  }
-  return value;
-}
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
-  return result;
-};
-const COLORS = [
-  "primary",
-  "accent",
-  "danger",
-  "warning",
-  "success",
-  "info",
-  "disabled",
-  "red",
-  "pink",
-  "purple",
-  "deep-purple",
-  "indigo",
-  "blue",
-  "light-blue",
-  "cyan",
-  "teal",
-  "green",
-  "light-green",
-  "lime",
-  "yellow",
-  "amber",
-  "orange",
-  "deep-orange",
-  "brown",
-  "light-grey",
-  "grey",
-  "dark-grey",
-  "blue-grey",
-  "black",
-  "white"
-];
-let ColorSelector = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.value = COLORS[0];
-    this._isMore = false;
-  }
-  get colors() {
-    if (this.isMore) {
-      return COLORS;
-    }
-    return COLORS.slice(0, 6);
-  }
-  get isMore() {
-    const index = COLORS.indexOf(this.value);
-    return index > 5 ? true : this._isMore;
-  }
-  set isMore(value) {
-    this._isMore = value;
-  }
-  render() {
-    var _a, _b, _c;
-    return html`
-      <div class="color-selector">
-        <div class="buttons">
-          ${this.colors.map((color) => html`
-            <button
-              type="button"
-              class=${`color-button${this.value === color ? " active" : ""}`}
-              style=${`--lc-color-button: ${formatColors(color)}; opacity: ${this.value === color ? "1" : "0.3"};`}
-              @click=${() => this._handleSelect(color)}
-            >
-              <span>${color}</span>
-            </button>
-          `)}
+      <div class="entity-config">
+        <div class="handle">
+          <ha-icon icon="mdi:drag" class="icon"></ha-icon>
         </div>
 
-        <div class="more-button">
-          ${!this.isMore ? html`
-            <button @click=${() => this.isMore = true}>
-              ${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.more_theme_colors")}
-            </button>
-          ` : null}
-        </div>
+        ${this._renderEntity(index, entity)}
 
-        <ha-textfield
-          class="color-input"
-          .label=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.type_your_color")}
-          .value=${COLORS.includes(this.value) ? "" : this.value}
-          .configValue=${"confirmation"}
-          .helper=${(_c = this.hass) == null ? void 0 : _c.localize("component.lovelace_cards.entity_component._.supports_color_format")}
-          .errorMessage=${this._errorMessage}
-          .invalid=${!!this._errorMessage}
-          @input=${this._handleCustom}
-        >
-          <slot name="icon" slot="leadingIcon"></slot>
-        </ha-textfield>
+        <lc-button-circle
+          icon="mdi:close"
+          .index=${index}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_entity")}
+          class="action-button"
+          @click=${this._removeRow}
+          transparent
+        ></lc-button-circle>
 
-        <ha-color-picker></ha-color-picker>
+        <lc-button-circle
+          icon="mdi:pencil"
+          .index=${index}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_entity")}
+          class="action-button"
+          @click=${this._editRow}
+          transparent
+        ></lc-button-circle>
       </div>
+
     `;
   }
-  _handleSelect(color) {
-    this.value = color;
-    fireEvent(this, "value-changed", { value: color });
-  }
-  _handleCustom(event) {
-    var _a;
-    const value = event.target.value;
-    if (COLORS.includes(this.value)) {
-      this._prevColor = this.value;
-    }
-    if (value) {
-      this.value = value;
-    } else {
-      this.value = this._prevColor || COLORS[0];
-    }
-    this._errorMessage = CSS.supports("color", value) ? void 0 : (_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.unsupported_color_format");
-    fireEvent(this, "value-changed", { value });
-  }
-};
-ColorSelector.styles = styles$a;
-__decorateClass$b([
-  n2({ attribute: false })
-], ColorSelector.prototype, "hass", 2);
-__decorateClass$b([
-  n2({ attribute: "value", reflect: true, type: String })
-], ColorSelector.prototype, "value", 2);
-__decorateClass$b([
-  r()
-], ColorSelector.prototype, "_custom", 2);
-__decorateClass$b([
-  r()
-], ColorSelector.prototype, "_errorMessage", 2);
-__decorateClass$b([
-  r()
-], ColorSelector.prototype, "colors", 1);
-__decorateClass$b([
-  r()
-], ColorSelector.prototype, "_isMore", 2);
-ColorSelector = __decorateClass$b([
-  t$1("lc-color-selector")
-], ColorSelector);
-const styles$9 = css`:host {
-  --lc-button-size: 40px;
-  --lc-button-icon-size: 24px;
-  --lc-button-color: currentColor;
-  --lc-button-bg-opacity: 0.15;
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  color: var(--lc-button-color);
-  font-family: var(--paper-font-body1_-_font-family);
-  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
-  font-size: var(--paper-font-body1_-_font-size);
-  font-weight: var(--paper-font-body1_-_font-weight);
-  line-height: var(--paper-font-body1_-_line-height);
-  display: inline-block;
-  position: relative;
-}
-:host:before {
-  content: " ";
-  left: 0;
-  right: 0;
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  border-radius: 50%;
-  background-color: currentcolor;
-  opacity: var(--lc-button-bg-opacity);
-  position: absolute;
-}
-
-.lc-button-circle-icon {
-  --ha-icon-display: block;
-  --mdc-icon-button-size: var(--lc-button-size);
-  --mdc-icon-size: var(--lc-button-icon-size);
-  --mdc-theme-primary: var(--lc-button-color);
-  color: var(--lc-button-color);
-}
-
-.lc-button-circle-spinner {
-  width: var(--lc-button-size);
-  height: var(--lc-button-size);
-  border-radius: 50%;
-  font-size: var(--lc-button-icon-size);
-}`;
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$a(target, key, result);
-  return result;
-};
-function createComponent(Base) {
-  const _ButtonCircle = class _ButtonCircle extends Base {
-    constructor(...rest) {
-      super(...rest);
-      this.icon = "mdi:gesture-tap-button";
-      this.disabled = false;
-      this._popoverOff = false;
-    }
-    set color(value) {
-      this.style.setProperty("--lc-button-color", formatColors(value, "currentColor"));
-    }
-    set transparent(value) {
-      this.style.setProperty("--lc-button-bg-opacity", value ? "0" : "0.15");
-    }
-    render() {
+  _renderEntity(index, entity) {
+    var _a, _b;
+    if (!("type" in entity)) {
       return html`
-        <mwc-icon-button
-          type="button"
-          role="button"
-          class="lc-button-circle-icon"
-          .disabled=${this.disabled}
-          @mouseenter="${this._onMouseenter}"
-          @mouseleave="${this._onMouseLeave}"
-          @click=${this._onClick}
-        >
-          ${this._renderIcon()}
-        </mwc-icon-button>
+        <lc-select
+          class="edit-entity"
+          .index=${index}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
+          .options=${this.options}
+          .value=${entity.entity}
+          .getValue=${(value) => {
+        var _a2;
+        return ((_a2 = this.hass.entities[value]) == null ? void 0 : _a2.name) || value;
+      }}
+          @value-changed=${this._changeValue}
+        ></lc-select>
       `;
     }
-    _renderIcon() {
-      if (this.disabled || !this.status) {
-        return html`<ha-icon icon=${this.icon} class="icon"></ha-icon>`;
-      }
-      switch (this.status) {
-        case "loading":
-          return html`<lc-icon-spinner color="var(--lc-button-color)"></lc-icon-spinner>`;
-        case "success":
-          return html`<lc-icon-success color="var(--lc-button-color)"></lc-icon-success>`;
-        case "error":
-          return html`<lc-icon-error color="var(--lc-button-color)"></lc-icon-error>`;
-      }
+    if (entity.type === "divider") {
+      return html`
+        <div class="divider-entity">
+          <div class="label">${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.divider")}</div>
+          <hr class="divider" />
+        </div>
+      `;
     }
-    _removePopover() {
-      if (this._popover) {
-        this._popover.hide();
-        this._popover = void 0;
-      }
-    }
-    _onClick() {
-      this._popoverOff = true;
-      this._removePopover();
-    }
-    /**
-     * Show tooltip popover
-     * @private
-     */
-    _onMouseenter() {
-      if (this._popoverOff || !this.tooltip || this.status) return;
-      this._popover = document.createElement("lc-popover");
-      this._popover.attach(this, this.tooltip);
-    }
-    /**
-     * Hide tooltip popover
-     * @private
-     */
-    _onMouseLeave() {
-      this._removePopover();
-      this._popoverOff = false;
-    }
-  };
-  _ButtonCircle.styles = styles$9;
-  let ButtonCircle = _ButtonCircle;
-  __decorateClass$a([
-    n2({ attribute: true })
-  ], ButtonCircle.prototype, "icon", 2);
-  __decorateClass$a([
-    n2({ attribute: "color", reflect: true, type: String })
-  ], ButtonCircle.prototype, "color", 1);
-  __decorateClass$a([
-    n2({ attribute: true })
-  ], ButtonCircle.prototype, "tooltip", 2);
-  __decorateClass$a([
-    n2({ attribute: "status", reflect: true, type: String })
-  ], ButtonCircle.prototype, "status", 2);
-  __decorateClass$a([
-    n2({ attribute: "disabled", reflect: true, type: Boolean })
-  ], ButtonCircle.prototype, "disabled", 2);
-  __decorateClass$a([
-    n2({ attribute: "transparent", reflect: true, type: Boolean })
-  ], ButtonCircle.prototype, "transparent", 1);
-  return ButtonCircle;
-}
-(async () => {
-  await customElements.whenDefined("ha-icon");
-  const source = await customElements.whenDefined("mwc-icon-button");
-  customElements.define("lc-button-circle", createComponent(source), { extends: "button" });
-})();
-function forwardHaptic(hapticType) {
-  fireEvent(window, "haptic", hapticType);
-}
-function domainToName(localize, domain, manifest) {
-  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
-}
-const MAIN_WINDOW_NAME = "ha-main-window";
-const mainWindow = (() => {
-  try {
-    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
-  } catch {
-    return window;
+    return html``;
   }
-})();
-function isCustomType(type2) {
-  return type2.startsWith("custom:");
-}
+  _addEntity(event) {
+    const value = event.detail.value;
+    if (value === "") {
+      return;
+    }
+    const entity = { entity: value };
+    event.target.value = "";
+    fireEvent(this, "entities-changed", { entities: [...this.entities || [], entity] });
+  }
+  _editRow(event) {
+    const index = event.currentTarget.index;
+    fireEvent(this, "edit-detail-element", {
+      subElementConfig: {
+        index,
+        type: "entity",
+        elementConfig: this.entities[index]
+      }
+    });
+  }
+  _removeRow(event) {
+    const index = event.currentTarget.index;
+    const entities = this.entities.concat();
+    entities.splice(index, 1);
+    fireEvent(this, "entities-changed", { entities });
+  }
+  _changeValue(event) {
+    const value = event.detail.value;
+    const index = event.target.index;
+    const entities = this.entities.concat();
+    if (value === "" || value === void 0) {
+      entities.splice(index, 1);
+    } else {
+      entities[index] = {
+        ...entities[index],
+        entity: value
+      };
+    }
+    fireEvent(this, "entities-changed", { entities });
+  }
+  _rowMoved(event) {
+    event.stopPropagation();
+    const { oldIndex, newIndex } = event.detail;
+    const entities = this.entities.concat();
+    entities.splice(newIndex, 0, entities.splice(oldIndex, 1)[0]);
+    fireEvent(this, "entities-changed", { entities });
+  }
+};
+EntitiesEditor.styles = styles$d;
+__decorateClass$e([
+  n2({ attribute: false })
+], EntitiesEditor.prototype, "hass", 2);
+__decorateClass$e([
+  n2({ attribute: false })
+], EntitiesEditor.prototype, "entities", 2);
+__decorateClass$e([
+  r()
+], EntitiesEditor.prototype, "options", 2);
+EntitiesEditor = __decorateClass$e([
+  t$1("lc-entities-editor")
+], EntitiesEditor);
+const ActionConfigTypeSchema = object({
+  action: enums(["none", "toggle", "url", "navigate", "assist"]),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+const ActionConfigServiceSchema = object({
+  action: literal("perform-action"),
+  service: optional(string()),
+  perform_action: optional(string()),
+  service_data: optional(object()),
+  data: optional(object()),
+  target: optional(TargetConfigSchema),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+const ActionConfigNavigateSchema = object({
+  action: literal("navigate"),
+  navigation_path: string(),
+  navigation_replace: optional(boolean()),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+const ActionConfigUrlSchema = object({
+  action: literal("url"),
+  url_path: string(),
+  confirmation: optional(ConfirmationConfigSchema)
+});
+const ActionConfigMoreInfoSchema = type({
+  action: literal("more-info"),
+  entity: optional(string())
+});
+const ActionConfigSchema = dynamic((value) => {
+  if (value && typeof value === "object" && "action" in value) {
+    switch (value.action) {
+      case "perform-action": {
+        return ActionConfigServiceSchema;
+      }
+      case "navigate": {
+        return ActionConfigNavigateSchema;
+      }
+      case "url": {
+        return ActionConfigUrlSchema;
+      }
+      case "more-info": {
+        return ActionConfigMoreInfoSchema;
+      }
+    }
+  }
+  return ActionConfigTypeSchema;
+});
+const FormatEnum = enums(["relative", "total", "date", "time", "datetime"]);
+const SecondaryInfoEnum = enums(["last-changed", "entity-id", "last-updated", "last-triggered", "brightness", "tilt-position", "position"]);
+const EntityBaseConfigSchema = union([
+  object({
+    entity: string(),
+    name: optional(string()),
+    icon: optional(string()),
+    image: optional(string()),
+    secondary_info: optional(SecondaryInfoEnum),
+    format: optional(FormatEnum),
+    state_color: optional(boolean()),
+    tap_action: optional(ActionConfigSchema),
+    hold_action: optional(ActionConfigSchema),
+    double_tap_action: optional(ActionConfigSchema),
+    confirmation: optional(ConfirmationConfigSchema)
+  }),
+  string()
+]);
+const EntityDividerConfigSchema = object({
+  type: literal("divider"),
+  style: optional(any())
+});
+const EntitySectionConfigSchema = object({
+  type: literal("section"),
+  label: optional(string())
+});
+const EntityWebLinkConfigSchema = object({
+  type: literal("weblink"),
+  url: string(),
+  name: optional(string()),
+  icon: optional(string())
+});
+const EntityAttributeConfigSchema = object({
+  type: literal("attribute"),
+  entity: string(),
+  attribute: string(),
+  prefix: optional(string()),
+  suffix: optional(string()),
+  name: optional(string()),
+  icon: optional(string()),
+  format: optional(FormatEnum)
+});
+const EntityTextConfigSchema = object({
+  type: literal("text"),
+  name: string(),
+  text: string(),
+  icon: optional(string())
+});
+const EntityConfigSchema = dynamic((value) => {
+  if (value && typeof value === "object" && "type" in value) {
+    switch (value.type) {
+      case "attribute": {
+        return EntityAttributeConfigSchema;
+      }
+      case "divider": {
+        return EntityDividerConfigSchema;
+      }
+      case "section": {
+        return EntitySectionConfigSchema;
+      }
+      case "text": {
+        return EntityTextConfigSchema;
+      }
+      case "weblink": {
+        return EntityWebLinkConfigSchema;
+      }
+    }
+  }
+  return EntityBaseConfigSchema;
+});
 function computeDomain(entityId) {
   return entityId.substring(0, entityId.indexOf("."));
 }
@@ -3050,6 +2436,1002 @@ function findEntities(hass, maxEntities, entities, entitiesFallback, includeDoma
   }
   return entityIds;
 }
+const styles$c = css`.container {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 16px;
+}
+.container .row-full {
+  grid-column: span 2/span 2;
+}
+.container hr {
+  grid-column: span 2/span 2;
+  width: 100%;
+  border-color: var(--entities-divider-color, var(--divider-color));
+}
+.container .description {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  line-height: 1.2;
+}
+.container .enable-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.container .color-radio {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.yaml-editor .error {
+  margin-top: 8px;
+  color: var(--error-color);
+  font-size: 13px;
+}`;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$d(target, key, result);
+  return result;
+};
+let FooterButtonEditor2 = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._guiMode = true;
+    this._options = [];
+  }
+  get hasError() {
+    return !!this._error;
+  }
+  get hasWarning() {
+    return false;
+  }
+  get GUImode() {
+    return this._guiMode;
+  }
+  set GUImode(guiMode) {
+    this._guiMode = guiMode;
+    this.updateComplete.then(() => {
+      fireEvent(this, "GUImode-changed", {
+        guiMode,
+        guiModeAvailable: !(this.hasError || this._guiSupported === false)
+      });
+    });
+  }
+  toggleMode() {
+    this.GUImode = !this.GUImode;
+  }
+  focusYamlEditor() {
+    var _a;
+    (_a = this._yamlEditor) == null ? void 0 : _a.focus();
+  }
+  render() {
+    if (!this.hass || !this.value) return html``;
+    if (!this._guiMode) {
+      return this._renderYamlEditor();
+    }
+    return html`
+      <div class="container">
+        ${"type" in this.value ? this._renderEntityWidthType(this.value) : this._renderBaseEntity(this.value)}
+      </div>
+    `;
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this._options = entitiesToSelectOption(this.hass);
+  }
+  _renderEntityWidthType(_entity) {
+    return html``;
+  }
+  _renderBaseEntity(entity) {
+    var _a;
+    if (!this.hass) return html``;
+    const domain = computeDomain(entity.entity);
+    const secondaryInfoValues = [
+      "none",
+      "entity-id",
+      "last-changed",
+      "last-updated",
+      ...["automation", "script"].includes(domain) ? ["last-triggered"] : [],
+      ...domain === "cover" ? ["position", "tilt-position"] : [],
+      ...domain === "light" ? ["brightness"] : []
+    ];
+    return html`
+      <lc-select
+        class="row-full"
+        .label="${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")} *"
+        .value=${entity.entity}
+        .options=${this._options}
+        .configValue=${"entity"}
+        .getValue=${(value) => {
+      var _a2;
+      return ((_a2 = this.hass.entities[value]) == null ? void 0 : _a2.name) || value;
+    }}
+        @value-changed=${this._valueChanged}
+      ></lc-select>
+
+      <!-- Name -->
+      <ha-textfield
+        class="input"
+        .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.name")}"
+        .value=${entity.name || ""}
+        .configValue=${"name"}
+        @input=${this._valueChanged}
+      >
+        <slot name="icon" slot="leadingIcon"></slot>
+      </ha-textfield>
+
+      <!-- Icon -->
+      <ha-selector
+        .hass=${this.hass}
+        .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.icon")}"
+        .value=${entity.icon}
+        .required=${false}
+        .disabled=${false}
+        .configValue=${"icon"}
+        .selector=${{ icon: {} }}
+        .context=${{ icon_entity: entity.entity }}
+        @value-changed=${this._valueChanged}
+      ></ha-selector>
+
+
+      <div class="row-full">
+        <ha-selector
+          .hass=${this.hass}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.secondary_information")}
+          .selector=${{
+      select: {
+        mode: "list",
+        translation_key: "editor.secondary_info",
+        options: secondaryInfoValues
+      }
+    }}
+          .configValue=${"secondary_info"}
+          .value=${entity.secondary_info || "none"}
+          .localizeValue=${(value) => {
+      return this.hass.localize(`component.lovelace_cards.entity_component._.${value}`);
+    }}
+          @value-changed=${this._valueChanged}
+        ></ha-selector>
+      </div>
+    `;
+  }
+  _renderYamlEditor() {
+    return html`
+      <div class="yaml-editor">
+        <ha-yaml-editor
+          .defaultValue=${this.value}
+          autofocus
+          .hass=${this.hass}
+          @value-changed=${this._handleYAMLChanged}
+          dir="ltr"
+        ></ha-yaml-editor>
+
+        ${this._error ? html`
+          <div class="error">${this._error}</div>` : null}
+      </div>
+    `;
+  }
+  _handleYAMLChanged(event) {
+    event.stopPropagation();
+    const config = event.detail.value;
+    if (event.detail.isValid) {
+      try {
+        assert(config, EntityConfigSchema);
+        this.value = config;
+        this._error = void 0;
+        fireEvent(this, "config-changed", { config });
+      } catch (e2) {
+        this._error = `${e2.message}`.trim();
+      }
+    } else {
+      this._error = `${event.detail.errorMsg}`.trim();
+    }
+  }
+  _valueChanged(event) {
+    const configValue = event.target.configValue;
+    const value = ["icon", "secondary_info"].includes(configValue) ? event.detail.value : event.target.value;
+    const config = {
+      ...this.value,
+      [configValue]: value
+    };
+    if (configValue === "secondary_info" && value === "none") {
+      Reflect.deleteProperty(config, "secondary_info");
+    }
+    fireEvent(this, "config-changed", { config });
+  }
+};
+FooterButtonEditor2.styles = styles$c;
+__decorateClass$d([
+  n2({ attribute: false })
+], FooterButtonEditor2.prototype, "hass", 2);
+__decorateClass$d([
+  n2({ attribute: false })
+], FooterButtonEditor2.prototype, "value", 2);
+__decorateClass$d([
+  e("ha-yaml-editor")
+], FooterButtonEditor2.prototype, "_yamlEditor", 2);
+__decorateClass$d([
+  r()
+], FooterButtonEditor2.prototype, "_guiSupported", 2);
+__decorateClass$d([
+  r()
+], FooterButtonEditor2.prototype, "_error", 2);
+__decorateClass$d([
+  r()
+], FooterButtonEditor2.prototype, "_guiMode", 2);
+__decorateClass$d([
+  r()
+], FooterButtonEditor2.prototype, "_options", 2);
+FooterButtonEditor2 = __decorateClass$d([
+  t$1("lc-entity-editor")
+], FooterButtonEditor2);
+const styles$b = css`.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}`;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$c(target, key, result);
+  return result;
+};
+let HuiSubElementEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._guiModeAvailable = true;
+    this._guiMode = true;
+  }
+  render() {
+    return html`
+      ${this._renderHeader()}
+      ${this._renderEditor()}
+    `;
+  }
+  _renderHeader() {
+    if (!this.hass || !this.config) return html``;
+    return html`
+      <div class="header">
+        <div class="back-title">
+          <lc-button-circle
+            icon="lc:back"
+            .tooltip=${this.hass.localize("ui.common.back")}
+            @click=${this._goBack}
+            transparent
+          ></lc-button-circle>
+          ${this._renderTitle()}
+        </div>
+        <lc-button-circle
+          type="button"
+          role="button"
+          class="gui-mode-button"
+          @click=${this._toggleMode}
+          .icon=${this._guiMode ? "mdi:code-braces" : "mdi:list-box-outline"}
+          .disabled=${!this._guiModeAvailable}
+          .tooltip=${this.hass.localize(
+      this._guiMode ? "ui.panel.lovelace.editor.edit_card.show_code_editor" : "ui.panel.lovelace.editor.edit_card.show_visual_editor"
+    )}
+          transparent
+        ></lc-button-circle>
+      </div>`;
+  }
+  _renderTitle() {
+    if (!this.hass) return html``;
+    let title;
+    const translateKey = this.config.type.replace(/-/g, "_");
+    switch (this.config.type) {
+      case "footer-button":
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
+        break;
+      case "entity":
+        const entityType = "type" in this.config.elementConfig ? this.config.elementConfig.type : "entity";
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_config_caption`, {
+          entityType: this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_type_${entityType}`)
+        });
+        break;
+      default:
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.${translateKey}`);
+        break;
+    }
+    return html`<span slot="title">${title}</span>`;
+  }
+  _renderEditor() {
+    const type2 = this.config.type;
+    switch (type2) {
+      case "row":
+        return html`
+          <hui-row-element-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></hui-row-element-editor>
+        `;
+      case "entity":
+        return html`
+          <lc-entity-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></lc-entity-editor>
+        `;
+      case "footer-button":
+        return html`
+          <lc-footer-button-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></lc-footer-button-editor>
+        `;
+      default:
+        return html``;
+    }
+  }
+  _goBack() {
+    fireEvent(this, "go-back");
+  }
+  _toggleMode() {
+    var _a;
+    (_a = this._editorElement) == null ? void 0 : _a.toggleMode();
+  }
+  _handleGUIModeChanged(ev) {
+    ev.stopPropagation();
+    this._guiMode = ev.detail.guiMode;
+    this._guiModeAvailable = ev.detail.guiModeAvailable;
+  }
+  _handleConfigChanged(ev) {
+    this.config.elementConfig = ev.detail.config;
+  }
+};
+HuiSubElementEditor.styles = styles$b;
+__decorateClass$c([
+  n2({ attribute: false })
+], HuiSubElementEditor.prototype, "hass", 2);
+__decorateClass$c([
+  n2({ attribute: false })
+], HuiSubElementEditor.prototype, "config", 2);
+__decorateClass$c([
+  r()
+], HuiSubElementEditor.prototype, "_guiModeAvailable", 2);
+__decorateClass$c([
+  r()
+], HuiSubElementEditor.prototype, "_guiMode", 2);
+__decorateClass$c([
+  e(".editor")
+], HuiSubElementEditor.prototype, "_editorElement", 2);
+HuiSubElementEditor = __decorateClass$c([
+  t$1("lc-sub-element-editor")
+], HuiSubElementEditor);
+const styles$a = css`:host {
+  --lc-dropdown-item-height: 72px;
+  --lc-dropdown-items-count: 5;
+  --lc-dropdown-width: 300px;
+  --lc-dropdown-top: 0;
+  --lc-dropdown-left: 0;
+  --lc-dropdown-border-radius: 0;
+}
+
+.dropdown {
+  top: var(--lc-dropdown-top);
+  left: var(--lc-dropdown-left);
+  width: var(--lc-dropdown-width);
+  height: var(--lc-dropdown-height);
+  max-height: var(--lc-dropdown-height);
+  background-color: var(--material-background-color);
+  border-radius: var(--lc-dropdown-border-radius);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  position: fixed;
+  z-index: 99999;
+}
+
+.scroller {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: block;
+}
+
+.list-items {
+  padding-left: 0;
+  margin: 0;
+}`;
+const styles$9 = css`:host {
+  height: var(--lc-dropdown-item-height);
+  width: auto;
+  padding: 0 16px;
+  cursor: pointer;
+  color: var(--primary-text-color);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  scroll-snap-align: start end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  transition: background-color 0.2s ease-out;
+  outline: 0;
+}
+
+:host(:hover) {
+  background-color: var(--material-secondary-background-color);
+}
+
+:host([selected]) {
+  color: var(--primary-color);
+  background-color: color-mix(in srgb, var(--primary-color) 10%, transparent 90%);
+}
+
+.icon {
+  --mdc-icon-size: 24px;
+  --icon-primary-color: var(--secondary-text-color);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info {
+  margin-left: 16px;
+}
+.info .label {
+  font-size: 14px;
+}
+.info .text {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--secondary-text-color);
+}`;
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$b(target, key, result);
+  return result;
+};
+let SelectOption = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.selected = false;
+  }
+  render() {
+    return html`
+      ${this._renderIcon()}
+      <div class="info">
+        <div class="label">${this.label || this.value}</div>
+        ${this.secondLabel ? html`<div class="text">${this.secondLabel}</div>` : null}
+        </div>
+      </div>
+    `;
+  }
+  _renderIcon() {
+    if (!this.icon) return html``;
+    if (typeof this.icon === "string") {
+      return html`
+        <div class="icon">
+          <ha-icon .icon=${this.icon}></ha-icon>
+        </div>
+      `;
+    }
+    return this.icon;
+  }
+};
+SelectOption.styles = styles$9;
+__decorateClass$b([
+  n2()
+], SelectOption.prototype, "value", 2);
+__decorateClass$b([
+  n2({ attribute: false })
+], SelectOption.prototype, "icon", 2);
+__decorateClass$b([
+  n2({ attribute: "selected", reflect: true, type: Boolean })
+], SelectOption.prototype, "selected", 2);
+__decorateClass$b([
+  n2()
+], SelectOption.prototype, "label", 2);
+__decorateClass$b([
+  n2()
+], SelectOption.prototype, "secondLabel", 2);
+SelectOption = __decorateClass$b([
+  t$1("lc-select-option")
+], SelectOption);
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$a(target, key, result);
+  return result;
+};
+let SelectDropdown = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.options = [];
+    this.inert = false;
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    requestAnimationFrame(() => {
+      const selected = this.shadowRoot.querySelector("[selected]");
+      if (selected && "scrollIntoView" in selected) {
+        selected.scrollIntoView(true);
+      }
+    });
+  }
+  render() {
+    if (!this.options) return html``;
+    return html`
+      <div class="dropdown" @click=${(event) => event.stopPropagation()} @wheel=${(event) => event.stopPropagation()}>
+        <div class="scroller">
+          <ul class="list-items">
+            ${this.options.map((option) => this._renderOption(option))}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+  _renderOption(item) {
+    return html`
+      <lc-select-option
+        .value=${item.value}
+        .selected=${this.value != null && item.value === this.value}
+        .icon=${item.icon}
+        .label=${item.label}
+        .secondLabel=${item.secondLabel}
+        @click=${this._onClick}
+      ></lc-select-option>
+    `;
+  }
+  _onClick(event) {
+    event.stopPropagation();
+    fireEvent(this, "value-changed", { value: event.target.value });
+  }
+};
+SelectDropdown.styles = styles$a;
+__decorateClass$a([
+  n2({ attribute: false })
+], SelectDropdown.prototype, "options", 2);
+__decorateClass$a([
+  n2()
+], SelectDropdown.prototype, "value", 2);
+__decorateClass$a([
+  n2({ attribute: "inert", type: Boolean })
+], SelectDropdown.prototype, "inert", 2);
+SelectDropdown = __decorateClass$a([
+  t$1("lc-select-dropdown")
+], SelectDropdown);
+function getElementRect(element) {
+  const rect = element.getBoundingClientRect();
+  if (!rect) {
+    throw new Error("No possible compute rect");
+  }
+  return {
+    x: rect.x,
+    y: rect.y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+const styles$8 = css`:host {
+  display: block;
+}
+
+:host([opened]) .select .toggle-button {
+  color: var(--primary-color);
+}
+
+.select {
+  position: relative;
+}
+.select .input {
+  width: 100%;
+}
+.select .toggle-button {
+  right: 1rem;
+  top: 1rem;
+  position: absolute;
+  color: var(--input-dropdown-icon-color);
+}`;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$9(target, key, result);
+  return result;
+};
+const LIST_ITEM_HEIGHT = 72;
+const LIST_MAX_DISPLAY = 5;
+let Select = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.disabled = false;
+    this.opened = false;
+    this._search = "";
+    this._focused = false;
+    this._callbacks = {};
+  }
+  willUpdate(_changed) {
+    var _a;
+    super.willUpdate(_changed);
+    if (_changed.has("required") || _changed.has("value")) ;
+    if (_changed.has("_search") && this._dropdown && this.options) {
+      const search = ((_a = this._search) == null ? void 0 : _a.trim().toLowerCase()) || "";
+      if (search) {
+        this._dropdown.options = this.options.filter((item) => {
+          return item.value.toLowerCase().includes(search) || item.label && item.label.toLowerCase().includes(search);
+        });
+      } else {
+        this._dropdown.options = this.options;
+      }
+      this._positioning();
+    }
+  }
+  render() {
+    if (!this.options) return html``;
+    return html`
+      <div class="select" @click=${(event) => event.stopPropagation()}>
+        <ha-textfield
+          class="input"
+          .label=${this.label}
+          .value=${this._focused ? this._search : this._getSelectedValue()}
+          .errorMessage=${this.errorMessage}
+          .invalid=${!!this.errorMessage}
+          .helper=${this.helper}
+          helperPersistent
+          @input=${this._onInput}
+          @focus=${this._onFocus}
+          @blur=${this._onBlur}
+        ></ha-textfield>
+
+        <ha-icon
+          role="button"
+          tabindex="-1"
+          aria-expanded=${this.opened ? "true" : "false"}
+          class="toggle-button"
+          .icon=${this.opened ? "mdi:menu-up" : "mdi:menu-down"}
+          ?disabled=${this.disabled}
+        ></ha-icon>
+      </div>
+    `;
+  }
+  updated(_changed) {
+    super.updated(_changed);
+    if (_changed.has("opened")) {
+      if (this.opened) {
+        this._showDropdown();
+      } else {
+        this._hideDropdown();
+      }
+    }
+  }
+  _showDropdown() {
+    if (this._dropdown) {
+      this._hideDropdown();
+    }
+    this._dropdown = document.createElement("lc-select-dropdown");
+    this._dropdown.options = this.options;
+    this._dropdown.value = this.value;
+    this._dropdown.addEventListener("value-changed", this._onValueChanged.bind(this));
+    document.body.append(this._dropdown);
+    this._callbacks["wheel"] = this._onWheel.bind(this);
+    window.addEventListener("wheel", this._callbacks["wheel"]);
+    requestAnimationFrame(() => {
+      this._callbacks["window-click"] = () => this.opened = false;
+      window.addEventListener("click", this._callbacks["window-click"]);
+      this._positioning();
+    });
+  }
+  _hideDropdown() {
+    var _a;
+    window.removeEventListener("wheel", this._callbacks["wheel"]);
+    Reflect.deleteProperty(this._callbacks, "wheel");
+    window.removeEventListener("click", this._callbacks["window-click"]);
+    Reflect.deleteProperty(this._callbacks, "window-click");
+    (_a = this._dropdown) == null ? void 0 : _a.remove();
+    this._dropdown = void 0;
+  }
+  _positioning() {
+    var _a;
+    if (!this._dropdown) {
+      throw new Error("");
+    }
+    const { x, y: y2, width, height } = getElementRect(this);
+    const windowHeight = ((_a = window.visualViewport) == null ? void 0 : _a.height) || window.innerHeight;
+    const dropdownHeight = LIST_ITEM_HEIGHT * Math.min(LIST_MAX_DISPLAY, this._dropdown.options.length);
+    const isBellow = windowHeight < y2 + height + dropdownHeight;
+    const top2 = isBellow ? y2 - dropdownHeight : y2 + height;
+    this._dropdown.style.setProperty("--lc-dropdown-top", `${top2}px`);
+    this._dropdown.style.setProperty("--lc-dropdown-left", `${x}px`);
+    this._dropdown.style.setProperty("--lc-dropdown-width", `${width}px`);
+    this._dropdown.style.setProperty("--lc-dropdown-height", `${dropdownHeight}px`);
+    this._dropdown.style.setProperty("--lc-dropdown-border-radius", isBellow ? ".5rem .5rem 0 0" : "0 0 .5rem .5rem");
+    return {
+      top: top2,
+      left: x,
+      width,
+      isBellow
+    };
+  }
+  _onBlur(event) {
+    event.stopPropagation();
+    this._focused = false;
+  }
+  _onFocus(event) {
+    event.stopPropagation();
+    this._search = this._getSelectedValue();
+    this._focused = true;
+    this.opened = true;
+    requestAnimationFrame(() => {
+      var _a;
+      (_a = this._input) == null ? void 0 : _a.setSelectionRange(0, this._search.length, "forward");
+    });
+  }
+  _onInput(event) {
+    this._search = event.target.value;
+  }
+  _onWheel() {
+    let left;
+    let top2;
+    const tryPosition = () => {
+      const result = this._positioning();
+      if (!result) return;
+      if (left !== result.left || top2 !== result.top) {
+        left = result.left;
+        top2 = result.top;
+        requestAnimationFrame(tryPosition);
+      }
+    };
+    requestAnimationFrame(tryPosition);
+  }
+  _getSelectedValue() {
+    if (!this.value) return "";
+    return this.getValue ? this.getValue(this.value) : this.value;
+  }
+  _onValueChanged(event) {
+    this.value = event.detail.value;
+    this._search = "";
+    this.opened = false;
+    fireEvent(this, "value-changed", { value: this.value });
+  }
+};
+Select.styles = styles$8;
+__decorateClass$9([
+  n2()
+], Select.prototype, "label", 2);
+__decorateClass$9([
+  n2({ attribute: "value", reflect: true, type: String })
+], Select.prototype, "value", 2);
+__decorateClass$9([
+  n2()
+], Select.prototype, "options", 2);
+__decorateClass$9([
+  n2()
+], Select.prototype, "helper", 2);
+__decorateClass$9([
+  n2({ attribute: "error-message", type: String })
+], Select.prototype, "errorMessage", 2);
+__decorateClass$9([
+  n2({ attribute: "disabled", type: Boolean, reflect: true })
+], Select.prototype, "disabled", 2);
+__decorateClass$9([
+  n2({ attribute: "opened", type: Boolean, reflect: true })
+], Select.prototype, "opened", 2);
+__decorateClass$9([
+  n2({ attribute: false })
+], Select.prototype, "getValue", 2);
+__decorateClass$9([
+  r()
+], Select.prototype, "_search", 2);
+__decorateClass$9([
+  r()
+], Select.prototype, "_focused", 2);
+__decorateClass$9([
+  e(".input")
+], Select.prototype, "_input", 2);
+Select = __decorateClass$9([
+  t$1("lc-select")
+], Select);
+const styles$7 = css`:host {
+  --lc-button-size: 40px;
+  --lc-button-icon-size: 24px;
+  --lc-button-color: currentColor;
+  --lc-button-bg-opacity: 0.15;
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  color: var(--lc-button-color);
+  font-family: var(--paper-font-body1_-_font-family);
+  -webkit-font-smoothing: var(--paper-font-body1_-_-webkit-font-smoothing);
+  font-size: var(--paper-font-body1_-_font-size);
+  font-weight: var(--paper-font-body1_-_font-weight);
+  line-height: var(--paper-font-body1_-_line-height);
+  display: inline-block;
+  position: relative;
+}
+:host:before {
+  content: " ";
+  left: 0;
+  right: 0;
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  border-radius: 50%;
+  background-color: currentcolor;
+  opacity: var(--lc-button-bg-opacity);
+  position: absolute;
+}
+
+.lc-button-circle-icon {
+  --ha-icon-display: block;
+  --mdc-icon-button-size: var(--lc-button-size);
+  --mdc-icon-size: var(--lc-button-icon-size);
+  --mdc-theme-primary: var(--lc-button-color);
+  color: var(--lc-button-color);
+}
+
+.lc-button-circle-spinner {
+  width: var(--lc-button-size);
+  height: var(--lc-button-size);
+  border-radius: 50%;
+  font-size: var(--lc-button-icon-size);
+}`;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$8(target, key, result);
+  return result;
+};
+function createComponent(Base) {
+  const _ButtonCircle = class _ButtonCircle extends Base {
+    constructor(...rest) {
+      super(...rest);
+      this.icon = "mdi:gesture-tap-button";
+      this.disabled = false;
+      this._popoverOff = false;
+    }
+    set color(value) {
+      this.style.setProperty("--lc-button-color", formatColors(value, "currentColor"));
+    }
+    set transparent(value) {
+      this.style.setProperty("--lc-button-bg-opacity", value ? "0" : "0.15");
+    }
+    render() {
+      return html`
+        <mwc-icon-button
+          type="button"
+          role="button"
+          class="lc-button-circle-icon"
+          .disabled=${this.disabled}
+          @mouseenter="${this._onMouseenter}"
+          @mouseleave="${this._onMouseLeave}"
+          @click=${this._onClick}
+        >
+          ${this._renderIcon()}
+        </mwc-icon-button>
+      `;
+    }
+    _renderIcon() {
+      if (this.disabled || !this.status) {
+        return html`<ha-icon icon=${this.icon} class="icon"></ha-icon>`;
+      }
+      switch (this.status) {
+        case "loading":
+          return html`<lc-icon-spinner color="var(--lc-button-color)"></lc-icon-spinner>`;
+        case "success":
+          return html`<lc-icon-success color="var(--lc-button-color)"></lc-icon-success>`;
+        case "error":
+          return html`<lc-icon-error color="var(--lc-button-color)"></lc-icon-error>`;
+      }
+    }
+    _removePopover() {
+      if (this._popover) {
+        this._popover.hide();
+        this._popover = void 0;
+      }
+    }
+    _onClick() {
+      this._popoverOff = true;
+      this._removePopover();
+    }
+    /**
+     * Show tooltip popover
+     * @private
+     */
+    _onMouseenter() {
+      if (this._popoverOff || !this.tooltip || this.status) return;
+      this._popover = document.createElement("lc-popover");
+      this._popover.attach(this, this.tooltip);
+    }
+    /**
+     * Hide tooltip popover
+     * @private
+     */
+    _onMouseLeave() {
+      this._removePopover();
+      this._popoverOff = false;
+    }
+  };
+  _ButtonCircle.styles = styles$7;
+  let ButtonCircle = _ButtonCircle;
+  __decorateClass$8([
+    n2({ attribute: true })
+  ], ButtonCircle.prototype, "icon", 2);
+  __decorateClass$8([
+    n2({ attribute: "color", reflect: true, type: String })
+  ], ButtonCircle.prototype, "color", 1);
+  __decorateClass$8([
+    n2({ attribute: true })
+  ], ButtonCircle.prototype, "tooltip", 2);
+  __decorateClass$8([
+    n2({ attribute: "status", reflect: true, type: String })
+  ], ButtonCircle.prototype, "status", 2);
+  __decorateClass$8([
+    n2({ attribute: "disabled", reflect: true, type: Boolean })
+  ], ButtonCircle.prototype, "disabled", 2);
+  __decorateClass$8([
+    n2({ attribute: "transparent", reflect: true, type: Boolean })
+  ], ButtonCircle.prototype, "transparent", 1);
+  return ButtonCircle;
+}
+(async () => {
+  await customElements.whenDefined("ha-icon");
+  const source = await customElements.whenDefined("mwc-icon-button");
+  customElements.define("lc-button-circle", createComponent(source), { extends: "button" });
+})();
+function forwardHaptic(hapticType) {
+  fireEvent(window, "haptic", hapticType);
+}
+function domainToName(localize, domain, manifest) {
+  return localize(`component.${domain}.title`) || (manifest == null ? void 0 : manifest.name) || domain;
+}
+const MAIN_WINDOW_NAME = "ha-main-window";
+const mainWindow = (() => {
+  try {
+    return window.name === MAIN_WINDOW_NAME ? window : parent.name === MAIN_WINDOW_NAME ? parent : top;
+  } catch {
+    return window;
+  }
+})();
 function isShowConfirmation(confirmation, userId) {
   if (!confirmation) return false;
   if (confirmation === true) return true;
@@ -3077,14 +3459,14 @@ const style = css`.footer {
 .footer .buttons .btn-wrap {
   padding: 0 6px;
 }`;
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
+  if (kind && result) __defProp$7(target, key, result);
   return result;
 };
 let FooterButtons = class extends LitElement {
@@ -3189,19 +3571,19 @@ let FooterButtons = class extends LitElement {
   }
 };
 FooterButtons.styles = style;
-__decorateClass$9([
+__decorateClass$7([
   n2({ attribute: false })
 ], FooterButtons.prototype, "hass", 2);
-__decorateClass$9([
+__decorateClass$7([
   n2({ attribute: false })
 ], FooterButtons.prototype, "buttons", 2);
-__decorateClass$9([
+__decorateClass$7([
   r()
 ], FooterButtons.prototype, "_statuses", 2);
-FooterButtons = __decorateClass$9([
+FooterButtons = __decorateClass$7([
   t$1("lc-footer-buttons")
 ], FooterButtons);
-const styles$8 = css`:host {
+const styles$6 = css`:host {
   --lc-popover-y: 0px;
   --lc-popover-x: 0px;
   --lc-popover-width: auto;
@@ -3306,13 +3688,13 @@ const styles$8 = css`:host {
 .popover.show.in.out {
   opacity: 0;
 }`;
-var __defProp$8 = Object.defineProperty;
-var __decorateClass$8 = (decorators, target, key, kind) => {
+var __defProp$6 = Object.defineProperty;
+var __decorateClass$6 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$8(target, key, result);
+  if (result) __defProp$6(target, key, result);
   return result;
 };
 const _Popover = class _Popover extends LitElement {
@@ -3447,25 +3829,25 @@ const _Popover = class _Popover extends LitElement {
     setTimeout(() => popover.classList.add("show", "in"), 100);
   }
 };
-_Popover.styles = styles$8;
+_Popover.styles = styles$6;
 let Popover = _Popover;
-__decorateClass$8([
+__decorateClass$6([
   n2()
 ], Popover.prototype, "content");
-__decorateClass$8([
+__decorateClass$6([
   n2({ attribute: "placement", reflect: true })
 ], Popover.prototype, "placement");
-__decorateClass$8([
+__decorateClass$6([
   n2()
 ], Popover.prototype, "arrow");
-__decorateClass$8([
+__decorateClass$6([
   n2()
 ], Popover.prototype, "offset");
-__decorateClass$8([
+__decorateClass$6([
   n2({ attribute: "max-width" })
 ], Popover.prototype, "maxWidth");
 customElements.define("lc-popover", Popover, { extends: "div" });
-const styles$7 = css`:host {
+const styles$5 = css`:host {
   --gauge-needle-position: 0deg;
   display: block;
 }
@@ -3537,14 +3919,14 @@ const elasticOut = function custom2(a2, p2) {
   };
   return elasticOut2;
 }(amplitude, period);
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$5(target, key, result);
   return result;
 };
 function round(value, decimals = 2) {
@@ -3827,47 +4209,47 @@ let Gauge = class extends LitElement {
     return filter;
   }
 };
-Gauge.styles = styles$7;
+Gauge.styles = styles$5;
 Gauge.sizes = {
   width: 110,
   labelHeight: 14,
   scaleRadius: 47.5,
   scaleWidth: 15
 };
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: String })
 ], Gauge.prototype, "label", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: String })
 ], Gauge.prototype, "unit", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: Number, reflect: true })
 ], Gauge.prototype, "min", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: Number, reflect: true })
 ], Gauge.prototype, "max", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: Number, reflect: true })
 ], Gauge.prototype, "step", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: Number })
 ], Gauge.prototype, "value", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ type: Boolean, reflect: true })
 ], Gauge.prototype, "disabled", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ attribute: "digits", type: Boolean, reflect: true })
 ], Gauge.prototype, "digits", 2);
-__decorateClass$7([
+__decorateClass$5([
   n2({ attribute: false })
 ], Gauge.prototype, "levels", 1);
-__decorateClass$7([
+__decorateClass$5([
   r()
 ], Gauge.prototype, "_levels", 2);
-Gauge = __decorateClass$7([
+Gauge = __decorateClass$5([
   t$1("lc-gauge")
 ], Gauge);
-const styles$6 = css`:host {
+const styles$4 = css`:host {
   --lc-switch-color: var(--blue-color);
   --lc-switch-aspect-ratio: 1.8333333;
   --lc-switch-thumb-size: 20px;
@@ -3924,14 +4306,14 @@ const styles$6 = css`:host {
   left: calc(var(--lc-switch-width) - var(--lc-switch-thumb-size) - var(--lc-switch-thumb-margin));
   --lc-switch-thumb-color: var(--lc-switch-thumb-active-color);
 }`;
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
+  if (kind && result) __defProp$4(target, key, result);
   return result;
 };
 let Switch = class extends LitElement {
@@ -3958,17 +4340,17 @@ let Switch = class extends LitElement {
     this.dispatchEvent(new CustomEvent("change", options));
   }
 };
-Switch.styles = styles$6;
-__decorateClass$6([
+Switch.styles = styles$4;
+__decorateClass$4([
   n2({ attribute: "checked", reflect: true, type: Boolean })
 ], Switch.prototype, "checked", 2);
-__decorateClass$6([
+__decorateClass$4([
   n2({ attribute: "disabled", reflect: true, type: Boolean })
 ], Switch.prototype, "disabled", 2);
-Switch = __decorateClass$6([
+Switch = __decorateClass$4([
   t$1("lc-switch")
 ], Switch);
-const styles$5 = css`.radio {
+const styles$3 = css`.radio {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -4011,13 +4393,13 @@ const styles$5 = css`.radio {
   opacity: 0.6;
   pointer-events: none;
 }`;
-var __defProp$5 = Object.defineProperty;
-var __decorateClass$5 = (decorators, target, key, kind) => {
+var __defProp$3 = Object.defineProperty;
+var __decorateClass$3 = (decorators, target, key, kind) => {
   var result = void 0;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = decorator(target, key, result) || result;
-  if (result) __defProp$5(target, key, result);
+  if (result) __defProp$3(target, key, result);
   return result;
 };
 const _Radio = class _Radio extends LitElement {
@@ -4060,36 +4442,36 @@ const _Radio = class _Radio extends LitElement {
     fireEvent(this, "change", { value: this.value, name: this.name });
   }
 };
-_Radio.styles = styles$5;
+_Radio.styles = styles$3;
 let Radio = _Radio;
-__decorateClass$5([
+__decorateClass$3([
   n2()
 ], Radio.prototype, "label");
-__decorateClass$5([
+__decorateClass$3([
   n2({ attribute: "name", reflect: true, type: String })
 ], Radio.prototype, "name");
-__decorateClass$5([
+__decorateClass$3([
   n2({ attribute: "value", reflect: true, type: String })
 ], Radio.prototype, "value");
-__decorateClass$5([
+__decorateClass$3([
   n2({ attribute: "checked", reflect: true, type: Boolean })
 ], Radio.prototype, "checked");
-__decorateClass$5([
+__decorateClass$3([
   n2({ attribute: "disabled", reflect: true, type: Boolean })
 ], Radio.prototype, "disabled");
-__decorateClass$5([
+__decorateClass$3([
   n2()
 ], Radio.prototype, "direction");
 customElements.define("lc-radio", Radio, { extends: "input" });
-const styles$4 = css``;
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+const styles$2 = css``;
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$2(target, key, result);
   return result;
 };
 function isSupported(stateObj) {
@@ -4126,17 +4508,17 @@ let ActionButtonFeature = class extends LitElement {
     });
   }
 };
-ActionButtonFeature.styles = styles$4;
-__decorateClass$4([
+ActionButtonFeature.styles = styles$2;
+__decorateClass$2([
   n2({ attribute: true })
 ], ActionButtonFeature.prototype, "hass", 2);
-__decorateClass$4([
+__decorateClass$2([
   n2({ attribute: true })
 ], ActionButtonFeature.prototype, "stateObj", 2);
-__decorateClass$4([
+__decorateClass$2([
   r()
 ], ActionButtonFeature.prototype, "_config", 2);
-ActionButtonFeature = __decorateClass$4([
+ActionButtonFeature = __decorateClass$2([
   t$1("lc-action-button-feature")
 ], ActionButtonFeature);
 window.customCardFeatures = window.customCardFeatures || [];
@@ -4145,645 +4527,6 @@ window.customCardFeatures.push({
   name: "Circle Button",
   supported: isSupported,
   configurable: true
-});
-const BaseCardConfigSchema = object({
-  type: string(),
-  view_layout: any(),
-  layout_options: any(),
-  grid_options: any(),
-  visibility: any()
-});
-const ActionConfigServiceSchema = object({
-  action: enums(["call-service", "perform-action"]),
-  service: optional(string()),
-  perform_action: optional(string()),
-  service_data: optional(object()),
-  data: optional(object()),
-  target: optional(TargetConfigSchema),
-  confirmation: optional(ConfirmationConfigSchema)
-});
-const ActionConfigNavigateSchema = object({
-  action: literal("navigate"),
-  navigation_path: string(),
-  navigation_replace: optional(boolean()),
-  confirmation: optional(ConfirmationConfigSchema)
-});
-const ActionConfigUrlSchema = object({
-  action: literal("url"),
-  url_path: string(),
-  confirmation: optional(ConfirmationConfigSchema)
-});
-const ActionConfigAssistSchema = type({
-  action: literal("assist"),
-  pipeline_id: optional(string()),
-  start_listening: optional(boolean())
-});
-const ActionConfigMoreInfoSchema = type({
-  action: literal("more-info"),
-  entity: optional(string())
-});
-const ActionConfigTypeSchema = object({
-  action: enums([
-    "none",
-    "toggle",
-    "more-info",
-    "call-service",
-    "perform-action",
-    "url",
-    "navigate",
-    "assist"
-  ]),
-  confirmation: optional(ConfirmationConfigSchema)
-});
-const ActionConfigSchema = dynamic((value) => {
-  if (value && typeof value === "object" && "action" in value) {
-    switch (value.action) {
-      case "call-service": {
-        return ActionConfigServiceSchema;
-      }
-      case "perform-action": {
-        return ActionConfigServiceSchema;
-      }
-      case "navigate": {
-        return ActionConfigNavigateSchema;
-      }
-      case "url": {
-        return ActionConfigUrlSchema;
-      }
-      case "assist": {
-        return ActionConfigAssistSchema;
-      }
-      case "more-info": {
-        return ActionConfigMoreInfoSchema;
-      }
-    }
-  }
-  return ActionConfigTypeSchema;
-});
-function customType() {
-  return refine(string(), "custom element type", isCustomType);
-}
-const TIMESTAMP_RENDERING_FORMATS = ["relative", "total", "date", "time", "datetime"];
-const EntitiesConfigBaseSchema = union([
-  object({
-    entity: string(),
-    name: optional(string()),
-    icon: optional(string()),
-    image: optional(string()),
-    secondary_info: optional(string()),
-    format: optional(enums(TIMESTAMP_RENDERING_FORMATS)),
-    state_color: optional(boolean()),
-    tap_action: optional(ActionConfigSchema),
-    hold_action: optional(ActionConfigSchema),
-    double_tap_action: optional(ActionConfigSchema),
-    confirmation: optional(ConfirmationConfigSchema)
-  }),
-  string()
-]);
-const ButtonEntityConfigSchema = object({
-  entity: string(),
-  name: optional(string()),
-  icon: optional(string()),
-  image: optional(string()),
-  show_name: optional(boolean()),
-  show_icon: optional(boolean()),
-  tap_action: optional(ActionConfigSchema),
-  hold_action: optional(ActionConfigSchema),
-  double_tap_action: optional(ActionConfigSchema)
-});
-const ButtonEntitiesRowConfigSchema = object({
-  type: literal("button"),
-  entity: optional(string()),
-  name: optional(string()),
-  icon: optional(string()),
-  action_name: optional(string()),
-  tap_action: ActionConfigSchema,
-  hold_action: optional(ActionConfigSchema),
-  double_tap_action: optional(ActionConfigSchema)
-});
-const CastEntitiesRowConfigSchema = object({
-  type: literal("cast"),
-  view: optional(union([string(), number()])),
-  dashboard: optional(string()),
-  name: optional(string()),
-  icon: optional(string()),
-  hide_if_unavailable: optional(boolean())
-});
-const CallServiceEntitiesRowConfigSchema = object({
-  type: enums(["call-service", "perform-action"]),
-  name: string(),
-  service: optional(string()),
-  action: optional(string()),
-  icon: optional(string()),
-  action_name: optional(string()),
-  data: optional(any())
-});
-const ConditionalEntitiesRowConfigSchema = object({
-  type: literal("conditional"),
-  row: any(),
-  conditions: array(any())
-});
-const DividerEntitiesRowConfigSchema = object({
-  type: literal("divider"),
-  style: optional(any())
-});
-const SectionEntitiesRowConfigSchema = object({
-  type: literal("section"),
-  label: optional(string())
-});
-const WebLinkEntitiesRowConfigSchema = object({
-  type: literal("weblink"),
-  url: string(),
-  name: optional(string()),
-  icon: optional(string())
-});
-const ButtonsEntitiesRowConfigSchema = object({
-  type: literal("buttons"),
-  entities: array(ButtonEntityConfigSchema)
-});
-const AttributeEntitiesRowConfigSchema = object({
-  type: literal("attribute"),
-  entity: string(),
-  attribute: string(),
-  prefix: optional(string()),
-  suffix: optional(string()),
-  name: optional(string()),
-  icon: optional(string()),
-  format: optional(enums(["relative", "total", "date", "time", "datetime"]))
-});
-const TextEntitiesRowConfigSchema = object({
-  type: literal("text"),
-  name: string(),
-  text: string(),
-  icon: optional(string())
-});
-const CustomEntitiesRowConfigSchema = type({
-  type: customType()
-});
-const EntitiesConfigSchema = dynamic((value) => {
-  if (value && typeof value === "object" && "type" in value) {
-    if (isCustomType(value.type)) {
-      return CustomEntitiesRowConfigSchema;
-    }
-    switch (value.type) {
-      case "attribute": {
-        return AttributeEntitiesRowConfigSchema;
-      }
-      case "button": {
-        return ButtonEntitiesRowConfigSchema;
-      }
-      case "buttons": {
-        return ButtonsEntitiesRowConfigSchema;
-      }
-      case "perform-action":
-      case "call-service": {
-        return CallServiceEntitiesRowConfigSchema;
-      }
-      case "cast": {
-        return CastEntitiesRowConfigSchema;
-      }
-      case "conditional": {
-        return ConditionalEntitiesRowConfigSchema;
-      }
-      case "divider": {
-        return DividerEntitiesRowConfigSchema;
-      }
-      case "section": {
-        return SectionEntitiesRowConfigSchema;
-      }
-      case "text": {
-        return TextEntitiesRowConfigSchema;
-      }
-      case "weblink": {
-        return WebLinkEntitiesRowConfigSchema;
-      }
-    }
-  }
-  return EntitiesConfigBaseSchema;
-});
-const EntitiesCardConfigSchema = assign(
-  BaseCardConfigSchema,
-  object({
-    title: optional(union([string(), boolean()])),
-    entity: optional(string()),
-    entities: array(EntitiesConfigSchema),
-    theme: optional(string()),
-    icon: optional(string()),
-    buttons: optional(array(ButtonConfigSchema))
-  })
-);
-const styles$3 = css`.card-config {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-lc-footer-buttons-editor {
-  margin-top: 16px;
-}`;
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
-  return result;
-};
-let EntitiesCardConfig = class extends LitElement {
-  setConfig(config) {
-    assert(config, EntitiesCardConfigSchema);
-    this._config = config;
-    this._configEntities = processEntities(config.entities);
-    this._configButtons = config.buttons;
-  }
-  async firstUpdated(_changedProperties) {
-    super.firstUpdated(_changedProperties);
-    const utils = await window.parent.loadCardHelpers();
-    utils.importMoreInfoControl;
-  }
-  render() {
-    if (!this.hass || !this._config) {
-      return html``;
-    }
-    if (this._subElementEditorConfig) {
-      return html`
-        <lc-sub-element-editor
-          .hass=${this.hass}
-          .config=${this._subElementEditorConfig}
-          @go-back=${this._goBack}
-          @config-changed=${this._handleSubElementChanged}
-        >
-        </lc-sub-element-editor>
-      `;
-    }
-    const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
-    return html`
-      <div class="card-config">
-        <ha-textfield
-          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.title")} ${optional2}"
-          .value=${this._title}
-          .configValue=${"title"}
-          @input=${this._valueChanged}
-        ></ha-textfield>
-
-        <ha-icon-picker
-          .hass=${this.hass}
-          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.icon")} ${optional2}"
-          .value=${this._icon}
-          .required=${false}
-          .disabled=${false}
-          .configValue=${"icon"}
-          .placeholder=${"lc:placeholder"}
-          @value-changed=${this._valueChanged}
-        >
-        </ha-icon-picker>
-
-        <ha-theme-picker
-          .hass=${this.hass}
-          .value=${this._theme}
-          .label=${`${this.hass.localize("ui.panel.lovelace.editor.card.generic.theme")} ${optional2}`}
-          .configValue=${"theme"}
-          @value-changed=${this._valueChanged}
-        ></ha-theme-picker>
-      </div>
-
-      <hui-entities-card-row-editor
-        .hass=${this.hass}
-        .entities=${this._configEntities}
-        @entities-changed=${this._valueChanged}
-        @edit-detail-element=${this._editDetailElement}
-      ></hui-entities-card-row-editor>
-      
-      <lc-footer-buttons-editor
-        .hass=${this.hass}
-        .buttons=${this._configButtons}
-        @buttons-changed=${this._handleButtonsChanged}
-        @edit-detail-element=${this._editDetailElement}
-      ></lc-footer-buttons-editor>
-    `;
-  }
-  _valueChanged(ev) {
-    var _a;
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const target = ev.target;
-    const configValue = target.configValue || ((_a = this._subElementEditorConfig) == null ? void 0 : _a.type);
-    const value = target.checked !== void 0 ? target.checked : target.value || ev.detail.config || ev.detail.value;
-    if (configValue === "title" && target.value === this._title || configValue === "theme" && target.value === this._theme || configValue === "icon" && target.value === this._icon) {
-      return;
-    }
-    if (configValue === "row" || ev.detail && ev.detail.entities) {
-      const newConfigEntities = ev.detail.entities || this._configEntities.concat();
-      if (configValue === "row") {
-        if (!value) {
-          newConfigEntities.splice(this._subElementEditorConfig.index, 1);
-          this._goBack();
-        } else {
-          newConfigEntities[this._subElementEditorConfig.index] = value;
-        }
-        this._subElementEditorConfig.elementConfig = value;
-      }
-      this._config = {
-        ...this._config,
-        entities: newConfigEntities
-      };
-      this._configEntities = processEntities(this._config.entities);
-    } else if (configValue) {
-      if (value === "") {
-        this._config = { ...this._config };
-        delete this._config[configValue];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value
-        };
-      }
-    }
-    fireEvent(this, "config-changed", { config: this._config });
-  }
-  _handleSubElementChanged(ev) {
-    var _a;
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
-    const value = ev.detail.config;
-    if (configValue === "footer-button") {
-      const index = this._subElementEditorConfig.index;
-      const buttons = [...this._configButtons || []];
-      if (value) {
-        buttons[index] = value;
-      } else {
-        buttons.splice(index, 1);
-        this._goBack();
-      }
-      this._config = { ...this._config, buttons };
-      this._configButtons = buttons;
-    } else if (configValue === "row") {
-      const index = this._subElementEditorConfig.index;
-      const entities = this._configEntities.concat();
-      if (value) {
-        entities[index] = value;
-      } else {
-        entities.splice(index, 1);
-        this._goBack();
-      }
-      this._config = { ...this._config, entities };
-      this._configEntities = processEntities(this._config.entities);
-    } else if (configValue) {
-      if (value === "") {
-        this._config = { ...this._config };
-        delete this._config[configValue];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value
-        };
-      }
-    }
-    this._subElementEditorConfig = {
-      ...this._subElementEditorConfig,
-      elementConfig: value
-    };
-    fireEvent(this, "config-changed", { config: this._config });
-  }
-  _editDetailElement(event) {
-    this._subElementEditorConfig = event.detail.subElementConfig;
-  }
-  _handleButtonsChanged(ev) {
-    const buttons = ev.detail.buttons;
-    this._configButtons = buttons;
-    this._config = {
-      ...this._config,
-      buttons
-    };
-    fireEvent(this, "config-changed", { config: this._config });
-  }
-  _goBack() {
-    this._subElementEditorConfig = void 0;
-  }
-  get _title() {
-    return this._config.title || "";
-  }
-  get _theme() {
-    return this._config.theme || "";
-  }
-  get _icon() {
-    return this._config.icon || "";
-  }
-};
-EntitiesCardConfig.styles = styles$3;
-__decorateClass$3([
-  n2({ attribute: false })
-], EntitiesCardConfig.prototype, "hass", 2);
-__decorateClass$3([
-  r()
-], EntitiesCardConfig.prototype, "_config", 2);
-__decorateClass$3([
-  r()
-], EntitiesCardConfig.prototype, "_configEntities", 2);
-__decorateClass$3([
-  r()
-], EntitiesCardConfig.prototype, "_configButtons", 2);
-__decorateClass$3([
-  r()
-], EntitiesCardConfig.prototype, "_subElementEditorConfig", 2);
-EntitiesCardConfig = __decorateClass$3([
-  t$1("lc-entities-card-config")
-], EntitiesCardConfig);
-const styles$2 = css`ha-card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-}
-.card-header .name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card-header .name .icon {
-  --mdc-icon-size: 38px;
-  top: -2px;
-  padding: 0 10px 0 0;
-  position: relative;
-}
-
-#states {
-  flex: 1;
-}
-
-#states > * {
-  margin: 8px 0;
-}
-
-#states > *:first-child {
-  margin-top: 0;
-}
-
-#states > *:last-child {
-  margin-bottom: 0;
-}
-
-#states > div > * {
-  overflow: clip visible;
-}
-
-#states > div {
-  position: relative;
-}
-
-.header {
-  border-top-left-radius: var(--ha-card-border-radius, 12px);
-  border-top-right-radius: var(--ha-card-border-radius, 12px);
-  margin-bottom: 16px;
-  overflow: hidden;
-}
-
-.footer {
-  border-bottom-left-radius: var(--ha-card-border-radius, 12px);
-  border-bottom-right-radius: var(--ha-card-border-radius, 12px);
-  margin-top: -16px;
-  overflow: hidden;
-}`;
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
-  return result;
-};
-let EntitiesCard = class extends LitElement {
-  static async getConfigElement() {
-    const source = await customElements.whenDefined("hui-entities-card");
-    await source.getConfigElement();
-    return document.createElement("lc-entities-card-config");
-  }
-  static getStubConfig(hass, entities, entitiesFallback) {
-    const maxEntities = 3;
-    const foundEntities = findEntities(
-      hass,
-      maxEntities,
-      entities,
-      entitiesFallback,
-      ["light", "switch", "sensor"]
-    );
-    return {
-      entities: foundEntities,
-      buttons: [
-        { color: "info", icon: "mdi:reload", action: "homeassistant.reload_all" }
-      ]
-    };
-  }
-  async setConfig(config) {
-    if (!config.entities || !Array.isArray(config.entities)) {
-      throw new Error("Entities must be specified");
-    }
-    const entities = processEntities(config.entities);
-    const utils = await mainWindow.loadCardHelpers();
-    this._config = config;
-    this._configEntities = entities;
-    this._createRowElement = utils.createRowElement;
-  }
-  getCardSize() {
-    if (!this._config) {
-      return 0;
-    }
-    return (this._config.title ? 2 : 0) + (this._config.entities.length || 1) + (this._config.buttons ? 2 : 0);
-  }
-  render() {
-    if (!this._config || !this.hass) {
-      return html``;
-    }
-    return html`
-      <ha-card>
-        ${this._renderHeader()}
-        ${this._renderEntities()}
-        ${this._renderFooter()}
-      </ha-card>
-    `;
-  }
-  _renderHeader() {
-    var _a, _b;
-    if (!((_a = this._config) == null ? void 0 : _a.title) && !((_b = this._config) == null ? void 0 : _b.icon)) {
-      return html``;
-    }
-    return html`
-      <h1 class="card-header">
-        <div class="name">
-          ${this._config.icon ? html`<ha-icon class="icon" .icon=${this._config.icon}></ha-icon>` : ""}
-          ${this._config.title}
-        </div>
-      </h1>
-    `;
-  }
-  _renderFooter() {
-    var _a, _b;
-    if (!((_b = (_a = this._config) == null ? void 0 : _a.buttons) == null ? void 0 : _b.length)) {
-      return html``;
-    }
-    return html`
-      <lc-footer-buttons
-        .hass=${this.hass}
-        .buttons=${this._config.buttons}
-      ></lc-footer-buttons>
-    `;
-  }
-  _renderEntities() {
-    if (!this._configEntities) {
-      return html``;
-    }
-    const entities = this._configEntities.map((entityConf) => this._renderEntity(entityConf));
-    return html`
-      <div id="states" class="card-content">${entities}</div>`;
-  }
-  _renderEntity(entityConf) {
-    let config;
-    if ((!("type" in entityConf) || entityConf.type === "conditional") && "state_color" in this._config) {
-      config = { state_color: this._config.state_color, ...entityConf };
-    } else if (entityConf.type === "perform-action") {
-      config = { ...entityConf, type: "call-service" };
-    } else {
-      config = { ...entityConf };
-    }
-    const element = this._createRowElement(config);
-    if (this.hass) {
-      element.hass = this.hass;
-    }
-    return html`
-      <div>${element}</div>`;
-  }
-};
-EntitiesCard.styles = styles$2;
-__decorateClass$2([
-  n2({ attribute: false })
-], EntitiesCard.prototype, "hass", 2);
-__decorateClass$2([
-  r()
-], EntitiesCard.prototype, "_config", 2);
-EntitiesCard = __decorateClass$2([
-  t$1("lc-entities-card")
-], EntitiesCard);
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "lc-entities-card",
-  name: "Entities With Actions Card",
-  preview: true,
-  description: "This map allows you to group entities and actions that are triggered by buttons in the footer.",
-  documentationURL: "https://github.com/itsib/lovelace-cards/blob/main/README.md"
 });
 const configElementStyle = css`
     .card-config {
@@ -4847,20 +4590,27 @@ const configElementStyle = css`
         color: var(--secondary-text-color);
     }
 `;
+const BaseCardConfigSchema = object({
+  type: string(),
+  view_layout: any(),
+  layout_options: any(),
+  grid_options: any(),
+  visibility: any()
+});
+const GaugeLevelConfigSchema = object({
+  level: number(),
+  color: string()
+});
 const GaugeConfigSchema = object({
   entity: string(),
   attribute: optional(string()),
   name: optional(string()),
-  icon: optional(string()),
-  image: optional(string()),
   unit: optional(string()),
   min: optional(number()),
   max: optional(number()),
   step: optional(number()),
-  levels: optional(array(object({
-    level: number(),
-    color: string()
-  })))
+  digits: optional(boolean()),
+  levels: optional(array(GaugeLevelConfigSchema))
 });
 const ServiceCardConfigSchema = assign(
   BaseCardConfigSchema,
@@ -4869,11 +4619,17 @@ const ServiceCardConfigSchema = assign(
     icon: optional(string()),
     theme: optional(string()),
     gauges: optional(array(GaugeConfigSchema)),
-    entities: optional(array(EntitiesConfigSchema)),
+    entities: optional(array(EntityConfigSchema)),
     buttons: optional(array(ButtonConfigSchema))
   })
 );
-const styles$1 = css``;
+const styles$1 = css`.title-icon-fields {
+  display: flex;
+  gap: 16px;
+}
+.title-icon-fields > * {
+  width: 50%;
+}`;
 var __defProp$1 = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
 var __decorateClass$1 = (decorators, target, key, kind) => {
@@ -4884,11 +4640,12 @@ var __decorateClass$1 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$1(target, key, result);
   return result;
 };
-let ServiceCardConfig = class extends LitElement {
+let UniversalCardConfig = class extends LitElement {
   setConfig(config) {
     assert(config, ServiceCardConfigSchema);
     this._config = config;
-    this._configEntities = processEntities(config.entities, { domains: ["sensor"] });
+    this._configGauges = config.gauges ? processEntities(config.gauges, { domains: ["sensor"] }) : [];
+    this._configEntities = config.entities ? processEntities(config.entities) : [];
     this._configButtons = config.buttons;
   }
   async firstUpdated(_changedProperties) {
@@ -4911,29 +4668,34 @@ let ServiceCardConfig = class extends LitElement {
         </lc-sub-element-editor>
       `;
     }
-    const optional2 = `(${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})`;
     return html`
-      <div class="card-config">
+      <div class="title-icon-fields">
         <ha-textfield
-          .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.title")} ${optional2}"
-          .value=${this._title}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.title")}
+          .value=${this._config.title || ""}
           .configValue=${"title"}
           @input=${this._valueChanged}
         ></ha-textfield>
-        <ha-theme-picker
+        
+         <ha-icon-picker
           .hass=${this.hass}
-          .value=${this._theme}
-          .label=${`${this.hass.localize("ui.panel.lovelace.editor.card.generic.theme")} ${optional2}`}
-          .configValue=${"theme"}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.icon")}
+          .value=${this._config.icon || ""}
+          .required=${false}
+          .disabled=${false}
+          .configValue=${"icon"}
+          .placeholder=${"lc:placeholder"}
           @value-changed=${this._valueChanged}
-        ></ha-theme-picker>
+        >
+        </ha-icon-picker>
       </div>
-      <hui-entities-card-row-editor
+      
+      <lc-entities-editor
         .hass=${this.hass}
         .entities=${this._configEntities}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
-      ></hui-entities-card-row-editor>
+      ></lc-entities-editor>
 
       <lc-footer-buttons-editor
         .hass=${this.hass}
@@ -4952,12 +4714,12 @@ let ServiceCardConfig = class extends LitElement {
     const target = ev.target;
     const configValue = target.configValue || ((_a = this._subElementEditorConfig) == null ? void 0 : _a.type);
     const value = target.checked !== void 0 ? target.checked : target.value || ev.detail.config || ev.detail.value;
-    if (configValue === "title" && target.value === this._title || configValue === "theme" && target.value === this._theme) {
+    if (configValue === "title" && target.value === this._config.title || configValue === "icon" && target.value === this._config.icon) {
       return;
     }
-    if (configValue === "row" || ev.detail && ev.detail.entities) {
+    if (configValue === "row" || configValue === "base-entity" || ev.detail && ev.detail.entities) {
       const newConfigEntities = ev.detail.entities || this._configEntities.concat();
-      if (configValue === "row") {
+      if (configValue === "row" || configValue === "base-entity") {
         if (!value) {
           newConfigEntities.splice(this._subElementEditorConfig.index, 1);
           this._goBack();
@@ -4970,7 +4732,7 @@ let ServiceCardConfig = class extends LitElement {
         ...this._config,
         entities: newConfigEntities
       };
-      this._configEntities = processEntities(this._config.entities, { domains: ["counter", "input_number", "number", "sensor"] });
+      this._configEntities = processEntities(this._config.entities);
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -4987,9 +4749,7 @@ let ServiceCardConfig = class extends LitElement {
   _handleSubElementChanged(ev) {
     var _a;
     ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
+    if (!this._config || !this.hass) return;
     const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
     const value = ev.detail.config;
     if (configValue === "footer-button") {
@@ -5003,6 +4763,17 @@ let ServiceCardConfig = class extends LitElement {
       }
       this._config = { ...this._config, buttons };
       this._configButtons = buttons;
+    } else if (configValue === "entity") {
+      const index = this._subElementEditorConfig.index;
+      const entities = [...this._configEntities || []];
+      if (value) {
+        entities[index] = value;
+      } else {
+        entities.splice(index, 1);
+        this._goBack();
+      }
+      this._config = { ...this._config, entities };
+      this._configEntities = entities;
     } else if (configValue === "row") {
       const index = this._subElementEditorConfig.index;
       const entities = this._configEntities.concat();
@@ -5013,7 +4784,7 @@ let ServiceCardConfig = class extends LitElement {
         this._goBack();
       }
       this._config = { ...this._config, entities };
-      this._configEntities = processEntities(this._config.entities, { domains: ["counter", "input_number", "number", "sensor"] });
+      this._configEntities = processEntities(this._config.entities);
     } else if (configValue) {
       if (value === "") {
         this._config = { ...this._config };
@@ -5043,38 +4814,41 @@ let ServiceCardConfig = class extends LitElement {
     };
     fireEvent(this, "config-changed", { config: this._config });
   }
+  _handleEntitiesChanged(ev) {
+    const entities = ev.detail.entities;
+    this._configEntities = entities;
+    this._config = {
+      ...this._config,
+      entities
+    };
+    fireEvent(this, "config-changed", { config: this._config });
+  }
   _goBack() {
     this._subElementEditorConfig = void 0;
   }
-  get _title() {
-    return this._config.title || "";
-  }
-  get _theme() {
-    return this._config.theme || "";
-  }
-  get _icon() {
-    return this._config.icon || "";
-  }
 };
-ServiceCardConfig.styles = [styles$1, configElementStyle];
+UniversalCardConfig.styles = [styles$1, configElementStyle];
 __decorateClass$1([
   n2({ attribute: false })
-], ServiceCardConfig.prototype, "hass", 2);
+], UniversalCardConfig.prototype, "hass", 2);
 __decorateClass$1([
   r()
-], ServiceCardConfig.prototype, "_config", 2);
+], UniversalCardConfig.prototype, "_config", 2);
 __decorateClass$1([
   r()
-], ServiceCardConfig.prototype, "_configEntities", 2);
+], UniversalCardConfig.prototype, "_configGauges", 2);
 __decorateClass$1([
   r()
-], ServiceCardConfig.prototype, "_configButtons", 2);
+], UniversalCardConfig.prototype, "_configEntities", 2);
 __decorateClass$1([
   r()
-], ServiceCardConfig.prototype, "_subElementEditorConfig", 2);
-ServiceCardConfig = __decorateClass$1([
-  t$1("lc-service-card-config")
-], ServiceCardConfig);
+], UniversalCardConfig.prototype, "_configButtons", 2);
+__decorateClass$1([
+  r()
+], UniversalCardConfig.prototype, "_subElementEditorConfig", 2);
+UniversalCardConfig = __decorateClass$1([
+  t$1("lc-universal-card-config")
+], UniversalCardConfig);
 function getNumberValueWithUnit(entity, hass) {
   if (!entity.entity) return {};
   const stateObj = hass.states[entity.entity];
@@ -5101,6 +4875,7 @@ const styles = css`ha-card {
 }
 
 .card-header {
+  padding-bottom: 0;
   display: flex;
   justify-content: space-between;
 }
@@ -5156,11 +4931,11 @@ var __decorateClass = (decorators, target, key, kind) => {
   if (kind && result) __defProp(target, key, result);
   return result;
 };
-let ServiceCard = class extends LitElement {
+let UniversalCard = class extends LitElement {
   static async getConfigElement() {
     const source = await customElements.whenDefined("hui-entities-card");
     await source.getConfigElement();
-    return document.createElement("lc-service-card-config");
+    return document.createElement("lc-universal-card-config");
   }
   static getStubConfig(hass, entities, entitiesFallback) {
     const gaugesEntities = findEntities(
@@ -5183,8 +4958,8 @@ let ServiceCard = class extends LitElement {
   }
   async setConfig(config) {
     this._config = config;
-    this._configEntities = processEntities(config.entities, { validateMode: "skip" });
     this._configGauges = processEntities(config.gauges, { validateMode: "skip" });
+    this._configEntities = processEntities(config.entities, { validateMode: "skip" });
     this._configButtons = config.buttons;
     if (!this._createRowElement) {
       const utils = await mainWindow.loadCardHelpers();
@@ -5227,7 +5002,7 @@ let ServiceCard = class extends LitElement {
     `;
   }
   _renderGauges() {
-    if (!this._configGauges) {
+    if (!this._configGauges || !this._configGauges.length) {
       return html``;
     }
     const entities = this._configGauges.map((entity) => this._renderGauge(entity));
@@ -5265,10 +5040,8 @@ let ServiceCard = class extends LitElement {
     var _a;
     if (!this._createRowElement) return html``;
     let config;
-    if ((!("type" in entityConf) || entityConf.type === "conditional") && "state_color" in this._config) {
+    if (!("type" in entityConf) && "state_color" in this._config) {
       config = { state_color: this._config.state_color, ...entityConf };
-    } else if (entityConf.type === "perform-action") {
-      config = { ...entityConf, type: "call-service" };
     } else {
       config = { ...entityConf };
     }
@@ -5291,28 +5064,29 @@ let ServiceCard = class extends LitElement {
     `;
   }
 };
-ServiceCard.styles = styles;
+UniversalCard.styles = styles;
 __decorateClass([
   n2({ attribute: false })
-], ServiceCard.prototype, "hass", 2);
+], UniversalCard.prototype, "hass", 2);
 __decorateClass([
   r()
-], ServiceCard.prototype, "_config", 2);
+], UniversalCard.prototype, "_config", 2);
 __decorateClass([
   r()
-], ServiceCard.prototype, "_createRowElement", 2);
-ServiceCard = __decorateClass([
-  t$1("lc-service-card")
-], ServiceCard);
+], UniversalCard.prototype, "_createRowElement", 2);
+UniversalCard = __decorateClass([
+  t$1("lc-universal-card")
+], UniversalCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "lc-service-card",
-  name: "Service Status Card",
-  description: "The card displays the status of the service or addon. It also allows you to trigger arbitrary actions.",
+  type: "lc-universal-card",
+  name: "Extended Card",
+  description: "The universal card supports displaying many kinds of UI elements in one place. For example, if you need to display the status in the form of a row and a gauge with action buttons.",
   preview: true,
   configurable: true
 });
 export {
+  EntitiesEditor,
   Gauge,
   HuiSubElementEditor,
   ICONS,

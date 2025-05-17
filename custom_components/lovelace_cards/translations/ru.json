@@ -7,6 +7,41 @@
   },
   "entity_component": {
     "_": {
+      "editor": {
+        "optional": "Необязательный",
+        "required": "обязательный",
+        "title": "Заголовок",
+        "name": "Имя",
+        "icon": "Иконка",
+        "entities": "Объекты",
+        "action": "Действие",
+        "choose_action": "Выбирите Действие",
+        "choose_entity": "Выбирите Объект",
+        "buttons": "Кнопки",
+        "remove_button": "Удалить Кнопку",
+        "configure_button": "Настроить Кнопку",
+        "remove_entity": "Удалить Объект",
+        "configure_entity": "Настроить Объект",
+        "entity": "Объект",
+        "divider": "Разделитель",
+        "secondary_information": "Дополнительная Информация",
+        "entity_config_caption": "Настройка {entityType}",
+        "button_config_caption": "Настройка Кнопки",
+        "entity_type_entity": "Объекта",
+        "entity_type_divider": "Разделителя",
+        "secondary_info": {
+          "options": {
+            "none": "Нет дополнительной инвормации",
+            "entity-id": "ID Объекта",
+            "last-changed": "Время последнего изменения",
+            "last-updated": "Время последнего обновления",
+            "brightness": "Яркость",
+            "last-triggered": "Время поледней активации",
+            "tilt-position": "Угол Наклона",
+            "position": "Положение"
+          }
+        }
+      },
       "button_action": "Конфигурация Кнопки",
       "button_tooltip": "Подсказка",
       "confirm_text": "Текст Подтверждения",

@@ -9,7 +9,7 @@ export interface SubElementEditorConfig<T = any> {
   elementConfig?: T;
   saveElementConfig?: (elementConfig: any) => void;
   context?: any;
-  type: 'footer-button' | 'row';
+  type: 'footer-button' | 'entity' | 'row';
 }
 
 export interface GUIModeChangedEvent {
@@ -43,14 +43,7 @@ export class HuiSubElementEditor extends LitElement {
   }
 
   private _renderHeader() {
-    if (!this.hass) return html``;
-
-    let title: string;
-    if (this.config?.type === 'footer-button') {
-      title = this.hass.localize(`component.lovelace_cards.entity_component._.button_action`);
-    } else {
-      title = this.hass.localize(`ui.panel.lovelace.editor.sub-element-editor.types.${this.config?.type}`);
-    }
+    if (!this.hass || !this.config) return html``;
 
     return html`
       <div class="header">
@@ -61,7 +54,7 @@ export class HuiSubElementEditor extends LitElement {
             @click=${this._goBack}
             transparent
           ></lc-button-circle>
-          <span slot="title">${title}</span>
+          ${this._renderTitle()}
         </div>
         <lc-button-circle
           type="button"
@@ -80,6 +73,29 @@ export class HuiSubElementEditor extends LitElement {
       </div>`;
   }
 
+  private _renderTitle() {
+    if (!this.hass) return html``;
+
+    let title: string;
+    const translateKey = this.config.type.replace(/-/g, '_');
+    switch (this.config.type) {
+      case 'footer-button':
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
+        break;
+      case 'entity':
+        const entityType = 'type' in this.config.elementConfig ? this.config.elementConfig.type : 'entity';
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_config_caption`, {
+          entityType: this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_type_${entityType}`),
+        });
+        break;
+      default:
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.${translateKey}`);
+        break;
+    }
+
+    return html`<span slot="title">${title}</span>`
+  }
+
   private _renderEditor() {
     const type = this.config.type;
 
@@ -94,6 +110,17 @@ export class HuiSubElementEditor extends LitElement {
             @config-changed=${this._handleConfigChanged}
             @GUImode-changed=${this._handleGUIModeChanged}
           ></hui-row-element-editor>
+        `;
+      case 'entity':
+        return html`
+          <lc-entity-editor
+            class="editor"
+            .hass=${this.hass}
+            .value=${this.config.elementConfig}
+            .context=${this.config.context}
+            @config-changed=${this._handleConfigChanged}
+            @GUImode-changed=${this._handleGUIModeChanged}
+          ></lc-entity-editor>
         `;
       case 'footer-button':
         return html`
