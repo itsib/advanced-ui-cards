@@ -55,8 +55,6 @@ export class AreaConfig extends LitElement implements LovelaceCardEditor {
       return html``;
     }
 
-    console.log(this.hass.areas);
-
     return html`
       <slot></slot>
       <div class="area-config">

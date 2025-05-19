@@ -3,15 +3,15 @@ import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { HomeAssistant, IEntityBaseConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
 import { entitiesToSelectOption } from '../../../utils/object-to-select-option';
-import { ISelectOption } from '../../form-controls';
 import { assert } from 'superstruct';
 import { EntityConfigSchema } from '../../../schemas/entity-config-schema';
 import { computeDomain } from '../../../utils/entities-utils';
 import styles from './entity-editor.scss';
+import { ISelectOption } from '../../select/select';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lc-entity-editor': FooterButtonEditor;
+    'lc-entity-editor': EntityEditor;
   }
 
   interface HASSDomEvents {
@@ -23,7 +23,7 @@ declare global {
 }
 
 @customElement('lc-entity-editor')
-class FooterButtonEditor extends LitElement {
+class EntityEditor extends LitElement {
   static styles = styles;
 
   @property({ attribute: false })

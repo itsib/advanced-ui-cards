@@ -4,11 +4,11 @@ import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { HassService, HomeAssistant, IButtonConfigSchema } from 'types';
 import { ButtonConfigSchema } from '../../../schemas/button-config-schema';
 import { fireEvent } from '../../../utils/fire-event';
-import styles from './footer-button-editor.scss';
 import { serviceToSelectOption } from '../../../utils/object-to-select-option';
-import { ISelectOption } from '../../form-controls';
 import { formatActionName } from '../../../utils/format-action-name';
-import { formatColors } from '../../../utils/format-colors';
+import { compactTarget, extensiveTarget } from '../../../utils/normalize-target';
+import { ISelectOption } from '../../select/select';
+import styles from './footer-button-editor.scss';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -22,11 +22,6 @@ declare global {
     };
   }
 }
-
-const COLORS: ISelectOption[] = [
-  { value: formatColors('primary'), label: 'Primary' },
-  { value: formatColors('secondary'), label: 'Secondary' },
-];
 
 @customElement('lc-footer-button-editor')
 class FooterButtonEditor extends LitElement {
@@ -262,7 +257,7 @@ class FooterButtonEditor extends LitElement {
           .selector=${{ target: { ...service.target } }}
           @value-changed=${this._valueChanged}
           .configValue=${'target'}
-          .value=${this.value?.target}
+          .value=${extensiveTarget(this.value?.target)}
         ></ha-selector>
       </div>
     `;
@@ -370,13 +365,7 @@ class FooterButtonEditor extends LitElement {
       }
 
       if (service.target && Object.keys(service.target).length) {
-        config.target = {
-          entity_id: [],
-          device_id: [],
-          area_id: [],
-          floor_id: [],
-          label_id: [],
-        };
+        config.target = {};
       } else {
         Reflect.deleteProperty(config, 'target');
       }
@@ -391,13 +380,7 @@ class FooterButtonEditor extends LitElement {
     } else if (configValue === 'confirmation') {
       config.confirmation = value ? { text: value } : true;
     } else if (configValue === 'target') {
-      config.target = {
-        entity_id: value.entity_id.length ? Array.from(new Set(value.entity_id)) : [],
-        device_id: value.device_id.length ? Array.from(new Set(value.device_id)) : [],
-        area_id: value.area_id.length ? Array.from(new Set(value.area_id)) : [],
-        floor_id: value.floor_id.length ? Array.from(new Set(value.floor_id)) : [],
-        label_id: value.label_id.length ? Array.from(new Set(value.label_id)) : [],
-      };
+      config.target = compactTarget(value);
     } else if (configValue === 'data') {
       const dataField = (event.target as any).dataField;
 

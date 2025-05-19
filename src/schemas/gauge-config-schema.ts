@@ -1,4 +1,4 @@
-import { array, boolean, number, object, optional, string } from 'superstruct';
+import { array, boolean, number, object, optional, string, integer, min } from 'superstruct';
 
 const GaugeLevelConfigSchema = object({
   level: number(),
@@ -12,7 +12,7 @@ export const GaugeConfigSchema = object({
   unit: optional(string()),
   min: optional(number()),
   max: optional(number()),
-  step: optional(number()),
+  decimals: optional(min(integer(), 0)),
   digits: optional(boolean()),
   levels: optional(array(GaugeLevelConfigSchema)),
 });

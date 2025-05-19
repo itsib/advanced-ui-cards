@@ -11,7 +11,7 @@ export interface IGaugeConfigSchema {
   unit?: string;
   min?: number;
   max?: number;
-  step?: number;
+  decimals?: number;
   digits?: boolean;
-  levels?: IGaugeLevelConfigSchema;
+  levels?: IGaugeLevelConfigSchema[];
 }

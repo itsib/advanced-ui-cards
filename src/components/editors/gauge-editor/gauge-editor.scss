@@ -1,0 +1,62 @@
+.container {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: auto;
+  align-items: center;
+  gap: 16px;
+
+  .row-full {
+    grid-column: span 6 / span 6;
+  }
+
+  .row-cell {
+    grid-column: span 2 / span 6;
+  }
+
+  .row-cell-1\.5x {
+    grid-column: span 3 / span 6;
+  }
+
+  .row-cell-2x {
+    grid-column: span 4 / span 6;
+  }
+
+  .enable-digits {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .add-button {
+    --mdc-theme-primary: var(--primary-color);
+    --mdc-theme-on-primary: var(--primary-text-color)
+  }
+
+  .level-number {
+    --ha-textfield-input-width: 30px !important;
+
+    ha-selector {
+      width: calc(100% - 40px);
+    }
+
+    ha-textfield {
+
+    }
+  }
+
+  .level-input {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.yaml-editor {
+
+  .error {
+    margin-top: 8px;
+    color: var(--error-color);
+    font-size: 13px;
+  }
+}

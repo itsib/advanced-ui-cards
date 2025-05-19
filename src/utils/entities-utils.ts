@@ -1,4 +1,11 @@
-import { EntityConfigLike, HassEntity, HomeAssistant, ServiceCallResponse } from 'types';
+import {
+  EntityConfigLike,
+  HassEntity,
+  HomeAssistant,
+  IEntityConfigSchema,
+  IGaugeConfigSchema,
+  ServiceCallResponse,
+} from 'types';
 
 /** States that we consider "off". */
 export const STATES_OFF = ['closed', 'locked', 'off'];
@@ -7,12 +14,60 @@ export function isValidEntityId(id: string): boolean {
   return /^(\w+)\.(\w+)$/.test(id);
 }
 
-export function isCustomType(type: string) {
-  return type.startsWith('custom:');
-}
-
 export function computeDomain(entityId: string): string {
   return entityId.substring(0, entityId.indexOf('.'));
+}
+
+export function processEntities(entities?: (any | string)[]) {
+  if (!entities) return[];
+
+  const results: IEntityConfigSchema[] = [];
+  for (let i = 0; i < entities.length; i++) {
+     const entity = entities[i];
+     if (!entity) continue;
+
+     if (typeof entity === 'string') {
+       results.push({ entity: entity });
+     } else if (typeof entity === 'object' && !Array.isArray(entity)) {
+       if ('type' in entity || 'entity' in entity) {
+         results.push({ ...entity });
+       } else {
+         throw new Error(`Object at position ${i} is missing entity or type field`);
+       }
+     } else {
+       throw new Error(`Invalid entity at position ${i}`);
+     }
+  }
+
+  return results;
+}
+
+export function processGauges(gauges?: (any | string)[], maxCount = 2) {
+  if (!gauges) return [];
+
+  if (gauges.length > maxCount) {
+    throw new Error(`MAx gauge count is ${maxCount}`);
+  }
+
+  const results: IGaugeConfigSchema[] = [];
+  for (let i = 0; i < gauges.length; i++) {
+     const gauge = gauges[i];
+     if (!gauge) continue;
+
+     if (typeof gauge === 'string') {
+       results.push({ entity: gauge });
+     } else if (typeof gauge === 'object' && !Array.isArray(gauge)) {
+       if ('type' in gauge || 'entity' in gauge) {
+         results.push({ ...gauge });
+       } else {
+         throw new Error(`Gauge at position ${i} is missing entity or type field`);
+       }
+     } else {
+       throw new Error(`Invalid gauge at position ${i}`);
+     }
+  }
+
+  return results;
 }
 
 export function arrayFilter<T>(array: T[], conditions: ((value: T) => boolean)[], maxSize: number): T[] {
@@ -47,7 +102,7 @@ export interface ProcessEntitiesOpts<T extends EntityConfigLike> {
   callback?: (entity: any) => T | null;
 }
 
-export function processEntities<T extends EntityConfigLike>(entities?: (any | string)[], opts: ProcessEntitiesOpts<T> = {}): T[] {
+export function processEntities2<T extends EntityConfigLike>(entities?: (any | string)[], opts: ProcessEntitiesOpts<T> = {}): T[] {
   const domains = opts.domains ? typeof opts.domains === 'string' ? [opts.domains] : opts.domains : null;
   const maxCount = opts.maxCount ?? Infinity;
   const validateMode = opts.validateMode == null ? 'throw' : opts.validateMode;

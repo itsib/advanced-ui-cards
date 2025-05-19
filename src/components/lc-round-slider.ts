@@ -14,7 +14,6 @@ async function waitThermostat(hass: HomeAssistant): Promise<void> {
   if (!THERMOSTAT_PROMISE) {
     THERMOSTAT_PROMISE = window.loadCardHelpers().then(helpers => {
       const entity = Object.keys(hass.entities).find(id => id.startsWith('climate.'));
-      console.log(entity);
       helpers.createCardElement({ type: 'thermostat', entity });
     });
   }

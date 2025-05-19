@@ -11,7 +11,7 @@ import {
   LovelaceCardEditor,
 } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
-import { processEntities } from '../../utils/entities-utils';
+import { processEntities, processGauges } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
 import { IServiceCardConfigSchema, ServiceCardConfigSchema } from './universal-card-schema';
@@ -41,8 +41,8 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
   setConfig(config: IServiceCardConfigSchema): void {
     assert(config, ServiceCardConfigSchema);
     this._config = config;
-    this._configGauges = config.gauges ? processEntities(config.gauges, { domains: ['sensor'] }) : [];
-    this._configEntities = config.entities ? processEntities(config.entities) : [];
+    this._configGauges = processGauges(config.gauges);
+    this._configEntities = processEntities(config.entities);
     this._configButtons = config.buttons;
   }
 
@@ -79,8 +79,8 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
           .configValue=${'title'}
           @input=${this._valueChanged}
         ></ha-textfield>
-        
-         <ha-icon-picker
+
+        <ha-icon-picker
           .hass=${this.hass}
           .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.icon')}
           .value=${this._config.icon || ''}
@@ -92,10 +92,19 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
         >
         </ha-icon-picker>
       </div>
-      
+
+      <lc-gauges-editor
+        .hass=${this.hass}
+        .gauges=${this._configGauges}
+        .configValue=${'gauges'}
+        @gauges-changed=${this._valueChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-gauges-editor>
+
       <lc-entities-editor
         .hass=${this.hass}
         .entities=${this._configEntities}
+        .configValue=${'entities'}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></lc-entities-editor>
@@ -103,7 +112,8 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
       <lc-footer-buttons-editor
         .hass=${this.hass}
         .buttons=${this._configButtons}
-        @buttons-changed=${this._handleButtonsChanged}
+        .configValue=${'buttons'}
+        @buttons-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></lc-footer-buttons-editor>
     `;
@@ -111,14 +121,15 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
   private _valueChanged(ev: CustomEvent): void {
     ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-
+    if (!this._config || !this.hass) return;
 
     const target = ev.target! as EditorTarget;
     const configValue = target.configValue || this._subElementEditorConfig?.type;
-    const value = target.checked !== undefined ? target.checked : target.value || ev.detail.config || ev.detail.value;
+    const value = target.checked !== undefined ? target.checked : target.value || (configValue && configValue in ev.detail ? ev.detail[configValue] : ev.detail.value);
+
+    if (!configValue) {
+      throw new Error('No config field provided');
+    }
 
     if (
       (configValue === 'title' && target.value === this._config.title) ||
@@ -127,39 +138,14 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
       return;
     }
 
-    if (configValue === 'row' || configValue === 'base-entity' || (ev.detail && ev.detail.entities)) {
-      const newConfigEntities = ev.detail.entities || this._configEntities!.concat();
-
-      if (configValue === 'row' || configValue === 'base-entity') {
-        if (!value) {
-          newConfigEntities.splice(this._subElementEditorConfig!.index!, 1);
-          this._goBack();
-        } else {
-          newConfigEntities[this._subElementEditorConfig!.index!] = value;
-        }
-
-        this._subElementEditorConfig!.elementConfig = value;
-      }
-
-      this._config = {
-        ...this._config!,
-        entities: newConfigEntities,
-      };
-
-      this._configEntities = processEntities(this._config!.entities);
-    } else if (configValue) {
-      if (value === '') {
-        this._config = { ...this._config };
-        delete this._config[configValue!];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value,
-        };
-      }
+    const config = { ...this._config };
+    if (!value) {
+      Reflect.deleteProperty(config, configValue);
+    } else {
+      config[configValue] = value;
     }
 
-    fireEvent(this, 'config-changed', { config: this._config });
+    fireEvent(this, 'config-changed', { config });
   }
 
   private _handleSubElementChanged(ev: CustomEvent): void {
@@ -169,49 +155,46 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
     const configValue = this._subElementEditorConfig?.type;
     const value = ev.detail.config;
 
-    // Buttons
-    if (configValue === 'footer-button') {
-      const index = this._subElementEditorConfig!.index!;
-      const buttons: IButtonConfigSchema[] = [...(this._configButtons || [])];
-      if (value) {
-        buttons[index] = value;
-      } else {
-        buttons.splice(index, 1);
-        this._goBack();
+
+    switch (configValue) {
+      case 'footer-button': {
+        const index = this._subElementEditorConfig!.index!;
+        const buttons: IButtonConfigSchema[] = [...(this._configButtons || [])];
+        if (value) {
+          buttons[index] = value;
+        } else {
+          buttons.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config!, buttons };
+        this._configButtons = buttons;
+        break;
       }
-      this._config = { ...this._config!, buttons };
-      this._configButtons = buttons;
-    } else if (configValue === 'entity') {
-      const index = this._subElementEditorConfig!.index!;
-      const entities: IEntityConfigSchema[] = [...(this._configEntities || [])];
-      if (value) {
-        entities[index] = value;
-      } else {
-        entities.splice(index, 1);
-        this._goBack();
+      case 'entity': {
+        const index = this._subElementEditorConfig!.index!;
+        const entities: IEntityConfigSchema[] = [...(this._configEntities || [])];
+        if (value) {
+          entities[index] = value;
+        } else {
+          entities.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config!, entities };
+        this._configEntities = entities;
+        break;
       }
-      this._config = { ...this._config!, entities };
-      this._configEntities = entities;
-    } else if (configValue === 'row') {
-      const index = this._subElementEditorConfig!.index!;
-      const entities = this._configEntities!.concat();
-      if (value) {
-        entities[index] = value;
-      } else {
-        entities.splice(index, 1);
-        this._goBack();
-      }
-      this._config = { ...this._config!, entities: entities };
-      this._configEntities = processEntities(this._config!.entities);
-    } else if (configValue) {
-      if (value === '') {
-        this._config = { ...this._config };
-        delete this._config[configValue!];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value,
-        };
+      case 'gauge': {
+        const index = this._subElementEditorConfig!.index!;
+        const gauges: IGaugeConfigSchema[] = [...(this._configGauges || [])];
+        if (value) {
+          gauges[index] = value;
+        } else {
+          gauges.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config!, gauges };
+        this._configGauges = gauges;
+        break;
       }
     }
 
@@ -225,30 +208,6 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
   private _editDetailElement(ev: HASSDomEvent<EditDetailElementEvent>): void {
     this._subElementEditorConfig = ev.detail.subElementConfig;
-  }
-
-  private _handleButtonsChanged(ev: CustomEvent) {
-    const buttons = ev.detail.buttons;
-
-    this._configButtons = buttons;
-    this._config = {
-      ...this._config!,
-      buttons: buttons as IButtonConfigSchema[],
-    };
-
-    fireEvent(this, 'config-changed', { config: this._config });
-  }
-
-  private _handleEntitiesChanged(ev: CustomEvent) {
-    const entities = ev.detail.entities;
-
-    this._configEntities = entities;
-    this._config = {
-      ...this._config!,
-      entities: entities as IEntityConfigSchema[],
-    };
-
-    fireEvent(this, 'config-changed', { config: this._config });
   }
 
   private _goBack(): void {

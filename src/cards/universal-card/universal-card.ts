@@ -1,16 +1,17 @@
 import { html, LitElement, TemplateResult } from 'lit';
 import {
   type EntityConfig,
-  HomeAssistant, IButtonConfigSchema, IEntityConfigSchema,
+  HomeAssistant,
+  IButtonConfigSchema,
+  IEntityConfigSchema,
   IGaugeConfigSchema,
   LovelaceCard,
   LovelaceCardEditor,
   LovelaceRowConfig,
 } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
-import { findEntities, processEntities } from '../../utils/entities-utils';
-import type { IServiceCardConfigSchema,  } from './universal-card-schema';
-import {  } from '../../schemas/button-config-schema';
+import { findEntities, processEntities, processGauges } from '../../utils/entities-utils';
+import type { IServiceCardConfigSchema } from './universal-card-schema';
 import { getNumberValueWithUnit } from '../../utils/format-number-value';
 import { formatEntityName } from '../../utils/format-entity-name';
 import { mainWindow } from '../../utils/get-main-window';
@@ -63,10 +64,8 @@ class UniversalCard extends LitElement implements LovelaceCard {
   async setConfig(config: IServiceCardConfigSchema) {
     this._config = config;
 
-    this._configGauges = processEntities<IGaugeConfigSchema>(config.gauges, { validateMode: 'skip' });
-
-    this._configEntities = processEntities<IEntityConfigSchema>(config.entities, { validateMode: 'skip' });
-
+    this._configGauges = processGauges(config.gauges);
+    this._configEntities = processEntities(config.entities);
     this._configButtons = config.buttons;
 
     if (!this._createRowElement) {
@@ -140,7 +139,7 @@ class UniversalCard extends LitElement implements LovelaceCard {
           .step="${_entity.step || step}"
           .digits="${_entity.digits}"
           .levels="${_entity.levels}"
-          .value="${value || 0}"
+          .value=${value || 0}
           .disabled=${value == null}
         ></lc-gauge>
       </div>`;

@@ -3,10 +3,10 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IButtonConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
 import { SubElementEditorConfig } from '../sub-element-editor/sub-element-editor';
-import { ISelectOption } from '../../form-controls';
 import { formatActionName } from '../../../utils/format-action-name';
 import { serviceToSelectOption } from '../../../utils/object-to-select-option';
 import styles from './footer-buttons-editor.scss';
+import { ISelectOption } from '../../select/select';
 
 declare global {
   interface HTMLElementTagNameMap {

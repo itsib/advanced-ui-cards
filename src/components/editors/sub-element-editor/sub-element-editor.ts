@@ -9,7 +9,7 @@ export interface SubElementEditorConfig<T = any> {
   elementConfig?: T;
   saveElementConfig?: (elementConfig: any) => void;
   context?: any;
-  type: 'footer-button' | 'entity' | 'row';
+  type: 'footer-button' | 'entity' | 'gauge';
 }
 
 export interface GUIModeChangedEvent {
@@ -79,6 +79,9 @@ export class HuiSubElementEditor extends LitElement {
     let title: string;
     const translateKey = this.config.type.replace(/-/g, '_');
     switch (this.config.type) {
+      case 'gauge':
+         title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.gauge_config_caption`);
+        break;
       case 'footer-button':
         title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
         break;
@@ -93,23 +96,23 @@ export class HuiSubElementEditor extends LitElement {
         break;
     }
 
-    return html`<span slot="title">${title}</span>`
+    return html`<span slot="title">${title}</span>`;
   }
 
   private _renderEditor() {
     const type = this.config.type;
 
     switch (type) {
-      case 'row':
+      case 'gauge':
         return html`
-          <hui-row-element-editor
+          <lc-gauge-editor
             class="editor"
             .hass=${this.hass}
             .value=${this.config.elementConfig}
             .context=${this.config.context}
             @config-changed=${this._handleConfigChanged}
             @GUImode-changed=${this._handleGUIModeChanged}
-          ></hui-row-element-editor>
+          ></lc-gauge-editor>
         `;
       case 'entity':
         return html`

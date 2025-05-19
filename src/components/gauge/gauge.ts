@@ -4,12 +4,17 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { elasticOut } from '../../utils/timing-functions';
 import { formatColors } from '../../utils/format-colors';
 
+interface LevelItem {
+  level: number;
+  color: string;
+}
+
 function round(value: number, decimals = 2): number {
   const mul = 10 ** decimals;
   return Math.round(value * mul) / mul;
 }
 
-function normalize(value: number, min: number, max: number, step = 0.1): [number, number, number] {
+function normalize(value: number, min: number, max: number, decimals = 2): [number, number, number] {
   min = isNaN(min) ? 0 : min;
   max = isNaN(max) ? 100 : max;
 
@@ -17,22 +22,11 @@ function normalize(value: number, min: number, max: number, step = 0.1): [number
     throw new Error('MIN_MAX');
   }
 
+  const multiplier = 10 ** decimals;
   value = value == null || isNaN(value) ? 0 : value;
   value = Math.max(value, min);
   value = Math.min(value, max);
-
-  const decimals = `${step}`.split('.')[1]?.length || 0;
-
-  const remains = value % step;
-  const half = step / 2;
-  const rounded = value - remains;
-  const nextTick = rounded + step;
-
-  if (half < remains && nextTick <= max) {
-    value = parseFloat(nextTick.toFixed(decimals));
-  } else {
-    value = parseFloat(rounded.toFixed(decimals));
-  }
+  value = Math.round(value * multiplier) / multiplier;
 
   return [value, min, max];
 }
@@ -73,26 +67,26 @@ export class Gauge extends LitElement {
    * Minimum value bound
    */
   @property({ type: Number, reflect: true })
-  min = 0;
+  min: number = 0;
 
   /**
    * Maximum value bound
    */
   @property({ type: Number, reflect: true })
-  max = 100;
+  max: number = 100;
 
   /**
    * The step attribute is a number that specifies the
    * granularity that the value must adhere to.
    */
   @property({ type: Number, reflect: true })
-  step = 0.1;
+  decimals: number = 2;
 
   /**
    * The value to display
    */
   @property({ type: Number })
-  value = 0;
+  value: number = 0;
 
   /**
    * Disable gauge
@@ -109,23 +103,25 @@ export class Gauge extends LitElement {
   /**
    * Colorized levels
    */
-  @property({ attribute: false })
-  set levels(_levels: { level: number; color: string }[] | undefined) {
-    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
-      this._levels = undefined;
-    } else {
-      _levels = _levels.map(item => ({ level: item?.level ?? 0, color: formatColors(item?.color) }));
-      _levels.sort((a, b) => a.level - b.level);
+  @property({
+    attribute: false,
+    hasChanged(newVal?: LevelItem[], oldVal?: LevelItem[]) {
+      if (!newVal && !oldVal) return false;
 
-      if (_levels[0].level !== this.min) {
-        _levels = [{ level: this.min, color: 'var(--info-color)' }, ..._levels];
+      if ((!newVal && oldVal) || (newVal && !oldVal)) return true;
+
+      if (Array.isArray(newVal) && Array.isArray(oldVal)) {
+        if (newVal.length !== oldVal.length) return true;
+
+        return newVal.some((item: LevelItem, index) => item.level !== oldVal[index].level || item.color !== oldVal[index].color);
       }
-      this._levels = _levels;
-    }
-  };
+      return true;
+    },
+  })
+  levels?: LevelItem[];
 
-  @state()
-  private _levels?: { level: number; color: string }[];
+  private _normalizedLevels?: LevelItem[];
+
   /**
    * SVG root element
    * @private
@@ -172,6 +168,10 @@ export class Gauge extends LitElement {
    */
   private _angleDeg = 0;
 
+  constructor() {
+    super();
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -193,6 +193,28 @@ export class Gauge extends LitElement {
     this._svg?.remove();
     this._svg = undefined;
     this._dial = undefined;
+  }
+
+  willUpdate(_changed: PropertyValues) {
+    super.willUpdate(_changed);
+
+    if (_changed.has('value') || _changed.has('min') || _changed.has('max') || _changed.has('decimals')) {
+      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.decimals);
+    }
+
+    if (_changed.has('levels')) {
+      if (!this.levels || !Array.isArray(this.levels) || this.levels.length === 0) {
+        this._normalizedLevels = undefined;
+      } else {
+        this._normalizedLevels = this.levels
+          .map(item => ({ level: item?.level ?? 0, color: item?.color || 'disabled' }))
+          .sort((a, b) => a.level - b.level);
+
+        if (this._normalizedLevels[0].level !== this.min) {
+          this._normalizedLevels = [{ level: this.min, color: 'disabled' }, ...this._normalizedLevels];
+        }
+      }
+    }
   }
 
   updated(_changed: PropertyValues) {
@@ -221,12 +243,13 @@ export class Gauge extends LitElement {
       this._rafID = null;
     }
 
-    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
-
-    this._text!.innerHTML = `${value}${this.unit || ''}`;
+    const fullValue = `${this.value}${this.unit || ''}`;
+    const fontSize = fullValue.length < 6 ? 14 : fullValue.length < 8 ? 13 : 12;
+    this._text!.style.fontSize = `${fontSize}px`;
+    this._text!.innerHTML = fullValue;
 
     const oldAngle = this._angleDeg;
-    const newAngle = getAngle(value, min, max);
+    const newAngle = getAngle(this.value, this.min, this.max);
     const diffAngle = newAngle - oldAngle;
     const duration = 500;
     const timingFunction = elasticOut.amplitude(0.5).period(0.4);
@@ -348,11 +371,11 @@ export class Gauge extends LitElement {
       this._scale!.append(text);
     };
 
-    if (this._levels) {
-      for (let i = 0; i < this._levels.length; i++) {
-        const level = this._levels[i].level;
-        const nextLevel = this._levels[i + 1]?.level ?? this.max;
-        const color = this._levels[i].color;
+    if (this._normalizedLevels) {
+      for (let i = 0; i < this._normalizedLevels.length; i++) {
+        const level = this._normalizedLevels[i].level;
+        const nextLevel = this._normalizedLevels[i + 1]?.level ?? this.max;
+        const color = formatColors(this._normalizedLevels[i].color);
 
         const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
         const beginAngle = toRadians(beginAngleDeg);
@@ -380,7 +403,7 @@ export class Gauge extends LitElement {
     } else {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
-      path.setAttribute('fill', 'var(--info-color)');
+      path.setAttribute('fill', 'var(--primary-color)');
       this._dial.append(path);
 
       renderNumber(this.min ?? 0, 0, 'start');
@@ -423,7 +446,7 @@ export class Gauge extends LitElement {
     // Cut color inside shadow
     const feFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
     feFlood.setAttribute('flood-color', 'rgb(0, 0, 0)');
-    feFlood.setAttribute('flood-opacity', '.35');
+    feFlood.setAttribute('flood-opacity', '.9');
     filter.append(feFlood);
 
     const feCompositeIn = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');

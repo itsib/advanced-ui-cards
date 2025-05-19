@@ -130,7 +130,6 @@ export class AreaCard extends LitElement implements LovelaceCard {
   }
 
   private _onChange(event: any) {
-    console.log('value', event.detail?.value);
     this.test = event.detail?.value;
   }
 

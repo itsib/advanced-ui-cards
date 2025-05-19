@@ -2,6 +2,7 @@ import { HomeAssistant } from 'types';
 import { ISelectOption } from '../components';
 import { getServiceIcon } from './get-service-icon';
 import { html } from 'lit';
+import { computeDomain } from './entities-utils';
 
 export function serviceToSelectOption(hass: HomeAssistant): ISelectOption[] {
   const domains = Object.keys(hass.services);
@@ -42,6 +43,33 @@ export function entitiesToSelectOption(hass: HomeAssistant): ISelectOption[] {
         ></ha-state-icon>
       `,
     });
+  }
+
+  return options;
+}
+
+export function gaugesToSelectOption(hass: HomeAssistant): ISelectOption[] {
+  const options: ISelectOption[] = [];
+  for (const [entityId, entity] of Object.entries(hass.entities)) {
+    const domain = computeDomain(entityId);
+    if (domain !== 'counter' && domain !== 'sensor' && domain !== 'input_number' && domain !== 'number') {
+      continue;
+    }
+    const stateObj = hass.states[entityId];
+    if (isNaN(Number(stateObj.state))) continue;
+
+
+    options.push({
+      value: entityId,
+      label: entity.name,
+      secondLabel: entityId,
+      icon: html`
+        <ha-state-icon
+          .hass=${hass}
+          .stateObj=${stateObj}
+        ></ha-state-icon>
+      `,
+    })
   }
 
   return options;

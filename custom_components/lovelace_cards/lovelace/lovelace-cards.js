@@ -620,15 +620,15 @@ function e(e2, r2) {
     } });
   };
 }
-const styles$i = css``;
-var __defProp$j = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$j = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+const styles$k = css``;
+var __defProp$l = Object.defineProperty;
+var __getOwnPropDesc$j = Object.getOwnPropertyDescriptor;
+var __decorateClass$l = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$j(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$j(target, key, result);
+  if (kind && result) __defProp$l(target, key, result);
   return result;
 };
 let IconError = class extends LitElement {
@@ -666,25 +666,25 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = styles$i;
-__decorateClass$j([
+IconError.styles = styles$k;
+__decorateClass$l([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ attribute: "color", type: String })
 ], IconError.prototype, "color", 2);
-IconError = __decorateClass$j([
+IconError = __decorateClass$l([
   t$1("lc-icon-error")
 ], IconError);
-const styles$h = css``;
-var __defProp$i = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$i = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+const styles$j = css``;
+var __defProp$k = Object.defineProperty;
+var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
+var __decorateClass$k = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$i(target, key, result);
+  if (kind && result) __defProp$k(target, key, result);
   return result;
 };
 let IconSuccess = class extends LitElement {
@@ -715,25 +715,25 @@ let IconSuccess = class extends LitElement {
     `;
   }
 };
-IconSuccess.styles = styles$h;
-__decorateClass$i([
+IconSuccess.styles = styles$j;
+__decorateClass$k([
   n2({ attribute: "size", type: Number })
 ], IconSuccess.prototype, "size", 2);
-__decorateClass$i([
+__decorateClass$k([
   n2({ attribute: "color", type: String })
 ], IconSuccess.prototype, "color", 2);
-IconSuccess = __decorateClass$i([
+IconSuccess = __decorateClass$k([
   t$1("lc-icon-success")
 ], IconSuccess);
-const styles$g = css``;
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+const styles$i = css``;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 let IconSpinner = class extends LitElement {
@@ -759,14 +759,14 @@ let IconSpinner = class extends LitElement {
     `;
   }
 };
-IconSpinner.styles = styles$g;
-__decorateClass$h([
+IconSpinner.styles = styles$i;
+__decorateClass$j([
   n2({ attribute: "size", type: Number })
 ], IconSpinner.prototype, "size", 2);
-__decorateClass$h([
+__decorateClass$j([
   n2({ attribute: "color", type: String })
 ], IconSpinner.prototype, "color", 2);
-IconSpinner = __decorateClass$h([
+IconSpinner = __decorateClass$j([
   t$1("lc-icon-spinner")
 ], IconSpinner);
 function fireEvent(node, type2, detail, options = {}) {
@@ -866,6 +866,95 @@ function getServiceIcon(service) {
   }
   return iconName || DEFAULT_SERVICE_ICON;
 }
+function computeDomain(entityId) {
+  return entityId.substring(0, entityId.indexOf("."));
+}
+function processEntities(entities) {
+  if (!entities) return [];
+  const results = [];
+  for (let i2 = 0; i2 < entities.length; i2++) {
+    const entity = entities[i2];
+    if (!entity) continue;
+    if (typeof entity === "string") {
+      results.push({ entity });
+    } else if (typeof entity === "object" && !Array.isArray(entity)) {
+      if ("type" in entity || "entity" in entity) {
+        results.push({ ...entity });
+      } else {
+        throw new Error(`Object at position ${i2} is missing entity or type field`);
+      }
+    } else {
+      throw new Error(`Invalid entity at position ${i2}`);
+    }
+  }
+  return results;
+}
+function processGauges(gauges, maxCount = 2) {
+  if (!gauges) return [];
+  if (gauges.length > maxCount) {
+    throw new Error(`MAx gauge count is ${maxCount}`);
+  }
+  const results = [];
+  for (let i2 = 0; i2 < gauges.length; i2++) {
+    const gauge = gauges[i2];
+    if (!gauge) continue;
+    if (typeof gauge === "string") {
+      results.push({ entity: gauge });
+    } else if (typeof gauge === "object" && !Array.isArray(gauge)) {
+      if ("type" in gauge || "entity" in gauge) {
+        results.push({ ...gauge });
+      } else {
+        throw new Error(`Gauge at position ${i2} is missing entity or type field`);
+      }
+    } else {
+      throw new Error(`Invalid gauge at position ${i2}`);
+    }
+  }
+  return results;
+}
+function arrayFilter(array2, conditions, maxSize) {
+  if (!maxSize || maxSize > array2.length) {
+    maxSize = array2.length;
+  }
+  const filteredArray = [];
+  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
+    let meetsConditions = true;
+    for (const condition of conditions) {
+      if (!condition(array2[i2])) {
+        meetsConditions = false;
+        break;
+      }
+    }
+    if (meetsConditions) {
+      filteredArray.push(array2[i2]);
+    }
+  }
+  return filteredArray;
+}
+function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
+  const conditions = [];
+  if (includeDomains == null ? void 0 : includeDomains.length) {
+    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
+  }
+  if (entityFilter) {
+    conditions.push(
+      (eid) => hass.states[eid] && entityFilter(hass.states[eid])
+    );
+  }
+  const entityIds = arrayFilter(entities, conditions, maxEntities);
+  if (entityIds.length < maxEntities && entitiesFallback.length) {
+    const fallbackEntityIds = findEntities(
+      hass,
+      maxEntities - entityIds.length,
+      entitiesFallback,
+      [],
+      includeDomains,
+      entityFilter
+    );
+    entityIds.push(...fallbackEntityIds);
+  }
+  return entityIds;
+}
 function serviceToSelectOption(hass) {
   const domains = Object.keys(hass.services);
   const options = [];
@@ -904,7 +993,30 @@ function entitiesToSelectOption(hass) {
   }
   return options;
 }
-const styles$f = css`:host {
+function gaugesToSelectOption(hass) {
+  const options = [];
+  for (const [entityId, entity] of Object.entries(hass.entities)) {
+    const domain = computeDomain(entityId);
+    if (domain !== "counter" && domain !== "sensor" && domain !== "input_number" && domain !== "number") {
+      continue;
+    }
+    const stateObj = hass.states[entityId];
+    if (isNaN(Number(stateObj.state))) continue;
+    options.push({
+      value: entityId,
+      label: entity.name,
+      secondLabel: entityId,
+      icon: html`
+        <ha-state-icon
+          .hass=${hass}
+          .stateObj=${stateObj}
+        ></ha-state-icon>
+      `
+    });
+  }
+  return options;
+}
+const styles$h = css`:host {
   display: block;
 }
 
@@ -935,14 +1047,14 @@ const styles$f = css`:host {
   margin-inline-end: 71px;
   direction: var(--direction);
 }`;
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 let FooterButtonsEditor = class extends LitElement {
@@ -1076,17 +1188,17 @@ let FooterButtonsEditor = class extends LitElement {
     fireEvent(this, "buttons-changed", { buttons });
   }
 };
-FooterButtonsEditor.styles = styles$f;
-__decorateClass$g([
+FooterButtonsEditor.styles = styles$h;
+__decorateClass$i([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "hass", 2);
-__decorateClass$g([
+__decorateClass$i([
   n2({ attribute: false })
 ], FooterButtonsEditor.prototype, "buttons", 2);
-__decorateClass$g([
+__decorateClass$i([
   r()
 ], FooterButtonsEditor.prototype, "options", 2);
-FooterButtonsEditor = __decorateClass$g([
+FooterButtonsEditor = __decorateClass$i([
   t$1("lc-footer-buttons-editor")
 ], FooterButtonsEditor);
 class StructError extends TypeError {
@@ -1386,6 +1498,11 @@ function enums(values) {
     }
   });
 }
+function integer() {
+  return define("integer", (value) => {
+    return typeof value === "number" && !isNaN(value) && Number.isInteger(value) || `Expected an integer, but received: ${print(value)}`;
+  });
+}
 function literal(constant) {
   const description = print(constant);
   const t2 = typeof constant;
@@ -1513,6 +1630,25 @@ function union(Structs) {
     }
   });
 }
+function min(struct, threshold, options = {}) {
+  const { exclusive } = options;
+  return refine(struct, "min", (value) => {
+    return exclusive ? value > threshold : value >= threshold || `Expected a ${struct.type} greater than ${exclusive ? "" : "or equal to "}${threshold} but received \`${value}\``;
+  });
+}
+function refine(struct, name, refiner) {
+  return new Struct({
+    ...struct,
+    *refiner(value, ctx) {
+      yield* struct.refiner(value, ctx);
+      const result = refiner(value, ctx);
+      const failures = toFailures(result, ctx, struct, value);
+      for (const failure of failures) {
+        yield { ...failure, refinement: name };
+      }
+    }
+  });
+}
 const ExemptionSchema = object({
   user: string()
 });
@@ -1540,7 +1676,42 @@ const ButtonConfigSchema = object({
   target: optional(TargetConfigSchema),
   confirmation: optional(ConfirmationConfigSchema)
 });
-const styles$e = css`.container {
+function extensiveField(value) {
+  if (!value) return [];
+  if (typeof value === "string") {
+    return [value];
+  }
+  return Array.from(new Set(value));
+}
+function compactField(dist, src, field) {
+  if (src[field]) {
+    if (typeof src[field] === "string") {
+      dist[field] = src[field];
+    } else if (Array.isArray(src[field]) && src[field].length > 0) {
+      dist[field] = src[field].length === 1 ? src[field][0] : src[field];
+    }
+  }
+}
+function compactTarget(src) {
+  if (!src) return {};
+  const dist = {};
+  compactField(dist, src, "entity_id");
+  compactField(dist, src, "device_id");
+  compactField(dist, src, "label_id");
+  compactField(dist, src, "floor_id");
+  compactField(dist, src, "area_id");
+  return dist;
+}
+function extensiveTarget(src = {}) {
+  return {
+    entity_id: extensiveField(src.entity_id),
+    device_id: extensiveField(src.device_id),
+    area_id: extensiveField(src.area_id),
+    floor_id: extensiveField(src.floor_id),
+    label_id: extensiveField(src.label_id)
+  };
+}
+const styles$g = css`.container {
   margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1561,6 +1732,7 @@ const styles$e = css`.container {
   line-height: 1.2;
 }
 .container .enable-confirm {
+  margin: 8px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1577,86 +1749,17 @@ const styles$e = css`.container {
   color: var(--error-color);
   font-size: 13px;
 }`;
-function formatColors(value, defaultColor = "var(--primary-color)") {
-  if (!value) return defaultColor;
-  switch (value) {
-    case "primary":
-      return "var(--primary-color)";
-    case "accent":
-      return "var(--accent-color)";
-    case "error":
-    case "err":
-    case "danger":
-      return "var(--error-color)";
-    case "warning":
-    case "warn":
-      return "var(--warning-color)";
-    case "success":
-      return "var(--success-color)";
-    case "disabled":
-      return "var(--disabled-color)";
-    case "info":
-      return "var(--info-color)";
-    case "red":
-      return "var(--red-color)";
-    case "pink":
-      return "var(--pink-color)";
-    case "purple":
-      return "var(--purple-color)";
-    case "deep-purple":
-      return "var(--deep-purple-color)";
-    case "indigo":
-      return "var(--indigo-color)";
-    case "blue":
-      return "var(--blue-color)";
-    case "light-blue":
-      return "var(--light-blue-color)";
-    case "cyan":
-      return "var(--cyan-color)";
-    case "teal":
-      return "var(--teal-color)";
-    case "green":
-      return "var(--green-color)";
-    case "light-green":
-      return "var(--light-green-color)";
-    case "lime":
-      return "var(--lime-color)";
-    case "yellow":
-      return "var(--yellow-color)";
-    case "amber":
-      return "var(--amber-color)";
-    case "orange":
-      return "var(--orange-color)";
-    case "deep-orange":
-      return "var(--deep-orange-color)";
-    case "brown":
-      return "var(--brown-color)";
-    case "light-grey":
-      return "var(--light-grey-color)";
-    case "grey":
-      return "var(--grey-color)";
-    case "dark-grey":
-      return "var(--dark-grey-color)";
-    case "blue-grey":
-      return "var(--blue-grey-color)";
-    case "black":
-      return "var(--black-color)";
-    case "white":
-      return "var(--white-color)";
-  }
-  return value;
-}
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
-let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
+let FooterButtonEditor = class extends LitElement {
   constructor() {
     super(...arguments);
     this._options = [];
@@ -1844,7 +1947,7 @@ let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
           .selector=${{ target: { ...service.target } }}
           @value-changed=${this._valueChanged}
           .configValue=${"target"}
-          .value=${(_a = this.value) == null ? void 0 : _a.target}
+          .value=${extensiveTarget((_a = this.value) == null ? void 0 : _a.target)}
         ></ha-selector>
       </div>
     `;
@@ -1939,13 +2042,7 @@ let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
         return;
       }
       if (service.target && Object.keys(service.target).length) {
-        config.target = {
-          entity_id: [],
-          device_id: [],
-          area_id: [],
-          floor_id: [],
-          label_id: []
-        };
+        config.target = {};
       } else {
         Reflect.deleteProperty(config, "target");
       }
@@ -1958,13 +2055,7 @@ let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
     } else if (configValue === "confirmation") {
       config.confirmation = value ? { text: value } : true;
     } else if (configValue === "target") {
-      config.target = {
-        entity_id: value.entity_id.length ? Array.from(new Set(value.entity_id)) : [],
-        device_id: value.device_id.length ? Array.from(new Set(value.device_id)) : [],
-        area_id: value.area_id.length ? Array.from(new Set(value.area_id)) : [],
-        floor_id: value.floor_id.length ? Array.from(new Set(value.floor_id)) : [],
-        label_id: value.label_id.length ? Array.from(new Set(value.label_id)) : []
-      };
+      config.target = compactTarget(value);
     } else if (configValue === "data") {
       const dataField = event.target.dataField;
       config.data = { ...((_b = this.value) == null ? void 0 : _b.data) || {} };
@@ -1975,38 +2066,38 @@ let FooterButtonEditor$1 = class FooterButtonEditor extends LitElement {
     fireEvent(this, "config-changed", { config });
   }
 };
-FooterButtonEditor$1.styles = styles$e;
-__decorateClass$f([
+FooterButtonEditor.styles = styles$g;
+__decorateClass$h([
   n2({ attribute: false })
-], FooterButtonEditor$1.prototype, "hass", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "hass", 2);
+__decorateClass$h([
   n2({ attribute: false })
-], FooterButtonEditor$1.prototype, "value", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "value", 2);
+__decorateClass$h([
   e("ha-yaml-editor")
-], FooterButtonEditor$1.prototype, "_yamlEditor", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_yamlEditor", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_options", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_options", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_actionDomain", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_actionDomain", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_actionName", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_actionName", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_guiSupported", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_guiSupported", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_error", 2);
-__decorateClass$f([
+], FooterButtonEditor.prototype, "_error", 2);
+__decorateClass$h([
   r()
-], FooterButtonEditor$1.prototype, "_guiMode", 2);
-FooterButtonEditor$1 = __decorateClass$f([
+], FooterButtonEditor.prototype, "_guiMode", 2);
+FooterButtonEditor = __decorateClass$h([
   t$1("lc-footer-button-editor")
-], FooterButtonEditor$1);
-const styles$d = css`:host {
+], FooterButtonEditor);
+const styles$f = css`:host {
   display: block;
 }
 
@@ -2051,14 +2142,14 @@ const styles$d = css`:host {
   margin-inline-end: 71px;
   direction: var(--direction);
 }`;
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 let EntitiesEditor = class extends LitElement {
@@ -2203,17 +2294,17 @@ let EntitiesEditor = class extends LitElement {
     fireEvent(this, "entities-changed", { entities });
   }
 };
-EntitiesEditor.styles = styles$d;
-__decorateClass$e([
+EntitiesEditor.styles = styles$f;
+__decorateClass$g([
   n2({ attribute: false })
 ], EntitiesEditor.prototype, "hass", 2);
-__decorateClass$e([
+__decorateClass$g([
   n2({ attribute: false })
 ], EntitiesEditor.prototype, "entities", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], EntitiesEditor.prototype, "options", 2);
-EntitiesEditor = __decorateClass$e([
+EntitiesEditor = __decorateClass$g([
   t$1("lc-entities-editor")
 ], EntitiesEditor);
 const ActionConfigTypeSchema = object({
@@ -2333,110 +2424,7 @@ const EntityConfigSchema = dynamic((value) => {
   }
   return EntityBaseConfigSchema;
 });
-function computeDomain(entityId) {
-  return entityId.substring(0, entityId.indexOf("."));
-}
-function arrayFilter(array2, conditions, maxSize) {
-  if (!maxSize || maxSize > array2.length) {
-    maxSize = array2.length;
-  }
-  const filteredArray = [];
-  for (let i2 = 0; i2 < array2.length && filteredArray.length < maxSize; i2++) {
-    let meetsConditions = true;
-    for (const condition of conditions) {
-      if (!condition(array2[i2])) {
-        meetsConditions = false;
-        break;
-      }
-    }
-    if (meetsConditions) {
-      filteredArray.push(array2[i2]);
-    }
-  }
-  return filteredArray;
-}
-function processEntities(entities, opts = {}) {
-  const domains = opts.domains ? typeof opts.domains === "string" ? [opts.domains] : opts.domains : null;
-  const maxCount = opts.maxCount ?? Infinity;
-  const validateMode = opts.validateMode == null ? "throw" : opts.validateMode;
-  const callback = opts.callback || ((entity) => entity);
-  if (!entities) {
-    if (validateMode === "skip") return [];
-    throw new Error(`No entities provided`);
-  }
-  if (maxCount < entities.length && validateMode !== "skip") {
-    throw new Error(`The maximum number of elements is ${maxCount}`);
-  }
-  const results = [];
-  for (let i2 = 0; i2 < entities.length; i2++) {
-    const entity = entities[i2];
-    if (!entity) {
-      if (validateMode === "skip") continue;
-      throw new Error(`Missing entity in position ${i2}, null provided`);
-    }
-    let result;
-    if (typeof entity === "string") {
-      result = { entity };
-    } else if (typeof entity === "object" && !Array.isArray(entity)) {
-      if ("type" in entity || "entity" in entity) {
-        result = { ...entity };
-      } else {
-        if (validateMode === "skip") continue;
-        throw new Error(`Object at position ${i2} is missing entity or type field`);
-      }
-    } else {
-      if (validateMode === "skip") continue;
-      throw new Error(`Invalid entity at position ${i2}`);
-    }
-    let domain = null;
-    if (result.entity) {
-      const regExResult = /^(\w+)\.(\w+)$/.exec(result.entity);
-      if (regExResult) {
-        domain = regExResult[1];
-      } else {
-        if (validateMode === "skip") continue;
-        throw new Error(`Invalid entity ID at position ${i2}: ${result.entity}`);
-      }
-    }
-    if (domains == null ? void 0 : domains.length) {
-      if (!domain) continue;
-      if (!domains.includes(domain)) {
-        if (validateMode === "skip") continue;
-        throw new Error(`Invalid entity domain ${domain} at position ${i2}. Allowed ${domains.join(". ")}`);
-      }
-    }
-    result = callback(result);
-    if (!result) continue;
-    results.push(result);
-    if (results.length >= maxCount) break;
-  }
-  return results;
-}
-function findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter) {
-  const conditions = [];
-  if (includeDomains == null ? void 0 : includeDomains.length) {
-    conditions.push((eid) => includeDomains.includes(computeDomain(eid)));
-  }
-  if (entityFilter) {
-    conditions.push(
-      (eid) => hass.states[eid] && entityFilter(hass.states[eid])
-    );
-  }
-  const entityIds = arrayFilter(entities, conditions, maxEntities);
-  if (entityIds.length < maxEntities && entitiesFallback.length) {
-    const fallbackEntityIds = findEntities(
-      hass,
-      maxEntities - entityIds.length,
-      entitiesFallback,
-      [],
-      includeDomains,
-      entityFilter
-    );
-    entityIds.push(...fallbackEntityIds);
-  }
-  return entityIds;
-}
-const styles$c = css`.container {
+const styles$e = css`.container {
   margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2473,17 +2461,17 @@ const styles$c = css`.container {
   color: var(--error-color);
   font-size: 13px;
 }`;
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
-let FooterButtonEditor2 = class extends LitElement {
+let EntityEditor = class extends LitElement {
   constructor() {
     super(...arguments);
     this._guiMode = true;
@@ -2651,31 +2639,670 @@ let FooterButtonEditor2 = class extends LitElement {
     fireEvent(this, "config-changed", { config });
   }
 };
-FooterButtonEditor2.styles = styles$c;
+EntityEditor.styles = styles$e;
+__decorateClass$f([
+  n2({ attribute: false })
+], EntityEditor.prototype, "hass", 2);
+__decorateClass$f([
+  n2({ attribute: false })
+], EntityEditor.prototype, "value", 2);
+__decorateClass$f([
+  e("ha-yaml-editor")
+], EntityEditor.prototype, "_yamlEditor", 2);
+__decorateClass$f([
+  r()
+], EntityEditor.prototype, "_guiSupported", 2);
+__decorateClass$f([
+  r()
+], EntityEditor.prototype, "_error", 2);
+__decorateClass$f([
+  r()
+], EntityEditor.prototype, "_guiMode", 2);
+__decorateClass$f([
+  r()
+], EntityEditor.prototype, "_options", 2);
+EntityEditor = __decorateClass$f([
+  t$1("lc-entity-editor")
+], EntityEditor);
+const styles$d = css`:host {
+  display: block;
+}
+
+.gauges .gauge-config {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+.gauges .gauge-config .handle {
+  padding-right: 8px;
+  cursor: grab;
+  padding-inline-end: 8px;
+}
+.gauges .gauge-config .edit-gauge {
+  flex-grow: 1;
+}
+.gauges .gauge-config .action-button {
+  --lc-button-size: 36px;
+  color: var(--secondary-text-color);
+}
+
+.add-gauge {
+  margin-top: 8px;
+  display: block;
+  margin-left: 31px;
+  margin-right: 71px;
+  margin-inline-start: 31px;
+  margin-inline-end: 71px;
+  direction: var(--direction);
+}`;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$e(target, key, result);
+  return result;
+};
+let GaugesEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.max = 3;
+    this.options = [];
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this.options = gaugesToSelectOption(this.hass);
+  }
+  render() {
+    if (!this.hass) return html``;
+    return html`
+      <h3>
+        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.gauges")}</span>
+      </h3>
+      ${this._renderRowsConfigs()}
+      ${this._renderAddGauge()}
+    `;
+  }
+  _renderRowsConfigs() {
+    if (!this.gauges || !this.gauges.length) return html``;
+    return html`
+      <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
+        <div class="gauges">
+          ${this.gauges.map((entity, index) => this._renderRowConfig(index, entity))}
+        </div>
+      </ha-sortable>
+    `;
+  }
+  _renderRowConfig(index, entity) {
+    return html`
+      <div class="gauge-config">
+        <div class="handle">
+          <ha-icon icon="mdi:drag" class="icon"></ha-icon>
+        </div>
+
+        ${this._renderGauge(index, entity)}
+
+        <lc-button-circle
+          icon="mdi:close"
+          .index=${index}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_gauge")}
+          class="action-button"
+          @click=${this._removeGauge}
+          transparent
+        ></lc-button-circle>
+
+        <lc-button-circle
+          icon="mdi:pencil"
+          .index=${index}
+          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_gauge")}
+          class="action-button"
+          @click=${this._editGauge}
+          transparent
+        ></lc-button-circle>
+      </div>
+
+    `;
+  }
+  _renderGauge(index, gauge) {
+    var _a;
+    return html`
+      <lc-select
+        class="edit-gauge"
+        .index=${index}
+        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.gauge")}
+        .options=${this.options}
+        .value=${gauge.entity}
+        .getValue=${(value) => {
+      var _a2;
+      return ((_a2 = this.hass.entities[value]) == null ? void 0 : _a2.name) || value;
+    }}
+        @value-changed=${this._changeValue}
+      ></lc-select>
+    `;
+  }
+  _renderAddGauge() {
+    if (this.gauges && this.gauges.length >= 2) return html``;
+    return html`
+      <lc-select
+        class="add-gauge"
+        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
+        .hass=${this.hass}
+        .options=${this.options}
+        @value-changed=${this._addGauge}
+      ></lc-select>
+    `;
+  }
+  _addGauge(event) {
+    const value = event.detail.value;
+    if (value === "") {
+      return;
+    }
+    const gauge = { entity: value };
+    event.target.value = "";
+    fireEvent(this, "gauges-changed", { gauges: [...this.gauges || [], gauge] });
+  }
+  _editGauge(event) {
+    const index = event.currentTarget.index;
+    fireEvent(this, "edit-detail-element", {
+      subElementConfig: {
+        index,
+        type: "gauge",
+        elementConfig: this.gauges[index]
+      }
+    });
+  }
+  _removeGauge(event) {
+    const index = event.currentTarget.index;
+    const gauges = this.gauges.concat();
+    gauges.splice(index, 1);
+    fireEvent(this, "gauges-changed", { gauges });
+  }
+  _changeValue(event) {
+    const value = event.detail.value;
+    const index = event.target.index;
+    const gauges = this.gauges.concat();
+    if (value === "" || value === void 0) {
+      gauges.splice(index, 1);
+    } else {
+      gauges[index] = {
+        ...gauges[index],
+        entity: value
+      };
+    }
+    fireEvent(this, "gauges-changed", { gauges });
+  }
+  _rowMoved(event) {
+    event.stopPropagation();
+    const { oldIndex, newIndex } = event.detail;
+    const gauges = this.gauges.concat();
+    gauges.splice(newIndex, 0, gauges.splice(oldIndex, 1)[0]);
+    fireEvent(this, "gauges-changed", { gauges });
+  }
+};
+GaugesEditor.styles = styles$d;
+__decorateClass$e([
+  n2({ attribute: false })
+], GaugesEditor.prototype, "hass", 2);
+__decorateClass$e([
+  n2()
+], GaugesEditor.prototype, "max", 2);
+__decorateClass$e([
+  n2({ attribute: false })
+], GaugesEditor.prototype, "gauges", 2);
+__decorateClass$e([
+  r()
+], GaugesEditor.prototype, "options", 2);
+GaugesEditor = __decorateClass$e([
+  t$1("lc-gauges-editor")
+], GaugesEditor);
+const THEME_COLORS_SET = /* @__PURE__ */ new Set([
+  "primary",
+  "accent",
+  "red",
+  "pink",
+  "purple",
+  "deep-purple",
+  "indigo",
+  "blue",
+  "light-blue",
+  "cyan",
+  "teal",
+  "green",
+  "light-green",
+  "lime",
+  "yellow",
+  "amber",
+  "orange",
+  "deep-orange",
+  "brown",
+  "light-grey",
+  "grey",
+  "dark-grey",
+  "blue-grey",
+  "black",
+  "white"
+]);
+const THEME_COLORS = Array.from(THEME_COLORS_SET);
+function formatColors(value, defaultColor = "var(--disabled-color)") {
+  if (!value) return defaultColor;
+  if (THEME_COLORS_SET.has(value)) {
+    return `var(--${value}-color)`;
+  }
+  return value;
+}
+const styles$c = css`.container {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: auto;
+  align-items: center;
+  gap: 16px;
+}
+.container .row-full {
+  grid-column: span 6/span 6;
+}
+.container .row-cell {
+  grid-column: span 2/span 6;
+}
+.container .row-cell-1\\.5x {
+  grid-column: span 3/span 6;
+}
+.container .row-cell-2x {
+  grid-column: span 4/span 6;
+}
+.container .enable-digits {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.container .add-button {
+  --mdc-theme-primary: var(--primary-color);
+  --mdc-theme-on-primary: var(--primary-text-color) ;
+}
+.container .level-number {
+  --ha-textfield-input-width: 30px !important;
+}
+.container .level-number ha-selector {
+  width: calc(100% - 40px);
+}
+.container .level-input {
+  display: flex;
+  align-items: center;
+}
+
+.yaml-editor .error {
+  margin-top: 8px;
+  color: var(--error-color);
+  font-size: 13px;
+}`;
+const GaugeLevelConfigSchema = object({
+  level: number(),
+  color: string()
+});
+const GaugeConfigSchema = object({
+  entity: string(),
+  attribute: optional(string()),
+  name: optional(string()),
+  unit: optional(string()),
+  min: optional(number()),
+  max: optional(number()),
+  decimals: optional(min(integer(), 0)),
+  digits: optional(boolean()),
+  levels: optional(array(GaugeLevelConfigSchema))
+});
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$d(target, key, result);
+  return result;
+};
+let GaugeEditor = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this._guiMode = true;
+    this._options = [];
+  }
+  get min() {
+    var _a;
+    return ((_a = this.value) == null ? void 0 : _a.min) ?? 0;
+  }
+  get max() {
+    var _a;
+    return ((_a = this.value) == null ? void 0 : _a.max) ?? 100;
+  }
+  get decimals() {
+    var _a;
+    return ((_a = this.value) == null ? void 0 : _a.decimals) ?? 2;
+  }
+  get hasError() {
+    return !!this._error;
+  }
+  get hasWarning() {
+    return false;
+  }
+  get GUImode() {
+    return this._guiMode;
+  }
+  set GUImode(guiMode) {
+    this._guiMode = guiMode;
+    this.updateComplete.then(() => {
+      fireEvent(this, "GUImode-changed", {
+        guiMode,
+        guiModeAvailable: !(this.hasError || this._guiSupported === false)
+      });
+    });
+  }
+  toggleMode() {
+    this.GUImode = !this.GUImode;
+  }
+  focusYamlEditor() {
+    var _a;
+    (_a = this._yamlEditor) == null ? void 0 : _a.focus();
+  }
+  render() {
+    var _a, _b, _c;
+    if (!this.hass || !this.value) return html``;
+    if (!this._guiMode) {
+      return this._renderYamlEditor();
+    }
+    return html`
+      <div class="container">
+        <!-- Entity -->
+        <lc-select
+          class="row-full"
+          .value=${this.value.entity}
+          .configValue=${"entity"}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.gauge")}
+          .options=${this._options}
+          .getValue=${(value) => {
+      var _a2;
+      return ((_a2 = this.hass.entities[value]) == null ? void 0 : _a2.name) || value;
+    }}
+          @value-changed=${this._valueChanged}
+        ></lc-select>
+
+        <!-- attribute -->
+          <!--ha-selector
+          class="row-full"
+          .hass=${this.hass}
+          .value=${this.value.attribute}
+          .label=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.attribute")}
+          .required=${false}
+          .configValue=${"attribute"}
+          .selector=${{ attribute: { entity_id: this.value.entity } }}
+          @value-changed=${this._valueChanged}
+        ></ha-selector-->
+
+        <!-- Name -->
+        <ha-textfield
+          class="row-cell-1.5x"
+          .hass=${this.hass}
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.name")}"
+          .value=${this.value.name || ""}
+          .configValue=${"name"}
+          @input=${this._valueChanged}
+        ></ha-textfield>
+
+        <!-- Unit -->
+        <ha-textfield
+          class="row-cell-1.5x"
+          .hass=${this.hass}
+          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.unit")}"
+          .value=${this.value.unit || ""}
+          .configValue=${"unit"}
+          @input=${this._valueChanged}
+        ></ha-textfield>
+
+        <!-- Min -->
+        <ha-selector
+          class="row-cell"
+          .hass=${this.hass}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.min")}
+          .value=${this.min}
+          .required=${false}
+          .configValue=${"min"}
+          .selector=${{
+      number: {
+        max: this.max,
+        step: 1 / 10 ** this.decimals
+      }
+    }}
+          .placeholder=${"0"}
+          .localize=${this.hass.localize}
+          @value-changed=${this._valueChanged}
+        ></ha-selector>
+
+        <!-- Max -->
+        <ha-selector
+          class="row-cell"
+          .hass=${this.hass}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.max")}
+          .value=${this.max}
+          .required=${false}
+          .configValue=${"max"}
+          .selector=${{
+      number: {
+        min: this.min,
+        step: 1 / 10 ** this.decimals
+      }
+    }}
+          .placeholder=${"100"}
+          .localize=${this.hass.localize}
+          @value-changed=${this._valueChanged}
+        ></ha-selector>
+
+        <!-- Decimals -->
+        <ha-selector
+          class="row-cell"
+          .hass=${this.hass}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.step")}
+          .value=${this.decimals}
+          .required=${false}
+          .configValue=${"decimals"}
+          .selector=${{
+      number: {
+        min: 0,
+        step: 1
+      }
+    }}
+          .placeholder=${"2"}
+          .localize=${this.hass.localize}
+          @value-changed=${this._valueChanged}
+        ></ha-selector>
+
+        <!-- Enable confirmation -->
+        <div class="row-full enable-digits">
+          <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.show_scale_digits")}</span>
+
+          <lc-switch
+            .checked=${!!this.value.digits}
+            @change=${this._toggleDigitsSwitch}
+          ></lc-switch>
+        </div>
+
+        <!-- Levels Configuration -->
+        ${(_c = this.value.levels) == null ? void 0 : _c.map((level, index) => this._renderLevelConfig(level, index))}
+
+        <mwc-button
+          class="row-full add-button"
+          outlined
+          @click=${this._addLevel}
+        >
+          ＋ ${this.hass.localize("component.lovelace_cards.entity_component._.editor.add_scale_color")}
+        </mwc-button>
+      </div>
+    `;
+  }
+  firstUpdated(_changed) {
+    super.firstUpdated(_changed);
+    if (!this.hass) return;
+    this._options = entitiesToSelectOption(this.hass);
+  }
+  _renderLevelConfig(level, index) {
+    var _a;
+    return html`
+      ${index === 0 ? html`
+        <div class="row-full">
+          ${this.hass.localize("component.lovelace_cards.entity_component._.editor.scale_colors_label")}
+        </div>` : null}
+
+      <ha-selector
+        class="row-cell-2x level-number"
+        .index=${index}
+        .hass=${this.hass}
+        .value=${level.level}
+        .required=${true}
+        .configValue=${"level"}
+        .selector=${{
+      number: {
+        min: this.min,
+        max: this.max,
+        step: 1 / 10 ** this.decimals,
+        mode: "slider",
+        slider_ticks: false,
+        unit_of_measurement: (_a = this.value) == null ? void 0 : _a.unit
+      }
+    }}
+        .localize=${this.hass.localize}
+        @value-changed=${this._updateLevel}
+      ></ha-selector>
+
+      <ha-selector
+        class="row-cell level-color"
+        .index=${index}
+        .hass=${this.hass}
+        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.color")}
+        .value=${level.color}
+        .required=${true}
+        .configValue=${"color"}
+        .selector=${{ ui_color: {} }}
+        .localize=${this.hass.localize}
+        @value-changed=${this._updateLevel}
+      ></ha-selector>
+    `;
+  }
+  _renderYamlEditor() {
+    return html`
+      <div class="yaml-editor">
+        <ha-yaml-editor
+          .defaultValue=${this.value}
+          autofocus
+          .hass=${this.hass}
+          @value-changed=${this._handleYAMLChanged}
+          dir="ltr"
+        ></ha-yaml-editor>
+
+        ${this._error ? html`
+          <div class="error">${this._error}</div>` : null}
+      </div>
+    `;
+  }
+  _handleYAMLChanged(event) {
+    event.stopPropagation();
+    const config = event.detail.value;
+    if (event.detail.isValid) {
+      try {
+        assert(config, GaugeConfigSchema);
+        this.value = config;
+        this._error = void 0;
+        fireEvent(this, "config-changed", { config });
+      } catch (e2) {
+        this._error = `${e2.message}`.trim();
+      }
+    } else {
+      this._error = `${event.detail.errorMsg}`.trim();
+    }
+  }
+  _toggleDigitsSwitch(event) {
+    const config = { ...this.value };
+    config.digits = !!event.detail.checked;
+    fireEvent(this, "config-changed", { config });
+  }
+  _updateLevel(event) {
+    var _a, _b, _c;
+    const index = event.target.index;
+    const configValue = event.target.configValue;
+    if (((_c = (_b = (_a = this.value) == null ? void 0 : _a.levels) == null ? void 0 : _b[index]) == null ? void 0 : _c[configValue]) === event.detail.value) return;
+    const config = { ...this.value };
+    if (!event.detail.value && configValue === "color") {
+      const levels = [];
+      for (let i2 = 0; i2 < config.levels.length; i2++) {
+        if (i2 !== index) {
+          levels.push({ ...config.levels[i2] });
+        }
+      }
+      config.levels = levels;
+    } else {
+      config.levels = config.levels.map((level) => ({ ...level }));
+      config.levels[index] = {
+        ...config.levels[index],
+        [configValue]: event.detail.value
+      };
+    }
+    fireEvent(this, "config-changed", { config });
+  }
+  _addLevel() {
+    const config = { ...this.value };
+    config.levels = (config.levels || []).map((level2) => ({ ...level2 })).sort((l0, l1) => l0.level - l1.level);
+    let level;
+    let color;
+    if (config.levels.length > 0) {
+      const multiplier = 10 ** this.decimals;
+      const onePercent = (this.max - this.min) / 100;
+      const inc = Math.round(onePercent * 10 * multiplier) / multiplier;
+      const lastLevel = config.levels[config.levels.length - 1].level;
+      level = Math.min(lastLevel + inc, this.max);
+      color = THEME_COLORS[config.levels.length];
+    } else {
+      level = this.min;
+      color = THEME_COLORS[0];
+    }
+    config.levels.push({ level, color });
+    fireEvent(this, "config-changed", { config });
+  }
+  _valueChanged(event) {
+    const configValue = event.target.configValue;
+    const value = ["min", "max", "step"].includes(configValue) ? event.detail.value : event.target.value;
+    const config = {
+      ...this.value,
+      [configValue]: value
+    };
+    fireEvent(this, "config-changed", { config });
+  }
+};
+GaugeEditor.styles = styles$c;
 __decorateClass$d([
   n2({ attribute: false })
-], FooterButtonEditor2.prototype, "hass", 2);
+], GaugeEditor.prototype, "hass", 2);
 __decorateClass$d([
   n2({ attribute: false })
-], FooterButtonEditor2.prototype, "value", 2);
+], GaugeEditor.prototype, "value", 2);
 __decorateClass$d([
   e("ha-yaml-editor")
-], FooterButtonEditor2.prototype, "_yamlEditor", 2);
+], GaugeEditor.prototype, "_yamlEditor", 2);
 __decorateClass$d([
   r()
-], FooterButtonEditor2.prototype, "_guiSupported", 2);
+], GaugeEditor.prototype, "_guiSupported", 2);
 __decorateClass$d([
   r()
-], FooterButtonEditor2.prototype, "_error", 2);
+], GaugeEditor.prototype, "_error", 2);
 __decorateClass$d([
   r()
-], FooterButtonEditor2.prototype, "_guiMode", 2);
+], GaugeEditor.prototype, "_guiMode", 2);
 __decorateClass$d([
   r()
-], FooterButtonEditor2.prototype, "_options", 2);
-FooterButtonEditor2 = __decorateClass$d([
-  t$1("lc-entity-editor")
-], FooterButtonEditor2);
+], GaugeEditor.prototype, "_options", 2);
+GaugeEditor = __decorateClass$d([
+  t$1("lc-gauge-editor")
+], GaugeEditor);
 const styles$b = css`.header {
   display: flex;
   justify-content: space-between;
@@ -2741,6 +3368,9 @@ let HuiSubElementEditor = class extends LitElement {
     let title;
     const translateKey = this.config.type.replace(/-/g, "_");
     switch (this.config.type) {
+      case "gauge":
+        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.gauge_config_caption`);
+        break;
       case "footer-button":
         title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
         break;
@@ -2759,16 +3389,16 @@ let HuiSubElementEditor = class extends LitElement {
   _renderEditor() {
     const type2 = this.config.type;
     switch (type2) {
-      case "row":
+      case "gauge":
         return html`
-          <hui-row-element-editor
+          <lc-gauge-editor
             class="editor"
             .hass=${this.hass}
             .value=${this.config.elementConfig}
             .context=${this.config.context}
             @config-changed=${this._handleConfigChanged}
             @GUImode-changed=${this._handleGUIModeChanged}
-          ></hui-row-element-editor>
+          ></lc-gauge-editor>
         `;
       case "entity":
         return html`
@@ -3873,7 +4503,6 @@ const styles$5 = css`:host {
   fill: var(--primary-text-color);
 }
 :host .lc-gauge .value {
-  font-size: 14px;
   font-weight: 400;
   font-family: Roboto, Noto, sans-serif;
   fill: var(--primary-text-color);
@@ -3933,30 +4562,21 @@ function round(value, decimals = 2) {
   const mul = 10 ** decimals;
   return Math.round(value * mul) / mul;
 }
-function normalize(value, min, max, step = 0.1) {
-  var _a;
-  min = isNaN(min) ? 0 : min;
+function normalize(value, min2, max, decimals = 2) {
+  min2 = isNaN(min2) ? 0 : min2;
   max = isNaN(max) ? 100 : max;
-  if (min > max) {
+  if (min2 > max) {
     throw new Error("MIN_MAX");
   }
+  const multiplier = 10 ** decimals;
   value = value == null || isNaN(value) ? 0 : value;
-  value = Math.max(value, min);
+  value = Math.max(value, min2);
   value = Math.min(value, max);
-  const decimals = ((_a = `${step}`.split(".")[1]) == null ? void 0 : _a.length) || 0;
-  const remains = value % step;
-  const half = step / 2;
-  const rounded = value - remains;
-  const nextTick = rounded + step;
-  if (half < remains && nextTick <= max) {
-    value = parseFloat(nextTick.toFixed(decimals));
-  } else {
-    value = parseFloat(rounded.toFixed(decimals));
-  }
-  return [value, min, max];
+  value = Math.round(value * multiplier) / multiplier;
+  return [value, min2, max];
 }
-function getAngle(value, min, max) {
-  const percent = (value - min) / (max - min) * 100;
+function getAngle(value, min2, max) {
+  const percent = (value - min2) / (max - min2) * 100;
   return percent * 180 / 100;
 }
 function toRadians(deg) {
@@ -3964,28 +4584,16 @@ function toRadians(deg) {
 }
 let Gauge = class extends LitElement {
   constructor() {
-    super(...arguments);
+    super();
     this.label = "";
     this.unit = "";
     this.min = 0;
     this.max = 100;
-    this.step = 0.1;
+    this.decimals = 2;
     this.value = 0;
     this.disabled = false;
     this.digits = false;
     this._angleDeg = 0;
-  }
-  set levels(_levels) {
-    if (!_levels || !Array.isArray(_levels) || _levels.length === 0) {
-      this._levels = void 0;
-    } else {
-      _levels = _levels.map((item) => ({ level: (item == null ? void 0 : item.level) ?? 0, color: formatColors(item == null ? void 0 : item.color) }));
-      _levels.sort((a2, b2) => a2.level - b2.level);
-      if (_levels[0].level !== this.min) {
-        _levels = [{ level: this.min, color: "var(--info-color)" }, ..._levels];
-      }
-      this._levels = _levels;
-    }
   }
   connectedCallback() {
     super.connectedCallback();
@@ -4004,6 +4612,22 @@ let Gauge = class extends LitElement {
     (_a = this._svg) == null ? void 0 : _a.remove();
     this._svg = void 0;
     this._dial = void 0;
+  }
+  willUpdate(_changed) {
+    super.willUpdate(_changed);
+    if (_changed.has("value") || _changed.has("min") || _changed.has("max") || _changed.has("decimals")) {
+      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.decimals);
+    }
+    if (_changed.has("levels")) {
+      if (!this.levels || !Array.isArray(this.levels) || this.levels.length === 0) {
+        this._normalizedLevels = void 0;
+      } else {
+        this._normalizedLevels = this.levels.map((item) => ({ level: (item == null ? void 0 : item.level) ?? 0, color: (item == null ? void 0 : item.color) || "disabled" })).sort((a2, b2) => a2.level - b2.level);
+        if (this._normalizedLevels[0].level !== this.min) {
+          this._normalizedLevels = [{ level: this.min, color: "disabled" }, ...this._normalizedLevels];
+        }
+      }
+    }
   }
   updated(_changed) {
     var _a, _b, _c;
@@ -4026,10 +4650,12 @@ let Gauge = class extends LitElement {
       cancelAnimationFrame(this._rafID);
       this._rafID = null;
     }
-    const [value, min, max] = normalize(this.value, this.min, this.max, this.step);
-    this._text.innerHTML = `${value}${this.unit || ""}`;
+    const fullValue = `${this.value}${this.unit || ""}`;
+    const fontSize = fullValue.length < 6 ? 14 : fullValue.length < 8 ? 13 : 12;
+    this._text.style.fontSize = `${fontSize}px`;
+    this._text.innerHTML = fullValue;
     const oldAngle = this._angleDeg;
-    const newAngle = getAngle(value, min, max);
+    const newAngle = getAngle(this.value, this.min, this.max);
     const diffAngle = newAngle - oldAngle;
     const duration = 500;
     const timingFunction = elasticOut.amplitude(0.5).period(0.4);
@@ -4123,11 +4749,11 @@ let Gauge = class extends LitElement {
       text.innerHTML = value.toString();
       this._scale.append(text);
     };
-    if (this._levels) {
-      for (let i2 = 0; i2 < this._levels.length; i2++) {
-        const level = this._levels[i2].level;
-        const nextLevel = ((_a = this._levels[i2 + 1]) == null ? void 0 : _a.level) ?? this.max;
-        const color = this._levels[i2].color;
+    if (this._normalizedLevels) {
+      for (let i2 = 0; i2 < this._normalizedLevels.length; i2++) {
+        const level = this._normalizedLevels[i2].level;
+        const nextLevel = ((_a = this._normalizedLevels[i2 + 1]) == null ? void 0 : _a.level) ?? this.max;
+        const color = formatColors(this._normalizedLevels[i2].color);
         const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
         const beginAngle = toRadians(beginAngleDeg);
         const beginAngleCos = Math.cos(beginAngle);
@@ -4150,7 +4776,7 @@ let Gauge = class extends LitElement {
     } else {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", `M -${rExt} 0 A ${rExt} ${rExt} 0 0 1 ${rExt} 0 L ${rInt} 0 A ${rInt} ${rInt} 0 1 0 -${rInt} 0 z`);
-      path.setAttribute("fill", "var(--info-color)");
+      path.setAttribute("fill", "var(--primary-color)");
       this._dial.append(path);
       renderNumber(this.min ?? 0, 0, "start");
     }
@@ -4180,7 +4806,7 @@ let Gauge = class extends LitElement {
     filter.append(feCompositeOut);
     const feFlood = document.createElementNS("http://www.w3.org/2000/svg", "feFlood");
     feFlood.setAttribute("flood-color", "rgb(0, 0, 0)");
-    feFlood.setAttribute("flood-opacity", ".35");
+    feFlood.setAttribute("flood-opacity", ".9");
     filter.append(feFlood);
     const feCompositeIn = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
     feCompositeIn.setAttribute("operator", "in");
@@ -4230,7 +4856,7 @@ __decorateClass$5([
 ], Gauge.prototype, "max", 2);
 __decorateClass$5([
   n2({ type: Number, reflect: true })
-], Gauge.prototype, "step", 2);
+], Gauge.prototype, "decimals", 2);
 __decorateClass$5([
   n2({ type: Number })
 ], Gauge.prototype, "value", 2);
@@ -4241,11 +4867,19 @@ __decorateClass$5([
   n2({ attribute: "digits", type: Boolean, reflect: true })
 ], Gauge.prototype, "digits", 2);
 __decorateClass$5([
-  n2({ attribute: false })
-], Gauge.prototype, "levels", 1);
-__decorateClass$5([
-  r()
-], Gauge.prototype, "_levels", 2);
+  n2({
+    attribute: false,
+    hasChanged(newVal, oldVal) {
+      if (!newVal && !oldVal) return false;
+      if (!newVal && oldVal || newVal && !oldVal) return true;
+      if (Array.isArray(newVal) && Array.isArray(oldVal)) {
+        if (newVal.length !== oldVal.length) return true;
+        return newVal.some((item, index) => item.level !== oldVal[index].level || item.color !== oldVal[index].color);
+      }
+      return true;
+    }
+  })
+], Gauge.prototype, "levels", 2);
 Gauge = __decorateClass$5([
   t$1("lc-gauge")
 ], Gauge);
@@ -4597,21 +5231,6 @@ const BaseCardConfigSchema = object({
   grid_options: any(),
   visibility: any()
 });
-const GaugeLevelConfigSchema = object({
-  level: number(),
-  color: string()
-});
-const GaugeConfigSchema = object({
-  entity: string(),
-  attribute: optional(string()),
-  name: optional(string()),
-  unit: optional(string()),
-  min: optional(number()),
-  max: optional(number()),
-  step: optional(number()),
-  digits: optional(boolean()),
-  levels: optional(array(GaugeLevelConfigSchema))
-});
 const ServiceCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
@@ -4644,8 +5263,8 @@ let UniversalCardConfig = class extends LitElement {
   setConfig(config) {
     assert(config, ServiceCardConfigSchema);
     this._config = config;
-    this._configGauges = config.gauges ? processEntities(config.gauges, { domains: ["sensor"] }) : [];
-    this._configEntities = config.entities ? processEntities(config.entities) : [];
+    this._configGauges = processGauges(config.gauges);
+    this._configEntities = processEntities(config.entities);
     this._configButtons = config.buttons;
   }
   async firstUpdated(_changedProperties) {
@@ -4676,8 +5295,8 @@ let UniversalCardConfig = class extends LitElement {
           .configValue=${"title"}
           @input=${this._valueChanged}
         ></ha-textfield>
-        
-         <ha-icon-picker
+
+        <ha-icon-picker
           .hass=${this.hass}
           .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.icon")}
           .value=${this._config.icon || ""}
@@ -4689,10 +5308,19 @@ let UniversalCardConfig = class extends LitElement {
         >
         </ha-icon-picker>
       </div>
-      
+
+      <lc-gauges-editor
+        .hass=${this.hass}
+        .gauges=${this._configGauges}
+        .configValue=${"gauges"}
+        @gauges-changed=${this._valueChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></lc-gauges-editor>
+
       <lc-entities-editor
         .hass=${this.hass}
         .entities=${this._configEntities}
+        .configValue=${"entities"}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></lc-entities-editor>
@@ -4700,7 +5328,8 @@ let UniversalCardConfig = class extends LitElement {
       <lc-footer-buttons-editor
         .hass=${this.hass}
         .buttons=${this._configButtons}
-        @buttons-changed=${this._handleButtonsChanged}
+        .configValue=${"buttons"}
+        @buttons-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></lc-footer-buttons-editor>
     `;
@@ -4708,43 +5337,23 @@ let UniversalCardConfig = class extends LitElement {
   _valueChanged(ev) {
     var _a;
     ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
+    if (!this._config || !this.hass) return;
     const target = ev.target;
     const configValue = target.configValue || ((_a = this._subElementEditorConfig) == null ? void 0 : _a.type);
-    const value = target.checked !== void 0 ? target.checked : target.value || ev.detail.config || ev.detail.value;
+    const value = target.checked !== void 0 ? target.checked : target.value || (configValue && configValue in ev.detail ? ev.detail[configValue] : ev.detail.value);
+    if (!configValue) {
+      throw new Error("No config field provided");
+    }
     if (configValue === "title" && target.value === this._config.title || configValue === "icon" && target.value === this._config.icon) {
       return;
     }
-    if (configValue === "row" || configValue === "base-entity" || ev.detail && ev.detail.entities) {
-      const newConfigEntities = ev.detail.entities || this._configEntities.concat();
-      if (configValue === "row" || configValue === "base-entity") {
-        if (!value) {
-          newConfigEntities.splice(this._subElementEditorConfig.index, 1);
-          this._goBack();
-        } else {
-          newConfigEntities[this._subElementEditorConfig.index] = value;
-        }
-        this._subElementEditorConfig.elementConfig = value;
-      }
-      this._config = {
-        ...this._config,
-        entities: newConfigEntities
-      };
-      this._configEntities = processEntities(this._config.entities);
-    } else if (configValue) {
-      if (value === "") {
-        this._config = { ...this._config };
-        delete this._config[configValue];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value
-        };
-      }
+    const config = { ...this._config };
+    if (!value) {
+      Reflect.deleteProperty(config, configValue);
+    } else {
+      config[configValue] = value;
     }
-    fireEvent(this, "config-changed", { config: this._config });
+    fireEvent(this, "config-changed", { config });
   }
   _handleSubElementChanged(ev) {
     var _a;
@@ -4752,48 +5361,45 @@ let UniversalCardConfig = class extends LitElement {
     if (!this._config || !this.hass) return;
     const configValue = (_a = this._subElementEditorConfig) == null ? void 0 : _a.type;
     const value = ev.detail.config;
-    if (configValue === "footer-button") {
-      const index = this._subElementEditorConfig.index;
-      const buttons = [...this._configButtons || []];
-      if (value) {
-        buttons[index] = value;
-      } else {
-        buttons.splice(index, 1);
-        this._goBack();
+    switch (configValue) {
+      case "footer-button": {
+        const index = this._subElementEditorConfig.index;
+        const buttons = [...this._configButtons || []];
+        if (value) {
+          buttons[index] = value;
+        } else {
+          buttons.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config, buttons };
+        this._configButtons = buttons;
+        break;
       }
-      this._config = { ...this._config, buttons };
-      this._configButtons = buttons;
-    } else if (configValue === "entity") {
-      const index = this._subElementEditorConfig.index;
-      const entities = [...this._configEntities || []];
-      if (value) {
-        entities[index] = value;
-      } else {
-        entities.splice(index, 1);
-        this._goBack();
+      case "entity": {
+        const index = this._subElementEditorConfig.index;
+        const entities = [...this._configEntities || []];
+        if (value) {
+          entities[index] = value;
+        } else {
+          entities.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config, entities };
+        this._configEntities = entities;
+        break;
       }
-      this._config = { ...this._config, entities };
-      this._configEntities = entities;
-    } else if (configValue === "row") {
-      const index = this._subElementEditorConfig.index;
-      const entities = this._configEntities.concat();
-      if (value) {
-        entities[index] = value;
-      } else {
-        entities.splice(index, 1);
-        this._goBack();
-      }
-      this._config = { ...this._config, entities };
-      this._configEntities = processEntities(this._config.entities);
-    } else if (configValue) {
-      if (value === "") {
-        this._config = { ...this._config };
-        delete this._config[configValue];
-      } else {
-        this._config = {
-          ...this._config,
-          [configValue]: value
-        };
+      case "gauge": {
+        const index = this._subElementEditorConfig.index;
+        const gauges = [...this._configGauges || []];
+        if (value) {
+          gauges[index] = value;
+        } else {
+          gauges.splice(index, 1);
+          this._goBack();
+        }
+        this._config = { ...this._config, gauges };
+        this._configGauges = gauges;
+        break;
       }
     }
     this._subElementEditorConfig = {
@@ -4804,24 +5410,6 @@ let UniversalCardConfig = class extends LitElement {
   }
   _editDetailElement(ev) {
     this._subElementEditorConfig = ev.detail.subElementConfig;
-  }
-  _handleButtonsChanged(ev) {
-    const buttons = ev.detail.buttons;
-    this._configButtons = buttons;
-    this._config = {
-      ...this._config,
-      buttons
-    };
-    fireEvent(this, "config-changed", { config: this._config });
-  }
-  _handleEntitiesChanged(ev) {
-    const entities = ev.detail.entities;
-    this._configEntities = entities;
-    this._config = {
-      ...this._config,
-      entities
-    };
-    fireEvent(this, "config-changed", { config: this._config });
   }
   _goBack() {
     this._subElementEditorConfig = void 0;
@@ -4958,8 +5546,8 @@ let UniversalCard = class extends LitElement {
   }
   async setConfig(config) {
     this._config = config;
-    this._configGauges = processEntities(config.gauges, { validateMode: "skip" });
-    this._configEntities = processEntities(config.entities, { validateMode: "skip" });
+    this._configGauges = processGauges(config.gauges);
+    this._configEntities = processEntities(config.entities);
     this._configButtons = config.buttons;
     if (!this._createRowElement) {
       const utils = await mainWindow.loadCardHelpers();
@@ -5023,7 +5611,7 @@ let UniversalCard = class extends LitElement {
           .step="${_entity.step || step}"
           .digits="${_entity.digits}"
           .levels="${_entity.levels}"
-          .value="${value || 0}"
+          .value=${value || 0}
           .disabled=${value == null}
         ></lc-gauge>
       </div>`;

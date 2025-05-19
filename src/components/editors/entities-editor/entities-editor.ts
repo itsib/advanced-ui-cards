@@ -1,10 +1,10 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IEntityConfigSchema } from 'types';
-import styles from './entities-editor.scss';
-import { ISelectOption } from '../../form-controls';
+import { ISelectOption } from '../../select/select';
 import { fireEvent } from '../../../utils/fire-event';
 import { entitiesToSelectOption } from '../../../utils/object-to-select-option';
+import styles from './entities-editor.scss';
 
 declare global {
   interface HTMLElementTagNameMap {
