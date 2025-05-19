@@ -66,7 +66,7 @@ class FooterButtons extends LitElement {
     }
 
     if (this._statuses[index] === 'loading') {
-       this._setButtonStatus(index, undefined);
+       return;
     }
 
     this._setButtonStatus(index, 'loading');
