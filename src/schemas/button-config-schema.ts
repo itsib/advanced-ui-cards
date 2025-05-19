@@ -1,4 +1,4 @@
-import { object, optional, string } from 'superstruct';
+import { boolean, object, optional, string } from 'superstruct';
 import { ConfirmationConfigSchema } from './confirmation-config-schema';
 import { TargetConfigSchema } from './target-config-schema';
 

@@ -1,7 +1,7 @@
 import { forwardHaptic } from './haptic';
 import { fireEvent } from './fire-event';
 import { ActionConfig, ConfirmationRestrictionConfig, HomeAssistant } from 'types';
-import { domainToName } from './licalization';
+import { domainToName } from './localization';
 import { mainWindow } from './get-main-window';
 import { toggleEntity } from './entities-utils';
 import { showToast } from './show-toast';

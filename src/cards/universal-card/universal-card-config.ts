@@ -93,6 +93,16 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
         </ha-icon-picker>
       </div>
 
+      <!-- Enable animation -->
+      <div class="row-full switch-selector">
+        <span>${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.animation_switch_description')}</span>
+
+        <lc-switch
+          .checked=${!!this._config!.animation}
+          @change=${this._toggleAnimation}
+        ></lc-switch>
+      </div>
+
       <lc-gauges-editor
         .hass=${this.hass}
         .gauges=${this._configGauges}
@@ -117,6 +127,13 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
         @edit-detail-element=${this._editDetailElement}
       ></lc-footer-buttons-editor>
     `;
+  }
+
+  private _toggleAnimation(event: CustomEvent) {
+    const config = { ...this._config! };
+    config.animation = !!event.detail.checked;
+
+    fireEvent(this as HTMLElement, 'config-changed', { config });
   }
 
   private _valueChanged(ev: CustomEvent): void {

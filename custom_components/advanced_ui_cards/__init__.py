@@ -1,4 +1,4 @@
-"""The UI Lovelace integration."""
+"""The Advanced UI Cards integration."""
 from __future__ import annotations
 
 import logging

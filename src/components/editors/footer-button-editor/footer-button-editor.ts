@@ -177,7 +177,7 @@ class FooterButtonEditor extends LitElement {
         <!-- Tooltip -->
         <ha-textfield
           class="input"
-          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.button_tooltip')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.button_tooltip')}
           .value=${this.value?.tooltip || ''}
           .configValue=${'tooltip'}
           @input=${this._valueChanged}
@@ -199,8 +199,8 @@ class FooterButtonEditor extends LitElement {
         </ha-icon-picker>
 
         <!-- Enable confirmation -->
-        <div class="row-full enable-confirm">
-          <span>${this.hass.localize('component.advanced_ui_cards.entity_component._.show_confirmation_dialog')}</span>
+        <div class="row-full switch-selector">
+          <span>${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.show_confirmation_dialog')}</span>
 
           <lc-switch
             .checked=${!!this.value!.confirmation}
@@ -211,7 +211,7 @@ class FooterButtonEditor extends LitElement {
         <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
-          .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.confirm_text')}"
+          .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.confirm_text')}"
           .value=${this.confirmationText}
           .configValue=${'confirmation'}
           .disabled=${!this.value?.confirmation}
@@ -224,7 +224,7 @@ class FooterButtonEditor extends LitElement {
         <ha-selector
           class="row-full"
           .hass=${this.hass}
-          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.button_color')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.button_color')}
           .value=${this.value.color}
           .configValue=${'color'}
           .selector=${{ ui_color: {} }}
@@ -252,7 +252,7 @@ class FooterButtonEditor extends LitElement {
     return html`
       <div class="row-full">
         <ha-selector
-          .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.choose_action_target')}
+          .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.choose_action_target')}
           .hass=${this.hass}
           .selector=${{ target: { ...service.target } }}
           @value-changed=${this._valueChanged}

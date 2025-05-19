@@ -1,5 +1,6 @@
 :host {
   --gauge-needle-position: 0deg;
+  --gauge-needle-color: var(--primary-text-color);
   display: block;
 
   .lc-gauge {
@@ -23,7 +24,7 @@
       transform: rotate(var(--gauge-needle-position));
 
       path {
-        fill: var(--primary-text-color);
+        fill: var(--gauge-needle-color);
       }
     }
 

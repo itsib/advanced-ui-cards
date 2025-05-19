@@ -185,15 +185,26 @@ class UniversalCard extends LitElement implements LovelaceCard {
   }
 
   private _renderButtons(): TemplateResult {
-    if (!this._configButtons) {
+    if (!this._configButtons || !this._configButtons.length) {
       return html``;
     }
 
     return html`
-      <lc-footer-buttons
-        .hass=${this.hass}
-        .buttons=${this._configButtons}
-      ></lc-footer-buttons>
+      <div class="card-footer">
+        <hr class="divider" role="separator" />
+
+        <div class="buttons">
+          ${this._configButtons.map(config => html`
+            <div class="btn-wrap">
+              <lc-call-action-button
+                .hass=${this.hass}
+                .config=${config}
+                .animation=${this._config?.animation}
+              ></lc-call-action-button>
+            </div>
+          `)}
+        </div>
+      </div>
     `;
   }
 }

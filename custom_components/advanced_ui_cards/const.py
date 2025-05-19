@@ -2,7 +2,7 @@
 from typing import Final
 
 DOMAIN: Final = "advanced_ui_cards"
-NAME: Final = "UI Lovelace"
+NAME: Final = "Advanced UI Cards"
 
 BASE_URL = "/lovelace_cards_files"
 

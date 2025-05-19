@@ -1737,7 +1737,7 @@ const styles$g = css`.container {
   color: var(--secondary-text-color);
   line-height: 1.2;
 }
-.container .enable-confirm {
+.container .switch-selector {
   margin: 8px 0;
   display: flex;
   align-items: center;
@@ -1877,7 +1877,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Tooltip -->
         <ha-textfield
           class="input"
-          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.button_tooltip")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.button_tooltip")}
           .value=${((_c = this.value) == null ? void 0 : _c.tooltip) || ""}
           .configValue=${"tooltip"}
           @input=${this._valueChanged}
@@ -1899,8 +1899,8 @@ let FooterButtonEditor = class extends LitElement {
         </ha-icon-picker>
 
         <!-- Enable confirmation -->
-        <div class="row-full enable-confirm">
-          <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.show_confirmation_dialog")}</span>
+        <div class="row-full switch-selector">
+          <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.show_confirmation_dialog")}</span>
 
           <lc-switch
             .checked=${!!this.value.confirmation}
@@ -1911,7 +1911,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
-          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.confirm_text")}"
+          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.confirm_text")}"
           .value=${this.confirmationText}
           .configValue=${"confirmation"}
           .disabled=${!((_d = this.value) == null ? void 0 : _d.confirmation)}
@@ -1924,7 +1924,7 @@ let FooterButtonEditor = class extends LitElement {
         <ha-selector
           class="row-full"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.button_color")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.button_color")}
           .value=${this.value.color}
           .configValue=${"color"}
           .selector=${{ ui_color: {} }}
@@ -1948,7 +1948,7 @@ let FooterButtonEditor = class extends LitElement {
     return html`
       <div class="row-full">
         <ha-selector
-          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.choose_action_target")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.choose_action_target")}
           .hass=${this.hass}
           .selector=${{ target: { ...service.target } }}
           @value-changed=${this._valueChanged}
@@ -4112,28 +4112,7 @@ function isShowConfirmation(confirmation, userId) {
   if (confirmation === true) return true;
   return !confirmation.exemptions || !confirmation.exemptions.some((e2) => e2.user === userId);
 }
-const style = css`.footer {
-  margin-top: 0;
-}
-.footer .divider {
-  margin: 0;
-  border: none;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--divider-color);
-}
-.footer .buttons {
-  width: auto;
-  padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-}
-.footer .buttons .btn-wrap {
-  padding: 0 6px;
-}`;
+const style = css``;
 var __defProp$7 = Object.defineProperty;
 var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
 var __decorateClass$7 = (decorators, target, key, kind) => {
@@ -4144,84 +4123,73 @@ var __decorateClass$7 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$7(target, key, result);
   return result;
 };
-let FooterButtons = class extends LitElement {
+let CallActionButton = class extends LitElement {
   constructor() {
     super(...arguments);
-    this._statuses = [];
-    this._animationTimer = [];
+    this.animation = false;
   }
   render() {
-    var _a;
-    if (!((_a = this.buttons) == null ? void 0 : _a.length)) {
-      return html``;
-    }
+    if (!this.hass || !this.config) return null;
     return html`
-      <div class="footer">
-        <hr class="divider" role="separator" />
-
-        <div class="buttons">
-          ${this.buttons.map((config, index) => this._renderButton(index, config))}
-        </div>
-      </div>
-    `;
-  }
-  _renderButton(index, config) {
-    if (!config) {
-      return html``;
-    }
-    return html`
-      <div class="btn-wrap">
-        <lc-button-circle
-          data-index=${index}
-          color=${config.color}
-          icon=${config.icon}
-          tooltip=${config.tooltip}
-          .status=${this._statuses[index]}
-          @click=${this._onClick}
-        ></lc-button-circle>
-      </div>
+      <lc-button-circle
+        color=${this.config.color}
+        icon=${this.config.icon}
+        tooltip=${this.config.tooltip}
+        .status=${this._status}
+        @click=${this.animation ? this._onClickAnimated : this._onClick}
+      ></lc-button-circle>
     `;
   }
   async _onClick(event) {
     event.stopPropagation();
-    const element = event.target;
-    const index = parseInt(element.dataset.index);
-    if (this._animationTimer[index]) {
-      clearTimeout(this._animationTimer[index]);
-      this._animationTimer[index] = void 0;
-    }
-    if (this._statuses[index] === "loading") {
+    if (await this._isConfirmed()) {
       return;
     }
-    this._setButtonStatus(index, "loading");
-    const config = this.buttons[index];
-    if (await this._isConfirmed(config)) {
-      this._setButtonStatus(index, void 0);
+    const [domain, service] = this.config.action.split(".", 2);
+    await this.hass.callService(domain, service, this.config.data, this.config.target);
+  }
+  async _onClickAnimated(event) {
+    event.stopPropagation();
+    if (this._status === "loading") return;
+    if (this._timeoutId) {
+      clearTimeout(this._timeoutId);
+      this._timeoutId = void 0;
+    }
+    this._status = "loading";
+    if (await this._isConfirmed()) {
+      this._status = void 0;
       return;
     }
-    const [domain, service] = config.action.split(".", 2);
+    const [domain, service] = this.config.action.split(".", 2);
     const begin = Date.now();
+    const handleCallResult = (status) => {
+      forwardHaptic("light");
+      this._status = status;
+      this._timeoutId = setTimeout(() => {
+        this._status = void 0;
+      }, 2500);
+    };
     try {
-      await this.hass.callService(domain, service, config.data, config.target);
+      await this.hass.callService(domain, service, this.config.data, this.config.target);
       const delay = Date.now() - begin;
       if (delay > 600) {
-        this._setCallResult(index, "success")();
+        handleCallResult("success");
       } else {
-        this._animationTimer[index] = setTimeout(this._setCallResult(index, "success"), 600 - delay);
+        this._timeoutId = setTimeout(() => handleCallResult("success"), 600 - delay);
       }
     } catch {
-      this._setCallResult(index, "error")();
+      handleCallResult("error");
     }
   }
-  async _isConfirmed(config) {
+  async _isConfirmed() {
     var _a;
-    if (!isShowConfirmation(config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
+    if (!isShowConfirmation(this.config.confirmation, (_a = this.hass.user) == null ? void 0 : _a.id)) return false;
     forwardHaptic("warning");
     let text = "";
-    if (typeof config.confirmation !== "boolean" && config.confirmation.text) {
-      text = config.confirmation.text;
+    if (typeof this.config.confirmation !== "boolean" && this.config.confirmation.text) {
+      text = this.config.confirmation.text;
     } else {
-      const [domain, service] = config.action.split(".", 2);
+      const [domain, service] = this.config.action.split(".", 2);
       const serviceDomains = this.hass.services;
       let serviceName = "";
       if (domain in serviceDomains && service in serviceDomains[domain]) {
@@ -4232,39 +4200,29 @@ let FooterButtons = class extends LitElement {
         serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
       }
       text = this.hass.localize("ui.panel.lovelace.cards.actions.action_confirmation", {
-        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${config.action}`) || config.action
+        action: serviceName || this.hass.localize(`ui.panel.lovelace.editor.action-editor.actions.${this.config.action}`) || this.config.action
       });
     }
     const utils = await mainWindow.loadCardHelpers();
-    return !await utils.showConfirmationDialog(this, { text, title: config.tooltip });
-  }
-  _setButtonStatus(index, status) {
-    this._statuses[index] = status;
-    this._statuses = [...this._statuses];
-  }
-  _setCallResult(index, status) {
-    return () => {
-      forwardHaptic("light");
-      this._setButtonStatus(index, status);
-      this._animationTimer[index] = setTimeout(() => {
-        this._setButtonStatus(index, void 0);
-      }, 2500);
-    };
+    return !await utils.showConfirmationDialog(this, { text, title: this.config.tooltip });
   }
 };
-FooterButtons.styles = style;
+CallActionButton.styles = style;
 __decorateClass$7([
   n2({ attribute: false })
-], FooterButtons.prototype, "hass", 2);
+], CallActionButton.prototype, "hass", 2);
 __decorateClass$7([
   n2({ attribute: false })
-], FooterButtons.prototype, "buttons", 2);
+], CallActionButton.prototype, "config", 2);
+__decorateClass$7([
+  n2()
+], CallActionButton.prototype, "animation", 2);
 __decorateClass$7([
   r()
-], FooterButtons.prototype, "_statuses", 2);
-FooterButtons = __decorateClass$7([
-  t$1("lc-footer-buttons")
-], FooterButtons);
+], CallActionButton.prototype, "_status", 2);
+CallActionButton = __decorateClass$7([
+  t$1("lc-call-action-button")
+], CallActionButton);
 const styles$6 = css`:host {
   --lc-popover-y: 0px;
   --lc-popover-x: 0px;
@@ -4531,6 +4489,7 @@ __decorateClass$6([
 customElements.define("lc-popover", Popover, { extends: "div" });
 const styles$5 = css`:host {
   --gauge-needle-position: 0deg;
+  --gauge-needle-color: var(--primary-text-color);
   display: block;
 }
 :host .lc-gauge {
@@ -4552,7 +4511,7 @@ const styles$5 = css`:host {
   transform: rotate(var(--gauge-needle-position));
 }
 :host .lc-gauge .pointer path {
-  fill: var(--primary-text-color);
+  fill: var(--gauge-needle-color);
 }
 :host .lc-gauge .value {
   font-weight: 400;
@@ -5277,7 +5236,7 @@ const ServiceCardConfigSchema = assign(
   object({
     title: optional(union([string(), boolean()])),
     icon: optional(string()),
-    theme: optional(string()),
+    animation: optional(boolean()),
     gauges: optional(array(GaugeConfigSchema)),
     entities: optional(array(EntityConfigSchema)),
     buttons: optional(array(ButtonConfigSchema))
@@ -5289,6 +5248,13 @@ const styles$1 = css`.title-icon-fields {
 }
 .title-icon-fields > * {
   width: 50%;
+}
+
+.switch-selector {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }`;
 var __defProp$1 = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
@@ -5350,6 +5316,16 @@ let UniversalCardConfig = class extends LitElement {
         </ha-icon-picker>
       </div>
 
+      <!-- Enable animation -->
+      <div class="row-full switch-selector">
+        <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.animation_switch_description")}</span>
+
+        <lc-switch
+          .checked=${!!this._config.animation}
+          @change=${this._toggleAnimation}
+        ></lc-switch>
+      </div>
+
       <lc-gauges-editor
         .hass=${this.hass}
         .gauges=${this._configGauges}
@@ -5374,6 +5350,11 @@ let UniversalCardConfig = class extends LitElement {
         @edit-detail-element=${this._editDetailElement}
       ></lc-footer-buttons-editor>
     `;
+  }
+  _toggleAnimation(event) {
+    const config = { ...this._config };
+    config.animation = !!event.detail.checked;
+    fireEvent(this, "config-changed", { config });
   }
   _valueChanged(ev) {
     var _a;
@@ -5560,6 +5541,29 @@ const styles = css`ha-card {
 }
 .card-entities:last-child {
   margin-bottom: 0;
+}
+
+.card-footer {
+  margin-top: 0;
+}
+.card-footer .divider {
+  margin: 0;
+  border: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--divider-color);
+}
+.card-footer .buttons {
+  width: auto;
+  padding: var(--padding-top, 10px) 12px var(--padding-bottom, 10px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.card-footer .buttons .btn-wrap {
+  padding: 0 6px;
 }`;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -5693,14 +5697,28 @@ let UniversalCard = class extends LitElement {
       <div>${element}</div>`;
   }
   _renderButtons() {
-    if (!this._configButtons) {
+    if (!this._configButtons || !this._configButtons.length) {
       return html``;
     }
     return html`
-      <lc-footer-buttons
-        .hass=${this.hass}
-        .buttons=${this._configButtons}
-      ></lc-footer-buttons>
+      <div class="card-footer">
+        <hr class="divider" role="separator" />
+
+        <div class="buttons">
+          ${this._configButtons.map((config) => {
+      var _a;
+      return html`
+            <div class="btn-wrap">
+              <lc-call-action-button
+                .hass=${this.hass}
+                .config=${config}
+                .animation=${(_a = this._config) == null ? void 0 : _a.animation}
+              ></lc-call-action-button>
+            </div>
+          `;
+    })}
+        </div>
+      </div>
     `;
   }
 };

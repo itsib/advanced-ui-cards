@@ -1,5 +1,4 @@
 
-
 .title-icon-fields {
   display: flex;
   gap: 16px;
@@ -7,4 +6,11 @@
   & > * {
     width: 50%;
   }
+}
+
+.switch-selector {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
