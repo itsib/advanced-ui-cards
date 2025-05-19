@@ -1,5 +1,5 @@
 {
-    "name": "UI Lovelace",
+    "name": "Advanced UI Cards",
     "country": ["RU", "EN"],
     "render_readme": true,
     "homeassistant": "2025.1.0"
