@@ -1,6 +1,6 @@
 {
   "name": "advanced-ui-cards",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Custom lovelace cards for Home Assistant",
   "author": "Sergey <itsib.su@gmail.com>",
   "license": "MIT",
