@@ -6,7 +6,7 @@ import type { LitElement } from 'lit';
 import type { ActionConfig, HassServiceTarget } from './ha-actions';
 import { CustomCardHelpers } from './ha-helper';
 import { ShowToastParams } from '../utils/show-toast';
-import { IButtonConfigSchema } from '../schemas/button-config-schema';
+import { IButtonConfigSchema } from './schemas';
 
 declare global {
   /* eslint-disable no-var, no-redeclare */

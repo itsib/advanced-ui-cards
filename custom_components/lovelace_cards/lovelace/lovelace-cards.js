@@ -955,7 +955,7 @@ function findEntities(hass, maxEntities, entities, entitiesFallback, includeDoma
   }
   return entityIds;
 }
-function serviceToSelectOption(hass) {
+function getServicesSelectOptions(hass) {
   const domains = Object.keys(hass.services);
   const options = [];
   for (let i2 = 0; i2 < domains.length; i2++) {
@@ -975,7 +975,7 @@ function serviceToSelectOption(hass) {
   }
   return options;
 }
-function entitiesToSelectOption(hass) {
+function getEntitiesSelectOptions(hass) {
   const options = [];
   for (const [entityId, entity] of Object.entries(hass.entities)) {
     const stateObj = hass.states[entityId];
@@ -993,26 +993,32 @@ function entitiesToSelectOption(hass) {
   }
   return options;
 }
-function gaugesToSelectOption(hass) {
+function getGaugesSelectOptions(hass) {
   const options = [];
   for (const [entityId, entity] of Object.entries(hass.entities)) {
     const domain = computeDomain(entityId);
-    if (domain !== "counter" && domain !== "sensor" && domain !== "input_number" && domain !== "number") {
-      continue;
+    let allowed = domain === "counter" || domain === "sensor" || domain === "input_number" || domain === "number";
+    if (allowed) {
+      const state = hass.states[entityId].state;
+      allowed = !isNaN(Number(state));
     }
-    const stateObj = hass.states[entityId];
-    if (isNaN(Number(stateObj.state))) continue;
-    options.push({
-      value: entityId,
-      label: entity.name,
-      secondLabel: entityId,
-      icon: html`
-        <ha-state-icon
-          .hass=${hass}
-          .stateObj=${stateObj}
-        ></ha-state-icon>
-      `
-    });
+    if (!allowed) {
+      const attValues = Object.values(hass.states[entityId].attributes);
+      allowed = attValues.some((value) => typeof value === "number");
+    }
+    if (allowed) {
+      options.push({
+        value: entityId,
+        label: entity.name,
+        secondLabel: entityId,
+        icon: html`
+          <ha-state-icon
+            .hass=${hass}
+            .stateObj=${hass.states[entityId]}
+          ></ha-state-icon>
+        `
+      });
+    }
   }
   return options;
 }
@@ -1065,7 +1071,7 @@ let FooterButtonsEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this.options = serviceToSelectOption(this.hass);
+    this.options = getServicesSelectOptions(this.hass);
   }
   render() {
     if (!this.hass) return html``;
@@ -1931,7 +1937,7 @@ let FooterButtonEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this._options = serviceToSelectOption(this.hass);
+    this._options = getServicesSelectOptions(this.hass);
   }
   _renderServiceTargetSelector() {
     var _a;
@@ -2160,7 +2166,7 @@ let EntitiesEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this.options = entitiesToSelectOption(this.hass);
+    this.options = getEntitiesSelectOptions(this.hass);
   }
   render() {
     if (!this.entities || !this.hass) return html``;
@@ -2516,7 +2522,7 @@ let EntityEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this._options = entitiesToSelectOption(this.hass);
+    this._options = getEntitiesSelectOptions(this.hass);
   }
   _renderEntityWidthType(_entity) {
     return html``;
@@ -2714,7 +2720,7 @@ let GaugesEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this.options = gaugesToSelectOption(this.hass);
+    this.options = getGaugesSelectOptions(this.hass);
   }
   render() {
     if (!this.hass) return html``;
@@ -2722,48 +2728,54 @@ let GaugesEditor = class extends LitElement {
       <h3>
         <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.gauges")}</span>
       </h3>
-      ${this._renderRowsConfigs()}
-      ${this._renderAddGauge()}
+      ${this._renderRows()}
+      ${this.gauges && this.gauges.length >= 2 ? null : html`
+        <lc-select
+          class="add-gauge"
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
+          .hass=${this.hass}
+          .options=${this.options}
+          @value-changed=${this._addGauge}
+        ></lc-select>
+      `}
     `;
   }
-  _renderRowsConfigs() {
+  _renderRows() {
     if (!this.gauges || !this.gauges.length) return html``;
     return html`
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="gauges">
-          ${this.gauges.map((entity, index) => this._renderRowConfig(index, entity))}
+          ${this.gauges.map((entity, index) => {
+      return html`
+              <div class="gauge-config">
+                <div class="handle">
+                  <ha-icon icon="mdi:drag" class="icon"></ha-icon>
+                </div>
+
+                ${this._renderGauge(index, entity)}
+
+                <lc-button-circle
+                  icon="mdi:close"
+                  .index=${index}
+                  .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_gauge")}
+                  class="action-button"
+                  @click=${this._removeGauge}
+                  transparent
+                ></lc-button-circle>
+
+                <lc-button-circle
+                  icon="mdi:pencil"
+                  .index=${index}
+                  .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_gauge")}
+                  class="action-button"
+                  @click=${this._editGauge}
+                  transparent
+                ></lc-button-circle>
+              </div>
+            `;
+    })}
         </div>
       </ha-sortable>
-    `;
-  }
-  _renderRowConfig(index, entity) {
-    return html`
-      <div class="gauge-config">
-        <div class="handle">
-          <ha-icon icon="mdi:drag" class="icon"></ha-icon>
-        </div>
-
-        ${this._renderGauge(index, entity)}
-
-        <lc-button-circle
-          icon="mdi:close"
-          .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_gauge")}
-          class="action-button"
-          @click=${this._removeGauge}
-          transparent
-        ></lc-button-circle>
-
-        <lc-button-circle
-          icon="mdi:pencil"
-          .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_gauge")}
-          class="action-button"
-          @click=${this._editGauge}
-          transparent
-        ></lc-button-circle>
-      </div>
-
     `;
   }
   _renderGauge(index, gauge) {
@@ -2772,7 +2784,7 @@ let GaugesEditor = class extends LitElement {
       <lc-select
         class="edit-gauge"
         .index=${index}
-        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.gauge")}
+        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
         .options=${this.options}
         .value=${gauge.entity}
         .getValue=${(value) => {
@@ -2783,24 +2795,14 @@ let GaugesEditor = class extends LitElement {
       ></lc-select>
     `;
   }
-  _renderAddGauge() {
-    if (this.gauges && this.gauges.length >= 2) return html``;
-    return html`
-      <lc-select
-        class="add-gauge"
-        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
-        .hass=${this.hass}
-        .options=${this.options}
-        @value-changed=${this._addGauge}
-      ></lc-select>
-    `;
-  }
   _addGauge(event) {
     const value = event.detail.value;
-    if (value === "") {
+    if (value === "" || !(value in this.hass.states)) {
       return;
     }
-    const gauge = { entity: value };
+    const gauge = {
+      entity: value
+    };
     event.target.value = "";
     fireEvent(this, "gauges-changed", { gauges: [...this.gauges || [], gauge] });
   }
@@ -2950,10 +2952,37 @@ const GaugeConfigSchema = object({
   unit: optional(string()),
   min: optional(number()),
   max: optional(number()),
-  decimals: optional(min(integer(), 0)),
+  precision: optional(min(integer(), 0)),
   digits: optional(boolean()),
   levels: optional(array(GaugeLevelConfigSchema))
 });
+function round(value, decimals = 2) {
+  const mul = 10 ** decimals;
+  return Math.round(value * mul) / mul;
+}
+function normalize(value, min2, max, decimals = 2) {
+  min2 = isNaN(min2) ? 0 : min2;
+  max = isNaN(max) ? 100 : max;
+  if (min2 > max) {
+    throw new Error("MIN_MAX");
+  }
+  const multiplier = 10 ** decimals;
+  value = value == null || isNaN(value) ? 0 : value;
+  value = Math.max(value, min2);
+  value = Math.min(value, max);
+  value = Math.round(value * multiplier) / multiplier;
+  return [value, min2, max];
+}
+function getAngle(value, min2, max) {
+  const percent = (value - min2) / (max - min2) * 100;
+  return percent * 180 / 100;
+}
+function toRadians(deg) {
+  return deg * Math.PI / 180;
+}
+function precisionToMinStep(decimals) {
+  return 1 / 10 ** decimals;
+}
 var __defProp$d = Object.defineProperty;
 var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
 var __decorateClass$d = (decorators, target, key, kind) => {
@@ -2978,9 +3007,9 @@ let GaugeEditor = class extends LitElement {
     var _a;
     return ((_a = this.value) == null ? void 0 : _a.max) ?? 100;
   }
-  get decimals() {
+  get precision() {
     var _a;
-    return ((_a = this.value) == null ? void 0 : _a.decimals) ?? 2;
+    return ((_a = this.value) == null ? void 0 : _a.precision) ?? 2;
   }
   get hasError() {
     return !!this._error;
@@ -3008,7 +3037,7 @@ let GaugeEditor = class extends LitElement {
     (_a = this._yamlEditor) == null ? void 0 : _a.focus();
   }
   render() {
-    var _a, _b, _c;
+    var _a, _b;
     if (!this.hass || !this.value) return html``;
     if (!this._guiMode) {
       return this._renderYamlEditor();
@@ -3020,7 +3049,7 @@ let GaugeEditor = class extends LitElement {
           class="row-full"
           .value=${this.value.entity}
           .configValue=${"entity"}
-          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.gauge")}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
           .options=${this._options}
           .getValue=${(value) => {
       var _a2;
@@ -3030,16 +3059,7 @@ let GaugeEditor = class extends LitElement {
         ></lc-select>
 
         <!-- attribute -->
-          <!--ha-selector
-          class="row-full"
-          .hass=${this.hass}
-          .value=${this.value.attribute}
-          .label=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.attribute")}
-          .required=${false}
-          .configValue=${"attribute"}
-          .selector=${{ attribute: { entity_id: this.value.entity } }}
-          @value-changed=${this._valueChanged}
-        ></ha-selector-->
+        ${this._renderAttributeSelect()}
 
         <!-- Name -->
         <ha-textfield
@@ -3072,7 +3092,7 @@ let GaugeEditor = class extends LitElement {
           .selector=${{
       number: {
         max: this.max,
-        step: 1 / 10 ** this.decimals
+        step: precisionToMinStep(this.precision)
       }
     }}
           .placeholder=${"0"}
@@ -3091,7 +3111,7 @@ let GaugeEditor = class extends LitElement {
           .selector=${{
       number: {
         min: this.min,
-        step: 1 / 10 ** this.decimals
+        step: precisionToMinStep(this.precision)
       }
     }}
           .placeholder=${"100"}
@@ -3103,10 +3123,10 @@ let GaugeEditor = class extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.step")}
-          .value=${this.decimals}
+          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.precision")}
+          .value=${this.precision}
           .required=${false}
-          .configValue=${"decimals"}
+          .configValue=${"precision"}
           .selector=${{
       number: {
         min: 0,
@@ -3129,7 +3149,7 @@ let GaugeEditor = class extends LitElement {
         </div>
 
         <!-- Levels Configuration -->
-        ${(_c = this.value.levels) == null ? void 0 : _c.map((level, index) => this._renderLevelConfig(level, index))}
+        ${(_b = this.value.levels) == null ? void 0 : _b.map((level, index) => this._renderLevelConfig(level, index))}
 
         <mwc-button
           class="row-full add-button"
@@ -3144,7 +3164,33 @@ let GaugeEditor = class extends LitElement {
   firstUpdated(_changed) {
     super.firstUpdated(_changed);
     if (!this.hass) return;
-    this._options = entitiesToSelectOption(this.hass);
+    this._options = getEntitiesSelectOptions(this.hass);
+  }
+  _renderAttributeSelect() {
+    var _a, _b;
+    if (!this.value || !this.hass) return html``;
+    const stateObj = this.hass.states[this.value.entity];
+    const attributes = Object.keys(stateObj.attributes);
+    const hideAttributes = Object.keys(stateObj.attributes).filter((attribute) => typeof stateObj.attributes[attribute] !== "number");
+    if (attributes.length === hideAttributes.length) return html``;
+    return html`
+      <ha-selector
+        class="row-full"
+        .hass=${this.hass}
+        .value=${this.value.attribute}
+        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.input_attribute_label")}
+        .helper=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.input_attribute_hint")}
+        .required=${false}
+        .configValue=${"attribute"}
+        .selector=${{
+      attribute: {
+        entity_id: this.value.entity,
+        hide_attributes: hideAttributes
+      }
+    }}
+        @value-changed=${this._valueChanged}
+      ></ha-selector>
+    `;
   }
   _renderLevelConfig(level, index) {
     var _a;
@@ -3165,7 +3211,7 @@ let GaugeEditor = class extends LitElement {
       number: {
         min: this.min,
         max: this.max,
-        step: 1 / 10 ** this.decimals,
+        step: precisionToMinStep(this.precision),
         mode: "slider",
         slider_ticks: false,
         unit_of_measurement: (_a = this.value) == null ? void 0 : _a.unit
@@ -3255,9 +3301,8 @@ let GaugeEditor = class extends LitElement {
     let level;
     let color;
     if (config.levels.length > 0) {
-      const multiplier = 10 ** this.decimals;
       const onePercent = (this.max - this.min) / 100;
-      const inc = Math.round(onePercent * 10 * multiplier) / multiplier;
+      const inc = round(onePercent * 10, this.precision);
       const lastLevel = config.levels[config.levels.length - 1].level;
       level = Math.min(lastLevel + inc, this.max);
       color = THEME_COLORS[config.levels.length];
@@ -3270,7 +3315,7 @@ let GaugeEditor = class extends LitElement {
   }
   _valueChanged(event) {
     const configValue = event.target.configValue;
-    const value = ["min", "max", "step"].includes(configValue) ? event.detail.value : event.target.value;
+    const value = ["min", "max", "precision", "attribute"].includes(configValue) ? event.detail.value : event.target.value;
     const config = {
       ...this.value,
       [configValue]: value
@@ -4103,6 +4148,7 @@ let FooterButtons = class extends LitElement {
   constructor() {
     super(...arguments);
     this._statuses = [];
+    this._animationTimer = [];
   }
   render() {
     var _a;
@@ -4140,7 +4186,13 @@ let FooterButtons = class extends LitElement {
     event.stopPropagation();
     const element = event.target;
     const index = parseInt(element.dataset.index);
-    if (this._statuses[index] === "loading") return;
+    if (this._animationTimer[index]) {
+      clearTimeout(this._animationTimer[index]);
+      this._animationTimer[index] = void 0;
+    }
+    if (this._statuses[index] === "loading") {
+      this._setButtonStatus(index, void 0);
+    }
     this._setButtonStatus(index, "loading");
     const config = this.buttons[index];
     if (await this._isConfirmed(config)) {
@@ -4155,7 +4207,7 @@ let FooterButtons = class extends LitElement {
       if (delay > 600) {
         this._setCallResult(index, "success")();
       } else {
-        setTimeout(this._setCallResult(index, "success"), 600 - delay);
+        this._animationTimer[index] = setTimeout(this._setCallResult(index, "success"), 600 - delay);
       }
     } catch {
       this._setCallResult(index, "error")();
@@ -4194,7 +4246,7 @@ let FooterButtons = class extends LitElement {
     return () => {
       forwardHaptic("light");
       this._setButtonStatus(index, status);
-      setTimeout(() => {
+      this._animationTimer[index] = setTimeout(() => {
         this._setButtonStatus(index, void 0);
       }, 2500);
     };
@@ -4505,6 +4557,7 @@ const styles$5 = css`:host {
 :host .lc-gauge .value {
   font-weight: 400;
   font-family: Roboto, Noto, sans-serif;
+  letter-spacing: -0.5px;
   fill: var(--primary-text-color);
 }
 :host .lc-gauge .label {
@@ -4558,30 +4611,6 @@ var __decorateClass$5 = (decorators, target, key, kind) => {
   if (kind && result) __defProp$5(target, key, result);
   return result;
 };
-function round(value, decimals = 2) {
-  const mul = 10 ** decimals;
-  return Math.round(value * mul) / mul;
-}
-function normalize(value, min2, max, decimals = 2) {
-  min2 = isNaN(min2) ? 0 : min2;
-  max = isNaN(max) ? 100 : max;
-  if (min2 > max) {
-    throw new Error("MIN_MAX");
-  }
-  const multiplier = 10 ** decimals;
-  value = value == null || isNaN(value) ? 0 : value;
-  value = Math.max(value, min2);
-  value = Math.min(value, max);
-  value = Math.round(value * multiplier) / multiplier;
-  return [value, min2, max];
-}
-function getAngle(value, min2, max) {
-  const percent = (value - min2) / (max - min2) * 100;
-  return percent * 180 / 100;
-}
-function toRadians(deg) {
-  return deg * Math.PI / 180;
-}
 let Gauge = class extends LitElement {
   constructor() {
     super();
@@ -4589,7 +4618,7 @@ let Gauge = class extends LitElement {
     this.unit = "";
     this.min = 0;
     this.max = 100;
-    this.decimals = 2;
+    this.precision = 2;
     this.value = 0;
     this.disabled = false;
     this.digits = false;
@@ -4600,7 +4629,7 @@ let Gauge = class extends LitElement {
     this._renderRootElements();
     this._renderScaleElements();
     this._renderLabelElement();
-    this._syncValue();
+    this._updateValueWithAnimation();
   }
   disconnectedCallback() {
     var _a;
@@ -4615,8 +4644,8 @@ let Gauge = class extends LitElement {
   }
   willUpdate(_changed) {
     super.willUpdate(_changed);
-    if (_changed.has("value") || _changed.has("min") || _changed.has("max") || _changed.has("decimals")) {
-      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.decimals);
+    if (_changed.has("value") || _changed.has("min") || _changed.has("max") || _changed.has("precision")) {
+      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.precision);
     }
     if (_changed.has("levels")) {
       if (!this.levels || !Array.isArray(this.levels) || this.levels.length === 0) {
@@ -4635,8 +4664,8 @@ let Gauge = class extends LitElement {
     if (_changed.has("_levels") || _changed.has("isDigitScale") || _changed.has("min") || _changed.has("max")) {
       this._renderScaleElements();
     }
-    if (_changed.has("value") || _changed.has("min") || _changed.has("max")) {
-      this._syncValue();
+    if (_changed.has("value") || _changed.has("min") || _changed.has("max") || _changed.has("precision") || _changed.has("unit")) {
+      this._updateValueWithAnimation();
     }
     if (_changed.has("disabled")) {
       (_c = (_b = (_a = this._svg) == null ? void 0 : _a.classList) == null ? void 0 : _b[this.disabled ? "add" : "remove"]) == null ? void 0 : _c.call(_b, "disabled");
@@ -4645,15 +4674,27 @@ let Gauge = class extends LitElement {
       this._renderLabelElement();
     }
   }
-  _syncValue() {
+  _updateValueWithAnimation() {
     if (this._rafID != null) {
       cancelAnimationFrame(this._rafID);
       this._rafID = null;
     }
-    const fullValue = `${this.value}${this.unit || ""}`;
-    const fontSize = fullValue.length < 6 ? 14 : fullValue.length < 8 ? 13 : 12;
-    this._text.style.fontSize = `${fontSize}px`;
-    this._text.innerHTML = fullValue;
+    const unit = this.unit || "";
+    const value = `${this.value}`;
+    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    tspan.innerHTML = `&#8201;${unit}`;
+    tspan.style.fontSize = "10px";
+    this._text.style.fontSize = `14px`;
+    this._text.style.letterSpacing = `-0.5px`;
+    this._text.innerHTML = value;
+    this._text.append(tspan);
+    requestAnimationFrame(() => {
+      const max = 42;
+      const length = this._text.getComputedTextLength();
+      if (length > max) {
+        this._text.setAttribute("transform", `scale(${max / length})`);
+      }
+    });
     const oldAngle = this._angleDeg;
     const newAngle = getAngle(this.value, this.min, this.max);
     const diffAngle = newAngle - oldAngle;
@@ -4855,8 +4896,8 @@ __decorateClass$5([
   n2({ type: Number, reflect: true })
 ], Gauge.prototype, "max", 2);
 __decorateClass$5([
-  n2({ type: Number, reflect: true })
-], Gauge.prototype, "decimals", 2);
+  n2({ attribute: "display-precision", type: Number, reflect: true })
+], Gauge.prototype, "precision", 2);
 __decorateClass$5([
   n2({ type: Number })
 ], Gauge.prototype, "value", 2);
@@ -5437,23 +5478,34 @@ __decorateClass$1([
 UniversalCardConfig = __decorateClass$1([
   t$1("lc-universal-card-config")
 ], UniversalCardConfig);
-function getNumberValueWithUnit(entity, hass) {
-  if (!entity.entity) return {};
+function getStateToNumber(entity, hass) {
+  if (!entity.entity) return 0;
   const stateObj = hass.states[entity.entity];
-  const stateRaw = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj == null ? void 0 : stateObj.state;
-  const state = hass.formatEntityState(stateObj, stateRaw);
-  const [valueRaw, unit] = state.split(/^(\d+(?:\.\d+)?)/).map((item) => item.trim()).filter(Boolean);
-  const value = parseFloat(valueRaw) || void 0;
-  return { value, unit };
+  const stateString = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj == null ? void 0 : stateObj.state;
+  return parseFloat(stateString) || 0;
 }
-function formatEntityName(entityId, hass) {
+function formatAttributeName(entityId, attribute, hass) {
+  const domain = computeDomain(entityId);
+  let name = hass.localize(`component.${domain}.entity_component._.state_attributes.${attribute}.name`);
+  if (!name) {
+    name = attribute.split("_").map((item) => item.charAt(0).toUpperCase() + item.substring(1)).join("");
+  }
+  return name;
+}
+function formatEntityName(entityLike, hass) {
+  const entityId = entityLike.entity;
+  if (!entityId) return "";
   const entity = hass.entities[entityId];
   const domain = computeDomain(entityId);
   let name = null;
   if (entity.platform && domain && entity.translation_key) {
     name = hass.localize(`component.${entity.platform}.entity.${domain}.${entity.translation_key}.name`);
   }
-  return name || entity.name;
+  name = name || entity.name || "";
+  if (entityLike.attribute) {
+    name += `: ${formatAttributeName(entityId, entityLike.attribute, hass)}`;
+  }
+  return name;
 }
 const styles = css`ha-card {
   height: 100%;
@@ -5552,6 +5604,7 @@ let UniversalCard = class extends LitElement {
     if (!this._createRowElement) {
       const utils = await mainWindow.loadCardHelpers();
       this._createRowElement = utils.createRowElement;
+      utils.importMoreInfoControl;
     }
   }
   getCardSize() {
@@ -5599,20 +5652,19 @@ let UniversalCard = class extends LitElement {
   }
   _renderGauge(_entity) {
     const entityObj = this.hass.entities[_entity.entity];
-    const { value, unit } = getNumberValueWithUnit(_entity, this.hass);
-    const step = _entity.step == null && entityObj.display_precision != null && 1 / 10 ** entityObj.display_precision || void 0;
+    const stateObj = this.hass.states[_entity.entity];
     return html`
-      <div class="gauge-wrap">
+      <div class="gauge-wrap" @click=${() => fireEvent(this, "hass-more-info", { entityId: _entity.entity })}>
         <lc-gauge
-          .label="${_entity.name || formatEntityName(_entity.entity, this.hass)}"
-          .unit="${_entity.unit || unit}"
-          .min="${_entity.min}"
-          .max="${_entity.max}"
-          .step="${_entity.step || step}"
-          .digits="${_entity.digits}"
-          .levels="${_entity.levels}"
-          .value=${value || 0}
-          .disabled=${value == null}
+          .label="${_entity.name || formatEntityName(_entity, this.hass)}"
+          .unit="${_entity.unit || stateObj.attributes.unit_of_measurement}"
+          .min="${_entity.min || stateObj.attributes.minimum}"
+          .max="${_entity.max || stateObj.attributes.maximum}"
+          .precision=${_entity.precision || entityObj.display_precision}
+          .digits=${_entity.digits}
+          .levels=${_entity.levels}
+          .value=${getStateToNumber(_entity, this.hass)}
+          .disabled=${stateObj.attributes.available === false}
         ></lc-gauge>
       </div>`;
   }

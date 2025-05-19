@@ -18,6 +18,8 @@ class FooterButtons extends LitElement {
 
   @state() private _statuses: (ButtonStatus | undefined)[] = [];
 
+  private _animationTimer: (ReturnType<typeof setTimeout> | undefined)[] = [];
+
   protected render(): unknown {
     if (!this.buttons?.length) {
       return html``;
@@ -58,7 +60,14 @@ class FooterButtons extends LitElement {
     const element = event.target as HTMLElement;
     const index = parseInt(element.dataset.index!);
 
-    if (this._statuses[index] === 'loading') return;
+    if (this._animationTimer[index]) {
+      clearTimeout(this._animationTimer[index]);
+      this._animationTimer[index] = undefined;
+    }
+
+    if (this._statuses[index] === 'loading') {
+       this._setButtonStatus(index, undefined);
+    }
 
     this._setButtonStatus(index, 'loading');
 
@@ -79,7 +88,7 @@ class FooterButtons extends LitElement {
       if (delay > 600) {
         this._setCallResult(index, 'success')();
       } else {
-        setTimeout(this._setCallResult(index, 'success'), 600 - delay);
+        this._animationTimer[index] = setTimeout(this._setCallResult(index, 'success'), 600 - delay);
       }
     } catch {
       this._setCallResult(index, 'error')();
@@ -128,7 +137,7 @@ class FooterButtons extends LitElement {
       forwardHaptic('light');
       this._setButtonStatus(index, status);
 
-      setTimeout(() => {
+      this._animationTimer[index] = setTimeout(() => {
         this._setButtonStatus(index, undefined);
       }, 2500);
     };

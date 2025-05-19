@@ -4,7 +4,7 @@ import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { HassService, HomeAssistant, IButtonConfigSchema } from 'types';
 import { ButtonConfigSchema } from '../../../schemas/button-config-schema';
 import { fireEvent } from '../../../utils/fire-event';
-import { serviceToSelectOption } from '../../../utils/object-to-select-option';
+import { getServicesSelectOptions } from '../../../utils/object-to-select-option';
 import { formatActionName } from '../../../utils/format-action-name';
 import { compactTarget, extensiveTarget } from '../../../utils/normalize-target';
 import { ISelectOption } from '../../select/select';
@@ -239,7 +239,7 @@ class FooterButtonEditor extends LitElement {
     super.firstUpdated(_changed);
 
     if (!this.hass) return;
-    this._options = serviceToSelectOption(this.hass);
+    this._options = getServicesSelectOptions(this.hass);
   }
 
   private _renderServiceTargetSelector(): TemplateResult | null {

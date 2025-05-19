@@ -1,10 +1,10 @@
 import { HomeAssistant } from 'types';
 import { ISelectOption } from '../components';
 import { getServiceIcon } from './get-service-icon';
-import { html } from 'lit';
 import { computeDomain } from './entities-utils';
+import { html } from 'lit';
 
-export function serviceToSelectOption(hass: HomeAssistant): ISelectOption[] {
+export function getServicesSelectOptions(hass: HomeAssistant): ISelectOption[] {
   const domains = Object.keys(hass.services);
   const options: ISelectOption[] = [];
   for (let i = 0; i < domains.length; i++) {
@@ -27,7 +27,7 @@ export function serviceToSelectOption(hass: HomeAssistant): ISelectOption[] {
   return options;
 }
 
-export function entitiesToSelectOption(hass: HomeAssistant): ISelectOption[] {
+export function getEntitiesSelectOptions(hass: HomeAssistant): ISelectOption[] {
   const options: ISelectOption[] = [];
   for (const [entityId, entity] of Object.entries(hass.entities)) {
     const stateObj = hass.states[entityId];
@@ -48,28 +48,35 @@ export function entitiesToSelectOption(hass: HomeAssistant): ISelectOption[] {
   return options;
 }
 
-export function gaugesToSelectOption(hass: HomeAssistant): ISelectOption[] {
+export function getGaugesSelectOptions(hass: HomeAssistant): ISelectOption[] {
   const options: ISelectOption[] = [];
   for (const [entityId, entity] of Object.entries(hass.entities)) {
     const domain = computeDomain(entityId);
-    if (domain !== 'counter' && domain !== 'sensor' && domain !== 'input_number' && domain !== 'number') {
-      continue;
+
+    let allowed = domain === 'counter' || domain === 'sensor' || domain === 'input_number' || domain === 'number';
+    if (allowed) {
+      const state = hass.states[entityId].state;
+      allowed = !isNaN(Number(state));
     }
-    const stateObj = hass.states[entityId];
-    if (isNaN(Number(stateObj.state))) continue;
 
+    if (!allowed) {
+      const attValues = Object.values(hass.states[entityId].attributes);
+      allowed = attValues.some(value => typeof value === 'number');
+    }
 
-    options.push({
-      value: entityId,
-      label: entity.name,
-      secondLabel: entityId,
-      icon: html`
-        <ha-state-icon
-          .hass=${hass}
-          .stateObj=${stateObj}
-        ></ha-state-icon>
-      `,
-    })
+    if (allowed) {
+      options.push({
+        value: entityId,
+        label: entity.name,
+        secondLabel: entityId,
+        icon: html`
+          <ha-state-icon
+            .hass=${hass}
+            .stateObj=${hass.states[entityId]}
+          ></ha-state-icon>
+        `,
+      });
+    }
   }
 
   return options;

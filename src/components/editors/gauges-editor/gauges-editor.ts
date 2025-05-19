@@ -1,7 +1,7 @@
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IGaugeConfigSchema } from 'types';
-import { gaugesToSelectOption } from '../../../utils/object-to-select-option';
+import { getGaugesSelectOptions } from '../../../utils/object-to-select-option';
 import { ISelectOption } from '../../select/select';
 import { fireEvent } from '../../../utils/fire-event';
 import styles from './gauges-editor.scss';
@@ -38,7 +38,7 @@ class GaugesEditor extends LitElement {
     super.firstUpdated(_changed);
     if (!this.hass) return;
 
-    this.options = gaugesToSelectOption(this.hass);
+    this.options = getGaugesSelectOptions(this.hass);
   }
 
   render(): TemplateResult {
@@ -48,51 +48,56 @@ class GaugesEditor extends LitElement {
       <h3>
         <span>${this.hass!.localize('component.lovelace_cards.entity_component._.editor.gauges')}</span>
       </h3>
-      ${this._renderRowsConfigs()}
-      ${this._renderAddGauge()}
+      ${this._renderRows()}
+      ${this.gauges && this.gauges.length >= 2 ? null : html`
+        <lc-select
+          class="add-gauge"
+          .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_entity')}
+          .hass=${this.hass}
+          .options=${this.options}
+          @value-changed=${this._addGauge}
+        ></lc-select>
+      `}
     `;
   }
 
-  private _renderRowsConfigs(): TemplateResult {
+  private _renderRows(): TemplateResult {
     if (!this.gauges || !this.gauges.length) return html``;
 
     return html`
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="gauges">
-          ${this.gauges.map((entity, index) => this._renderRowConfig(index, entity))}
+          ${this.gauges.map((entity, index) => {
+            return html`
+              <div class="gauge-config">
+                <div class="handle">
+                  <ha-icon icon="mdi:drag" class="icon"></ha-icon>
+                </div>
+
+                ${this._renderGauge(index, entity)}
+
+                <lc-button-circle
+                  icon="mdi:close"
+                  .index=${index}
+                  .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_gauge')}
+                  class="action-button"
+                  @click=${this._removeGauge}
+                  transparent
+                ></lc-button-circle>
+
+                <lc-button-circle
+                  icon="mdi:pencil"
+                  .index=${index}
+                  .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_gauge')}
+                  class="action-button"
+                  @click=${this._editGauge}
+                  transparent
+                ></lc-button-circle>
+              </div>
+            `;
+          })}
         </div>
       </ha-sortable>
-    `;
-  }
-
-  private _renderRowConfig(index: number, entity: IGaugeConfigSchema): TemplateResult {
-    return html`
-      <div class="gauge-config">
-        <div class="handle">
-          <ha-icon icon="mdi:drag" class="icon"></ha-icon>
-        </div>
-
-        ${this._renderGauge(index, entity)}
-
-        <lc-button-circle
-          icon="mdi:close"
-          .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_gauge')}
-          class="action-button"
-          @click=${this._removeGauge}
-          transparent
-        ></lc-button-circle>
-
-        <lc-button-circle
-          icon="mdi:pencil"
-          .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_gauge')}
-          class="action-button"
-          @click=${this._editGauge}
-          transparent
-        ></lc-button-circle>
-      </div>
-
     `;
   }
 
@@ -101,7 +106,7 @@ class GaugesEditor extends LitElement {
       <lc-select
         class="edit-gauge"
         .index=${index}
-        .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.gauge')}
+        .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')}
         .options=${this.options}
         .value=${gauge.entity}
         .getValue=${(value: string): string => {
@@ -112,27 +117,15 @@ class GaugesEditor extends LitElement {
     `;
   }
 
-  private _renderAddGauge() {
-    if (this.gauges && this.gauges.length >= 2) return html``;
-
-    return html`
-      <lc-select
-        class="add-gauge"
-        .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_entity')}
-        .hass=${this.hass}
-        .options=${this.options}
-        @value-changed=${this._addGauge}
-      ></lc-select>
-    `;
-  }
-
   private _addGauge(event: CustomEvent) {
     const value = event.detail.value as string;
-    if (value === '') {
+    if (value === '' || !(value in this.hass!.states)) {
       return;
     }
 
-    const gauge = { entity: value } as IGaugeConfigSchema;
+    const gauge: IGaugeConfigSchema = {
+      entity: value,
+    };
 
     (event.target as any).value = '';
     fireEvent(this, 'gauges-changed', { gauges: [...(this.gauges || []), gauge] });

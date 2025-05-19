@@ -1,22 +1,12 @@
 import { EntityConfigLike, HomeAssistant } from 'types';
 
-export interface ValueWithUnit {
-  value?: number;
-  unit?: string
-}
-
-export function getNumberValueWithUnit(entity: EntityConfigLike, hass: HomeAssistant): ValueWithUnit {
-  if (!entity.entity) return {};
+export function getStateToNumber(entity: EntityConfigLike, hass: HomeAssistant): number {
+  if (!entity.entity) return 0;
 
   const stateObj = hass.states[entity.entity];
-  const stateRaw = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj?.state;
+  const stateString = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj?.state;
 
-  const state = hass.formatEntityState(stateObj, stateRaw);
-
-  const [valueRaw, unit] = state.split(/^(\d+(?:\.\d+)?)/).map(item => item.trim()).filter(Boolean);
-  const value = parseFloat(valueRaw) || undefined;
-
-  return { value, unit };
+  return parseFloat(stateString) || 0;
 }
 
 export function formatNumberValue(hass: HomeAssistant, value: any): string | undefined {

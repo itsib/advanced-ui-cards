@@ -12,10 +12,17 @@ import {
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities, processGauges } from '../../utils/entities-utils';
 import type { IServiceCardConfigSchema } from './universal-card-schema';
-import { getNumberValueWithUnit } from '../../utils/format-number-value';
+import { getStateToNumber } from '../../utils/format-number-value';
 import { formatEntityName } from '../../utils/format-entity-name';
 import { mainWindow } from '../../utils/get-main-window';
+import { fireEvent } from '../../utils/fire-event';
 import styles from './universal-card.scss';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lc-universal-card': UniversalCard;
+  }
+}
 
 @customElement('lc-universal-card')
 class UniversalCard extends LitElement implements LovelaceCard {
@@ -71,6 +78,7 @@ class UniversalCard extends LitElement implements LovelaceCard {
     if (!this._createRowElement) {
       const utils = await mainWindow.loadCardHelpers();
       this._createRowElement = utils.createRowElement;
+      utils.importMoreInfoControl
     }
   }
 
@@ -126,21 +134,20 @@ class UniversalCard extends LitElement implements LovelaceCard {
 
   private _renderGauge(_entity: IGaugeConfigSchema): TemplateResult {
     const entityObj = this.hass!.entities[_entity.entity];
-    const { value, unit } = getNumberValueWithUnit(_entity, this.hass!);
-    const step = _entity.step == null && entityObj.display_precision != null && (1 / (10 ** entityObj.display_precision)) || undefined;
+    const stateObj = this.hass!.states[_entity.entity];
 
     return html`
-      <div class="gauge-wrap">
+      <div class="gauge-wrap" @click=${() => fireEvent(this, 'hass-more-info', { entityId: _entity.entity })}>
         <lc-gauge
-          .label="${_entity.name || formatEntityName(_entity.entity, this.hass!)}"
-          .unit="${_entity.unit || unit}"
-          .min="${_entity.min}"
-          .max="${_entity.max}"
-          .step="${_entity.step || step}"
-          .digits="${_entity.digits}"
-          .levels="${_entity.levels}"
-          .value=${value || 0}
-          .disabled=${value == null}
+          .label="${_entity.name || formatEntityName(_entity, this.hass!)}"
+          .unit="${_entity.unit || stateObj.attributes.unit_of_measurement}"
+          .min="${_entity.min || stateObj.attributes.minimum}"
+          .max="${_entity.max || stateObj.attributes.maximum}"
+          .precision=${_entity.precision || entityObj.display_precision}
+          .digits=${_entity.digits}
+          .levels=${_entity.levels}
+          .value=${getStateToNumber(_entity, this.hass!)}
+          .disabled=${stateObj.attributes.available === false}
         ></lc-gauge>
       </div>`;
   }
@@ -188,12 +195,6 @@ class UniversalCard extends LitElement implements LovelaceCard {
         .buttons=${this._configButtons}
       ></lc-footer-buttons>
     `;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'lc-universal-card': UniversalCard;
   }
 }
 

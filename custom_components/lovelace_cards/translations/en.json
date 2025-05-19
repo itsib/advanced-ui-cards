@@ -49,11 +49,13 @@
         "min": "Min",
         "max": "Max",
         "step": "Step",
-        "unit": "Unit",
+        "precision": "Display Precision",
         "show_scale_digits": "Show a scale digits",
         "add_scale_color": "Add Scale Color",
         "scale_colors_label": "Thresholds for transition the color of the scale",
-        "color": "Color"
+        "color": "Color",
+        "input_attribute_label": "Attribute",
+        "input_attribute_hint": "Choose attribute, which value to use. Leave it empty to use the state."
       },
       "button_tooltip": "Tooltip",
       "confirm_text": "Confirm Text",

@@ -2,12 +2,13 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { HomeAssistant, IGaugeConfigSchema, IGaugeLevelConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
-import { entitiesToSelectOption } from '../../../utils/object-to-select-option';
+import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import { THEME_COLORS } from '../../../utils/format-colors';
 import { assert } from 'superstruct';
 import styles from './gauge-editor.scss';
 import { ISelectOption } from '../../select/select';
 import { GaugeConfigSchema } from '../../../schemas/gauge-config-schema';
+import { precisionToMinStep, round } from '../../../utils/math';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -55,8 +56,8 @@ class GaugeEditor extends LitElement {
     return this.value?.max ?? 100;
   }
 
-  get decimals() {
-    return this.value?.decimals ?? 2;
+  get precision() {
+    return this.value?.precision ?? 2;
   }
 
   get hasError(): boolean {
@@ -106,7 +107,7 @@ class GaugeEditor extends LitElement {
           class="row-full"
           .value=${this.value.entity}
           .configValue=${'entity'}
-          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.gauge')}
+          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')}
           .options=${this._options}
           .getValue=${(value: string): string => {
             return this.hass!.entities[value]?.name || value;
@@ -115,16 +116,7 @@ class GaugeEditor extends LitElement {
         ></lc-select>
 
         <!-- attribute -->
-          <!--ha-selector
-          class="row-full"
-          .hass=${this.hass}
-          .value=${this.value.attribute}
-          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.attribute')}
-          .required=${false}
-          .configValue=${'attribute'}
-          .selector=${{ attribute: { entity_id: this.value.entity } }}
-          @value-changed=${this._valueChanged}
-        ></ha-selector-->
+        ${this._renderAttributeSelect()}
 
         <!-- Name -->
         <ha-textfield
@@ -157,7 +149,7 @@ class GaugeEditor extends LitElement {
           .selector=${{
             number: {
               max: this.max,
-              step: 1 / (10 ** this.decimals),
+              step: precisionToMinStep(this.precision),
             },
           }}
           .placeholder=${'0'}
@@ -176,7 +168,7 @@ class GaugeEditor extends LitElement {
           .selector=${{
             number: {
               min: this.min,
-              step: 1 / (10 ** this.decimals),
+              step: precisionToMinStep(this.precision),
             },
           }}
           .placeholder=${'100'}
@@ -188,10 +180,10 @@ class GaugeEditor extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.step')}
-          .value=${this.decimals}
+          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.precision')}
+          .value=${this.precision}
           .required=${false}
-          .configValue=${'decimals'}
+          .configValue=${'precision'}
           .selector=${{
             number: {
               min: 0,
@@ -231,7 +223,36 @@ class GaugeEditor extends LitElement {
     super.firstUpdated(_changed);
 
     if (!this.hass) return;
-    this._options = entitiesToSelectOption(this.hass);
+    this._options = getEntitiesSelectOptions(this.hass);
+  }
+
+  private _renderAttributeSelect(): TemplateResult {
+    if (!this.value || !this.hass) return html``;
+
+    const stateObj = this.hass.states[this.value.entity];
+    const attributes = Object.keys(stateObj.attributes);
+    const hideAttributes = Object.keys(stateObj.attributes).filter(attribute => typeof stateObj.attributes[attribute] !== 'number');
+
+    if (attributes.length === hideAttributes.length) return html``;
+
+    return html`
+      <ha-selector
+        class="row-full"
+        .hass=${this.hass}
+        .value=${this.value.attribute}
+        .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.input_attribute_label')}
+        .helper=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.input_attribute_hint')}
+        .required=${false}
+        .configValue=${'attribute'}
+        .selector=${{
+          attribute: {
+            entity_id: this.value.entity,
+            hide_attributes: hideAttributes,
+          }
+        }}
+        @value-changed=${this._valueChanged}
+      ></ha-selector>
+    `;
   }
 
   private _renderLevelConfig(level: IGaugeLevelConfigSchema, index: number) {
@@ -252,7 +273,7 @@ class GaugeEditor extends LitElement {
           number: {
             min: this.min,
             max: this.max,
-            step: 1 / (10 ** this.decimals),
+            step: precisionToMinStep(this.precision),
             mode: 'slider',
             slider_ticks: false,
             unit_of_measurement: this.value?.unit,
@@ -356,10 +377,10 @@ class GaugeEditor extends LitElement {
     let level: number;
     let color: string;
     if (config.levels.length > 0) {
-      const multiplier = 10 ** this.decimals;
       const onePercent = (this.max - this.min) / 100;
-      const inc = (Math.round(onePercent * 10 * multiplier) / multiplier);
+      const inc = round(onePercent * 10, this.precision);
       const lastLevel = config.levels[config.levels.length - 1].level;
+
       level = Math.min(lastLevel + inc, this.max);
       color = THEME_COLORS[config.levels.length];
     } else {
@@ -374,7 +395,7 @@ class GaugeEditor extends LitElement {
 
   private _valueChanged(event: CustomEvent) {
     const configValue = (event.target as any).configValue;
-    const value = ['min', 'max', 'step'].includes(configValue) ? event.detail.value : (event.target as any).value;
+    const value = ['min', 'max', 'precision', 'attribute'].includes(configValue) ? event.detail.value : (event.target as any).value;
 
     const config = {
       ...this.value!,

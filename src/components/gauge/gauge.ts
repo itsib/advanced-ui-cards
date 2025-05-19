@@ -3,42 +3,17 @@ import styles from './gauge.scss';
 import { customElement, property, state } from 'lit/decorators.js';
 import { elasticOut } from '../../utils/timing-functions';
 import { formatColors } from '../../utils/format-colors';
+import { getAngle, normalize, round, toRadians } from '../../utils/math';
 
 interface LevelItem {
   level: number;
   color: string;
 }
 
-function round(value: number, decimals = 2): number {
-  const mul = 10 ** decimals;
-  return Math.round(value * mul) / mul;
-}
-
-function normalize(value: number, min: number, max: number, decimals = 2): [number, number, number] {
-  min = isNaN(min) ? 0 : min;
-  max = isNaN(max) ? 100 : max;
-
-  if (min > max) {
-    throw new Error('MIN_MAX');
+declare global {
+  interface HTMLElementTagNameMap {
+    'lc-gauge': Gauge;
   }
-
-  const multiplier = 10 ** decimals;
-  value = value == null || isNaN(value) ? 0 : value;
-  value = Math.max(value, min);
-  value = Math.min(value, max);
-  value = Math.round(value * multiplier) / multiplier;
-
-  return [value, min, max];
-}
-
-function getAngle(value: number, min: number, max: number): number {
-  const percent = (value - min) / (max - min) * 100;
-
-  return (percent * 180) / 100;
-}
-
-function toRadians(deg: number): number {
-  return (deg * Math.PI) / 180;
 }
 
 @customElement('lc-gauge')
@@ -79,8 +54,8 @@ export class Gauge extends LitElement {
    * The step attribute is a number that specifies the
    * granularity that the value must adhere to.
    */
-  @property({ type: Number, reflect: true })
-  decimals: number = 2;
+  @property({ attribute: 'display-precision', type: Number, reflect: true })
+  precision: number = 2;
 
   /**
    * The value to display
@@ -179,7 +154,7 @@ export class Gauge extends LitElement {
     this._renderScaleElements();
     this._renderLabelElement();
 
-    this._syncValue();
+    this._updateValueWithAnimation();
   }
 
   disconnectedCallback() {
@@ -198,8 +173,8 @@ export class Gauge extends LitElement {
   willUpdate(_changed: PropertyValues) {
     super.willUpdate(_changed);
 
-    if (_changed.has('value') || _changed.has('min') || _changed.has('max') || _changed.has('decimals')) {
-      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.decimals);
+    if (_changed.has('value') || _changed.has('min') || _changed.has('max') || _changed.has('precision')) {
+      [this.value, this.min, this.max] = normalize(this.value, this.min, this.max, this.precision);
     }
 
     if (_changed.has('levels')) {
@@ -224,8 +199,8 @@ export class Gauge extends LitElement {
       this._renderScaleElements();
     }
 
-    if (_changed.has('value') || _changed.has('min') || _changed.has('max')) {
-      this._syncValue();
+    if (_changed.has('value') || _changed.has('min') || _changed.has('max') || _changed.has('precision') || _changed.has('unit')) {
+      this._updateValueWithAnimation();
     }
 
     if (_changed.has('disabled')) {
@@ -237,16 +212,30 @@ export class Gauge extends LitElement {
     }
   }
 
-  private _syncValue() {
+  private _updateValueWithAnimation() {
     if (this._rafID != null) {
       cancelAnimationFrame(this._rafID);
       this._rafID = null;
     }
 
-    const fullValue = `${this.value}${this.unit || ''}`;
-    const fontSize = fullValue.length < 6 ? 14 : fullValue.length < 8 ? 13 : 12;
-    this._text!.style.fontSize = `${fontSize}px`;
-    this._text!.innerHTML = fullValue;
+    const unit = this.unit || '';
+    const value = `${this.value}`;
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    tspan.innerHTML = `&#8201;${unit}`;
+    tspan.style.fontSize = '10px';
+
+    this._text!.style.fontSize = `14px`;
+    this._text!.style.letterSpacing = `-0.5px`;
+    this._text!.innerHTML = value;
+    this._text!.append(tspan);
+
+    requestAnimationFrame(() => {
+      const max = 42;
+      const length = this._text!.getComputedTextLength();
+      if (length > max) {
+        this._text!.setAttribute('transform', `scale(${max / length})`);
+      }
+    });
 
     const oldAngle = this._angleDeg;
     const newAngle = getAngle(this.value, this.min, this.max);
@@ -480,11 +469,5 @@ export class Gauge extends LitElement {
     filter.append(this._shadow);
 
     return filter;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'lc-gauge': Gauge;
   }
 }

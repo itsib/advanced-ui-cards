@@ -4,7 +4,7 @@ import type { HomeAssistant, IButtonConfigSchema, IEntityConfigSchema } from 'ty
 import { fireEvent } from '../../../utils/fire-event';
 import { SubElementEditorConfig } from '../sub-element-editor/sub-element-editor';
 import { formatActionName } from '../../../utils/format-action-name';
-import { serviceToSelectOption } from '../../../utils/object-to-select-option';
+import { getServicesSelectOptions } from '../../../utils/object-to-select-option';
 import styles from './footer-buttons-editor.scss';
 import { ISelectOption } from '../../select/select';
 
@@ -37,7 +37,7 @@ class FooterButtonsEditor extends LitElement {
     super.firstUpdated(_changed);
 
     if (!this.hass) return;
-    this.options = serviceToSelectOption(this.hass);
+    this.options = getServicesSelectOptions(this.hass);
   }
 
   render() {

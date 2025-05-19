@@ -12,7 +12,7 @@ export const GaugeConfigSchema = object({
   unit: optional(string()),
   min: optional(number()),
   max: optional(number()),
-  decimals: optional(min(integer(), 0)),
+  precision: optional(min(integer(), 0)),
   digits: optional(boolean()),
   levels: optional(array(GaugeLevelConfigSchema)),
 });

@@ -2,7 +2,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { HomeAssistant, IEntityBaseConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
-import { entitiesToSelectOption } from '../../../utils/object-to-select-option';
+import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import { assert } from 'superstruct';
 import { EntityConfigSchema } from '../../../schemas/entity-config-schema';
 import { computeDomain } from '../../../utils/entities-utils';
@@ -98,7 +98,7 @@ class EntityEditor extends LitElement {
     super.firstUpdated(_changed);
 
     if (!this.hass) return;
-    this._options = entitiesToSelectOption(this.hass);
+    this._options = getEntitiesSelectOptions(this.hass);
   }
 
   private _renderEntityWidthType(_entity: IEntityConfigSchema) {

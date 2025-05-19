@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IEntityConfigSchema } from 'types';
 import { ISelectOption } from '../../select/select';
 import { fireEvent } from '../../../utils/fire-event';
-import { entitiesToSelectOption } from '../../../utils/object-to-select-option';
+import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import styles from './entities-editor.scss';
 
 declare global {
@@ -35,7 +35,7 @@ export class EntitiesEditor extends LitElement {
     super.firstUpdated(_changed);
      if (!this.hass) return;
 
-     this.options = entitiesToSelectOption(this.hass);
+     this.options = getEntitiesSelectOptions(this.hass);
   }
 
   render() {
