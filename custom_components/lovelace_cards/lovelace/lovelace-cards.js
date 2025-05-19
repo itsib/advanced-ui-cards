@@ -4191,7 +4191,7 @@ let FooterButtons = class extends LitElement {
       this._animationTimer[index] = void 0;
     }
     if (this._statuses[index] === "loading") {
-      this._setButtonStatus(index, void 0);
+      return;
     }
     this._setButtonStatus(index, "loading");
     const config = this.buttons[index];
