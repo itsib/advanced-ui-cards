@@ -1,6 +1,6 @@
 {
   "name": "lovelace-cards",
-  "version": "3.0.33",
+  "version": "3.0.34",
   "description": "Custom lovelace cards for Home Assistant",
   "author": "Sergey <itsib.su@gmail.com>",
   "license": "MIT",
