@@ -27,11 +27,11 @@ export default defineConfig(async () => {
       lib: {
         formats: ['es'],
         entry: {
-          ['lovelace-cards']: join(APP_ROOT, 'src', 'index.ts'),
+          ['advanced-ui-cards']: join(APP_ROOT, 'src', 'index.ts'),
           ['brand-resolver']: join(APP_ROOT, 'src', 'brand-resolver', 'index.ts'),
         },
       },
-      outDir: join(APP_ROOT, 'custom_components', 'lovelace_cards', 'lovelace'),
+      outDir: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
       rollupOptions: {
         output: {
           preserveModules: false,
@@ -42,7 +42,7 @@ export default defineConfig(async () => {
             if (/\/brand-resolver\//.test(path)) {
               return 'brand-resolver';
             } else {
-              return 'lovelace-cards';
+              return 'advanced-ui-cards';
             }
           },
         },
@@ -56,7 +56,7 @@ export default defineConfig(async () => {
         targets: [
           {
             src: join(APP_ROOT, 'src', 'images'),
-            dest: join(APP_ROOT, 'custom_components', 'lovelace_cards', 'lovelace'),
+            dest: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
           },
         ],
       }),

@@ -1,5 +1,5 @@
 {
-  "title": "UI Lovelace",
+  "title": "Advanced UI Cards",
   "config": {
     "abort": {
       "single_instance_allowed": "Уже настроен. Возможна только одна конфигурация."
@@ -16,8 +16,8 @@
         "entities": "Объекты",
         "action": "Действие",
         "gauge": "Датчик",
-        "choose_action": "Выбирите Действие",
-        "choose_entity": "Выбирите Объект",
+        "choose_action": "Выберите Действие",
+        "choose_entity": "Выберите Объект",
         "buttons": "Кнопки",
         "gauges": "Датчики",
         "remove_button": "Удалить Кнопку",

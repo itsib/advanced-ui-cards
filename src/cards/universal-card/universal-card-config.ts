@@ -74,7 +74,7 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
     return html`
       <div class="title-icon-fields">
         <ha-textfield
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.title')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.title')}
           .value=${this._config.title || ''}
           .configValue=${'title'}
           @input=${this._valueChanged}
@@ -82,7 +82,7 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
         <ha-icon-picker
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.icon')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.icon')}
           .value=${this._config.icon || ''}
           .required=${false}
           .disabled=${false}

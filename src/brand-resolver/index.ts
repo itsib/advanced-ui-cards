@@ -25,7 +25,7 @@ if (!window.domWatcher) {
         hass,
         root: homeAssistant.shadowRoot!,
         images: {
-          ['lovelace_cards']: '/lovelace_cards_files/lovelace-cards.svg',
+          ['advanced_ui_cards']: '/lovelace_cards_files/logo.svg',
           ['yandex_player']: '/lovelace_cards_files/yandex-music.svg',
           ['sun']: '/lovelace_cards_files/sun-logo.svg',
         },

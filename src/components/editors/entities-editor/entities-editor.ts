@@ -43,14 +43,14 @@ export class EntitiesEditor extends LitElement {
 
     return html`
       <h3>
-        <span>${this.hass!.localize('component.lovelace_cards.entity_component._.editor.entities')}</span>
+        <span>${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.entities')}</span>
       </h3>
 
       ${this._renderRowsConfigs()}
 
       <lc-select
         class="add-entity"
-        .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_entity')}
+        .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.choose_entity')}
         .options=${this.options}
         @value-changed=${this._addEntity}
       ></lc-select>
@@ -81,7 +81,7 @@ export class EntitiesEditor extends LitElement {
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_entity')}
+          .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.remove_entity')}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -90,7 +90,7 @@ export class EntitiesEditor extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_entity')}
+          .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.configure_entity')}
           class="action-button"
           @click=${this._editRow}
           transparent
@@ -106,7 +106,7 @@ export class EntitiesEditor extends LitElement {
         <lc-select
           class="edit-entity"
           .index=${index}
-          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')}
+          .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.entity')}
           .options=${this.options}
           .value=${entity.entity}
           .getValue=${(value: string): string => {
@@ -119,7 +119,7 @@ export class EntitiesEditor extends LitElement {
     if (entity.type === 'divider') {
       return html`
         <div class="divider-entity">
-          <div class="label">${this.hass?.localize('component.lovelace_cards.entity_component._.editor.divider')}</div>
+          <div class="label">${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.divider')}</div>
           <hr class="divider" />
         </div>
       `;

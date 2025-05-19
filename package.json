@@ -1,5 +1,5 @@
 {
-  "name": "lovelace-cards",
+  "name": "advanced-ui-cards",
   "version": "3.0.35",
   "description": "Custom lovelace cards for Home Assistant",
   "author": "Sergey <itsib.su@gmail.com>",
@@ -16,17 +16,17 @@
     "admin",
     "admin-dashboard"
   ],
-  "repository": "git@github.com:itsib/lovelace-cards.git",
-  "homepage": "https://github.com/itsib/lovelace-cards#readme",
+  "repository": "git@github.com:itsib/advanced-ui-cards.git",
+  "homepage": "https://github.com/itsib/advanced-ui-cards#readme",
   "bugs": {
-    "url": "https://github.com/itsib/lovelace-cards/issues"
+    "url": "https://github.com/itsib/advanced-ui-cards/issues"
   },
   "scripts": {
     "watch": "vite build --watch",
     "build": "vite build --mode production",
     "lint": "eslint -c eslint.config.js",
     "preversion": "npm run build",
-    "version": "tsx ../../plugins/patch-manifest.ts lovelace-cards && git add .",
+    "version": "tsx ../../plugins/patch-manifest.ts advanced-ui-cards && git add .",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {

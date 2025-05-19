@@ -40,17 +40,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     LOGGER.info("Register paths: %s", f"{BASE_URL}")
     LOGGER.info("Register paths: %s", f"{BASE_URL}/brand-resolver.js")
-    LOGGER.info("Register paths: %s", f"{BASE_URL}/lovelace-cards.js")
+    LOGGER.info("Register paths: %s", f"{BASE_URL}/advanced-ui-cards.js")
 
     integration_dir = hass.config.path(f"custom_components/{DOMAIN}")
     await hass.http.async_register_static_paths([
         StaticPathConfig(f"{BASE_URL}", f"{integration_dir}/lovelace", cache_headers=False),
         StaticPathConfig(f"{BASE_URL}/brand-resolver.js", f"{integration_dir}/lovelace/brand-resolver.js", cache_headers=False),
-        StaticPathConfig(f"{BASE_URL}/lovelace-cards.js", f"{integration_dir}/lovelace/lovelace-cards.js", cache_headers=False),
+        StaticPathConfig(f"{BASE_URL}/advanced-ui-cards.js", f"{integration_dir}/lovelace/advanced-ui-cards.js", cache_headers=False),
     ])
 
     add_extra_js_url(hass, f"{BASE_URL}/brand-resolver.js", es5=False)
-    add_extra_js_url(hass, f"{BASE_URL}/lovelace-cards.js", es5=False)
+    add_extra_js_url(hass, f"{BASE_URL}/advanced-ui-cards.js", es5=False)
 
     data: dict = {'name': NAME}
     if DOMAIN in hass.data:
@@ -66,7 +66,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
 
     remove_extra_js_url(hass, f"{BASE_URL}/brand-resolver.js", es5=False)
-    remove_extra_js_url(hass, f"{BASE_URL}/lovelace-cards.js", es5=False)
+    remove_extra_js_url(hass, f"{BASE_URL}/advanced-ui-cards.js", es5=False)
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, [])
     if unload_ok:

@@ -1,16 +1,16 @@
 {
-  "name": "UI Lovelace",
+  "name": "Advanced UI Cards",
   "codeowners": [
     "@itsib"
   ],
   "integrations": ["lovelace"],
   "config_flow": true,
   "single_config_entry": true,
-  "documentation": "https://github.com/itsib/lovelace-cards",
-  "domain": "lovelace_cards",
+  "documentation": "https://github.com/itsib/advanced-ui-cards",
+  "domain": "advanced_ui_cards",
   "iot_class": "local_polling",
   "loggers": [
-    "lovelace_cards"
+    "advanced_ui_cards"
   ],
   "requirements": [],
   "dependencies": [

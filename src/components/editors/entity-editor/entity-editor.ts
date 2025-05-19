@@ -122,7 +122,7 @@ class EntityEditor extends LitElement {
     return html`
       <lc-select
         class="row-full"
-        .label="${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')} *"
+        .label="${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.entity')} *"
         .value=${entity.entity}
         .options=${this._options}
         .configValue=${'entity'}
@@ -135,7 +135,7 @@ class EntityEditor extends LitElement {
       <!-- Name -->
       <ha-textfield
         class="input"
-        .label="${this.hass.localize('component.lovelace_cards.entity_component._.editor.name')}"
+        .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.name')}"
         .value=${entity.name || ''}
         .configValue=${'name'}
         @input=${this._valueChanged}
@@ -146,7 +146,7 @@ class EntityEditor extends LitElement {
       <!-- Icon -->
       <ha-selector
         .hass=${this.hass}
-        .label="${this.hass.localize('component.lovelace_cards.entity_component._.editor.icon')}"
+        .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.icon')}"
         .value=${entity.icon}
         .required=${false}
         .disabled=${false}
@@ -160,7 +160,7 @@ class EntityEditor extends LitElement {
       <div class="row-full">
         <ha-selector
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.secondary_information')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.secondary_information')}
           .selector=${{
             select: {
               mode: 'list',
@@ -171,7 +171,7 @@ class EntityEditor extends LitElement {
           .configValue=${'secondary_info'}
           .value=${entity.secondary_info || 'none'}
           .localizeValue=${(value: string) => {
-            return this.hass!.localize(`component.lovelace_cards.entity_component._.${value}`);
+            return this.hass!.localize(`component.advanced_ui_cards.entity_component._.${value}`);
           }}
           @value-changed=${this._valueChanged}
         ></ha-selector>

@@ -46,13 +46,13 @@ class GaugesEditor extends LitElement {
 
     return html`
       <h3>
-        <span>${this.hass!.localize('component.lovelace_cards.entity_component._.editor.gauges')}</span>
+        <span>${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.gauges')}</span>
       </h3>
       ${this._renderRows()}
       ${this.gauges && this.gauges.length >= 2 ? null : html`
         <lc-select
           class="add-gauge"
-          .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_entity')}
+          .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.choose_entity')}
           .hass=${this.hass}
           .options=${this.options}
           @value-changed=${this._addGauge}
@@ -79,7 +79,7 @@ class GaugesEditor extends LitElement {
                 <lc-button-circle
                   icon="mdi:close"
                   .index=${index}
-                  .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_gauge')}
+                  .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.remove_gauge')}
                   class="action-button"
                   @click=${this._removeGauge}
                   transparent
@@ -88,7 +88,7 @@ class GaugesEditor extends LitElement {
                 <lc-button-circle
                   icon="mdi:pencil"
                   .index=${index}
-                  .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_gauge')}
+                  .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.configure_gauge')}
                   class="action-button"
                   @click=${this._editGauge}
                   transparent
@@ -106,7 +106,7 @@ class GaugesEditor extends LitElement {
       <lc-select
         class="edit-gauge"
         .index=${index}
-        .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')}
+        .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.entity')}
         .options=${this.options}
         .value=${gauge.entity}
         .getValue=${(value: string): string => {

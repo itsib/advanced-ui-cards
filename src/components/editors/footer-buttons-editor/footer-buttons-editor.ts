@@ -45,14 +45,14 @@ class FooterButtonsEditor extends LitElement {
 
     return html`
       <h3>
-        <span>${this.hass!.localize('component.lovelace_cards.entity_component._.editor.buttons')}</span>
+        <span>${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.buttons')}</span>
       </h3>
 
       ${this._renderButtonsConfigs()}
 
       <lc-select
         class="add-button"
-        .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.choose_action')}
+        .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.choose_action')}
         .options=${this.options}
         @value-changed=${this._addButton}
       ></lc-select>
@@ -81,7 +81,7 @@ class FooterButtonsEditor extends LitElement {
         <lc-select
           class="edit-button"
           .index=${index}
-          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.button')}
+          .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.button')}
           .getValue=${(value: string) => {
             const [domain, action] = value.split('.');
             const service = action && this.hass?.services?.[domain]?.[action] || undefined;
@@ -95,7 +95,7 @@ class FooterButtonsEditor extends LitElement {
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.remove_button')}
+          .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.remove_button')}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -104,7 +104,7 @@ class FooterButtonsEditor extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.configure_button')}
+          .tooltip=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.configure_button')}
           class="action-button"
           @click=${this._editRow}
           transparent

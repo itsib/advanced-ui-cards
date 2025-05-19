@@ -1077,14 +1077,14 @@ let FooterButtonsEditor = class extends LitElement {
     if (!this.hass) return html``;
     return html`
       <h3>
-        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.buttons")}</span>
+        <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.buttons")}</span>
       </h3>
 
       ${this._renderButtonsConfigs()}
 
       <lc-select
         class="add-button"
-        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_action")}
+        .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.choose_action")}
         .options=${this.options}
         @value-changed=${this._addButton}
       ></lc-select>
@@ -1111,7 +1111,7 @@ let FooterButtonsEditor = class extends LitElement {
         <lc-select
           class="edit-button"
           .index=${index}
-          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.button")}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.button")}
           .getValue=${(value) => {
       var _a2, _b, _c;
       const [domain, action] = value.split(".");
@@ -1126,7 +1126,7 @@ let FooterButtonsEditor = class extends LitElement {
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_button")}
+          .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.remove_button")}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -1135,7 +1135,7 @@ let FooterButtonsEditor = class extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_button")}
+          .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.configure_button")}
           class="action-button"
           @click=${this._editRow}
           transparent
@@ -1853,7 +1853,7 @@ let FooterButtonEditor = class extends LitElement {
         <lc-select
           class="row-full"
           .value=${(_a = this.value) == null ? void 0 : _a.action}
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.action")} *"
+          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.action")} *"
           .options=${this._options}
           .configValue=${"action"}
           .getValue=${(value) => {
@@ -1877,7 +1877,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Tooltip -->
         <ha-textfield
           class="input"
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.button_tooltip")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.button_tooltip")}
           .value=${((_c = this.value) == null ? void 0 : _c.tooltip) || ""}
           .configValue=${"tooltip"}
           @input=${this._valueChanged}
@@ -1900,7 +1900,7 @@ let FooterButtonEditor = class extends LitElement {
 
         <!-- Enable confirmation -->
         <div class="row-full enable-confirm">
-          <span>${this.hass.localize("component.lovelace_cards.entity_component._.show_confirmation_dialog")}</span>
+          <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.show_confirmation_dialog")}</span>
 
           <lc-switch
             .checked=${!!this.value.confirmation}
@@ -1911,7 +1911,7 @@ let FooterButtonEditor = class extends LitElement {
         <!-- Confirmation text -->
         <ha-textfield
           class="row-full"
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.confirm_text")}"
+          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.confirm_text")}"
           .value=${this.confirmationText}
           .configValue=${"confirmation"}
           .disabled=${!((_d = this.value) == null ? void 0 : _d.confirmation)}
@@ -1924,7 +1924,7 @@ let FooterButtonEditor = class extends LitElement {
         <ha-selector
           class="row-full"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.button_color")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.button_color")}
           .value=${this.value.color}
           .configValue=${"color"}
           .selector=${{ ui_color: {} }}
@@ -1948,7 +1948,7 @@ let FooterButtonEditor = class extends LitElement {
     return html`
       <div class="row-full">
         <ha-selector
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.choose_action_target")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.choose_action_target")}
           .hass=${this.hass}
           .selector=${{ target: { ...service.target } }}
           @value-changed=${this._valueChanged}
@@ -2172,14 +2172,14 @@ let EntitiesEditor = class extends LitElement {
     if (!this.entities || !this.hass) return html``;
     return html`
       <h3>
-        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.entities")}</span>
+        <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.entities")}</span>
       </h3>
 
       ${this._renderRowsConfigs()}
 
       <lc-select
         class="add-entity"
-        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
+        .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.choose_entity")}
         .options=${this.options}
         @value-changed=${this._addEntity}
       ></lc-select>
@@ -2207,7 +2207,7 @@ let EntitiesEditor = class extends LitElement {
         <lc-button-circle
           icon="mdi:close"
           .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_entity")}
+          .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.remove_entity")}
           class="action-button"
           @click=${this._removeRow}
           transparent
@@ -2216,7 +2216,7 @@ let EntitiesEditor = class extends LitElement {
         <lc-button-circle
           icon="mdi:pencil"
           .index=${index}
-          .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_entity")}
+          .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.configure_entity")}
           class="action-button"
           @click=${this._editRow}
           transparent
@@ -2232,7 +2232,7 @@ let EntitiesEditor = class extends LitElement {
         <lc-select
           class="edit-entity"
           .index=${index}
-          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.entity")}
           .options=${this.options}
           .value=${entity.entity}
           .getValue=${(value) => {
@@ -2246,7 +2246,7 @@ let EntitiesEditor = class extends LitElement {
     if (entity.type === "divider") {
       return html`
         <div class="divider-entity">
-          <div class="label">${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.divider")}</div>
+          <div class="label">${(_b = this.hass) == null ? void 0 : _b.localize("component.advanced_ui_cards.entity_component._.editor.divider")}</div>
           <hr class="divider" />
         </div>
       `;
@@ -2543,7 +2543,7 @@ let EntityEditor = class extends LitElement {
     return html`
       <lc-select
         class="row-full"
-        .label="${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")} *"
+        .label="${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.entity")} *"
         .value=${entity.entity}
         .options=${this._options}
         .configValue=${"entity"}
@@ -2557,7 +2557,7 @@ let EntityEditor = class extends LitElement {
       <!-- Name -->
       <ha-textfield
         class="input"
-        .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.name")}"
+        .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.name")}"
         .value=${entity.name || ""}
         .configValue=${"name"}
         @input=${this._valueChanged}
@@ -2568,7 +2568,7 @@ let EntityEditor = class extends LitElement {
       <!-- Icon -->
       <ha-selector
         .hass=${this.hass}
-        .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.icon")}"
+        .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.icon")}"
         .value=${entity.icon}
         .required=${false}
         .disabled=${false}
@@ -2582,7 +2582,7 @@ let EntityEditor = class extends LitElement {
       <div class="row-full">
         <ha-selector
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.secondary_information")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.secondary_information")}
           .selector=${{
       select: {
         mode: "list",
@@ -2593,7 +2593,7 @@ let EntityEditor = class extends LitElement {
           .configValue=${"secondary_info"}
           .value=${entity.secondary_info || "none"}
           .localizeValue=${(value) => {
-      return this.hass.localize(`component.lovelace_cards.entity_component._.${value}`);
+      return this.hass.localize(`component.advanced_ui_cards.entity_component._.${value}`);
     }}
           @value-changed=${this._valueChanged}
         ></ha-selector>
@@ -2726,13 +2726,13 @@ let GaugesEditor = class extends LitElement {
     if (!this.hass) return html``;
     return html`
       <h3>
-        <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.gauges")}</span>
+        <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.gauges")}</span>
       </h3>
       ${this._renderRows()}
       ${this.gauges && this.gauges.length >= 2 ? null : html`
         <lc-select
           class="add-gauge"
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.choose_entity")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.choose_entity")}
           .hass=${this.hass}
           .options=${this.options}
           @value-changed=${this._addGauge}
@@ -2757,7 +2757,7 @@ let GaugesEditor = class extends LitElement {
                 <lc-button-circle
                   icon="mdi:close"
                   .index=${index}
-                  .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.remove_gauge")}
+                  .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.remove_gauge")}
                   class="action-button"
                   @click=${this._removeGauge}
                   transparent
@@ -2766,7 +2766,7 @@ let GaugesEditor = class extends LitElement {
                 <lc-button-circle
                   icon="mdi:pencil"
                   .index=${index}
-                  .tooltip=${this.hass.localize("component.lovelace_cards.entity_component._.editor.configure_gauge")}
+                  .tooltip=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.configure_gauge")}
                   class="action-button"
                   @click=${this._editGauge}
                   transparent
@@ -2784,7 +2784,7 @@ let GaugesEditor = class extends LitElement {
       <lc-select
         class="edit-gauge"
         .index=${index}
-        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
+        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.entity")}
         .options=${this.options}
         .value=${gauge.entity}
         .getValue=${(value) => {
@@ -3049,7 +3049,7 @@ let GaugeEditor = class extends LitElement {
           class="row-full"
           .value=${this.value.entity}
           .configValue=${"entity"}
-          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.entity")}
+          .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.entity")}
           .options=${this._options}
           .getValue=${(value) => {
       var _a2;
@@ -3065,7 +3065,7 @@ let GaugeEditor = class extends LitElement {
         <ha-textfield
           class="row-cell-1.5x"
           .hass=${this.hass}
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.name")}"
+          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.name")}"
           .value=${this.value.name || ""}
           .configValue=${"name"}
           @input=${this._valueChanged}
@@ -3075,7 +3075,7 @@ let GaugeEditor = class extends LitElement {
         <ha-textfield
           class="row-cell-1.5x"
           .hass=${this.hass}
-          .label="${this.hass.localize("component.lovelace_cards.entity_component._.editor.unit")}"
+          .label="${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.unit")}"
           .value=${this.value.unit || ""}
           .configValue=${"unit"}
           @input=${this._valueChanged}
@@ -3085,7 +3085,7 @@ let GaugeEditor = class extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.min")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.min")}
           .value=${this.min}
           .required=${false}
           .configValue=${"min"}
@@ -3104,7 +3104,7 @@ let GaugeEditor = class extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.max")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.max")}
           .value=${this.max}
           .required=${false}
           .configValue=${"max"}
@@ -3123,7 +3123,7 @@ let GaugeEditor = class extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.precision")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.precision")}
           .value=${this.precision}
           .required=${false}
           .configValue=${"precision"}
@@ -3140,7 +3140,7 @@ let GaugeEditor = class extends LitElement {
 
         <!-- Enable confirmation -->
         <div class="row-full enable-digits">
-          <span>${this.hass.localize("component.lovelace_cards.entity_component._.editor.show_scale_digits")}</span>
+          <span>${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.show_scale_digits")}</span>
 
           <lc-switch
             .checked=${!!this.value.digits}
@@ -3156,7 +3156,7 @@ let GaugeEditor = class extends LitElement {
           outlined
           @click=${this._addLevel}
         >
-          ＋ ${this.hass.localize("component.lovelace_cards.entity_component._.editor.add_scale_color")}
+          ＋ ${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.add_scale_color")}
         </mwc-button>
       </div>
     `;
@@ -3178,8 +3178,8 @@ let GaugeEditor = class extends LitElement {
         class="row-full"
         .hass=${this.hass}
         .value=${this.value.attribute}
-        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.lovelace_cards.entity_component._.editor.input_attribute_label")}
-        .helper=${(_b = this.hass) == null ? void 0 : _b.localize("component.lovelace_cards.entity_component._.editor.input_attribute_hint")}
+        .label=${(_a = this.hass) == null ? void 0 : _a.localize("component.advanced_ui_cards.entity_component._.editor.input_attribute_label")}
+        .helper=${(_b = this.hass) == null ? void 0 : _b.localize("component.advanced_ui_cards.entity_component._.editor.input_attribute_hint")}
         .required=${false}
         .configValue=${"attribute"}
         .selector=${{
@@ -3197,7 +3197,7 @@ let GaugeEditor = class extends LitElement {
     return html`
       ${index === 0 ? html`
         <div class="row-full">
-          ${this.hass.localize("component.lovelace_cards.entity_component._.editor.scale_colors_label")}
+          ${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.scale_colors_label")}
         </div>` : null}
 
       <ha-selector
@@ -3225,7 +3225,7 @@ let GaugeEditor = class extends LitElement {
         class="row-cell level-color"
         .index=${index}
         .hass=${this.hass}
-        .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.color")}
+        .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.color")}
         .value=${level.color}
         .required=${true}
         .configValue=${"color"}
@@ -3414,19 +3414,19 @@ let HuiSubElementEditor = class extends LitElement {
     const translateKey = this.config.type.replace(/-/g, "_");
     switch (this.config.type) {
       case "gauge":
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.gauge_config_caption`);
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.gauge_config_caption`);
         break;
       case "footer-button":
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.button_config_caption`);
         break;
       case "entity":
         const entityType = "type" in this.config.elementConfig ? this.config.elementConfig.type : "entity";
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_config_caption`, {
-          entityType: this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_type_${entityType}`)
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.entity_config_caption`, {
+          entityType: this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.entity_type_${entityType}`)
         });
         break;
       default:
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.${translateKey}`);
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.${translateKey}`);
         break;
     }
     return html`<span slot="title">${title}</span>`;
@@ -5331,7 +5331,7 @@ let UniversalCardConfig = class extends LitElement {
     return html`
       <div class="title-icon-fields">
         <ha-textfield
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.title")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.title")}
           .value=${this._config.title || ""}
           .configValue=${"title"}
           @input=${this._valueChanged}
@@ -5339,7 +5339,7 @@ let UniversalCardConfig = class extends LitElement {
 
         <ha-icon-picker
           .hass=${this.hass}
-          .label=${this.hass.localize("component.lovelace_cards.entity_component._.editor.icon")}
+          .label=${this.hass.localize("component.advanced_ui_cards.entity_component._.editor.icon")}
           .value=${this._config.icon || ""}
           .required=${false}
           .disabled=${false}

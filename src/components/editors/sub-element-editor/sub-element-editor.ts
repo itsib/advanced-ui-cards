@@ -80,19 +80,19 @@ export class HuiSubElementEditor extends LitElement {
     const translateKey = this.config.type.replace(/-/g, '_');
     switch (this.config.type) {
       case 'gauge':
-         title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.gauge_config_caption`);
+         title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.gauge_config_caption`);
         break;
       case 'footer-button':
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.button_config_caption`);
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.button_config_caption`);
         break;
       case 'entity':
         const entityType = 'type' in this.config.elementConfig ? this.config.elementConfig.type : 'entity';
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_config_caption`, {
-          entityType: this.hass.localize(`component.lovelace_cards.entity_component._.editor.entity_type_${entityType}`),
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.entity_config_caption`, {
+          entityType: this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.entity_type_${entityType}`),
         });
         break;
       default:
-        title = this.hass.localize(`component.lovelace_cards.entity_component._.editor.${translateKey}`);
+        title = this.hass.localize(`component.advanced_ui_cards.entity_component._.editor.${translateKey}`);
         break;
     }
 

@@ -107,7 +107,7 @@ class GaugeEditor extends LitElement {
           class="row-full"
           .value=${this.value.entity}
           .configValue=${'entity'}
-          .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.entity')}
+          .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.entity')}
           .options=${this._options}
           .getValue=${(value: string): string => {
             return this.hass!.entities[value]?.name || value;
@@ -122,7 +122,7 @@ class GaugeEditor extends LitElement {
         <ha-textfield
           class="row-cell-1.5x"
           .hass=${this.hass}
-          .label="${this.hass.localize('component.lovelace_cards.entity_component._.editor.name')}"
+          .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.name')}"
           .value=${this.value.name || ''}
           .configValue=${'name'}
           @input=${this._valueChanged}
@@ -132,7 +132,7 @@ class GaugeEditor extends LitElement {
         <ha-textfield
           class="row-cell-1.5x"
           .hass=${this.hass}
-          .label="${this.hass.localize('component.lovelace_cards.entity_component._.editor.unit')}"
+          .label="${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.unit')}"
           .value=${this.value.unit || ''}
           .configValue=${'unit'}
           @input=${this._valueChanged}
@@ -142,7 +142,7 @@ class GaugeEditor extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.min')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.min')}
           .value=${this.min}
           .required=${false}
           .configValue=${'min'}
@@ -161,7 +161,7 @@ class GaugeEditor extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.max')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.max')}
           .value=${this.max}
           .required=${false}
           .configValue=${'max'}
@@ -180,7 +180,7 @@ class GaugeEditor extends LitElement {
         <ha-selector
           class="row-cell"
           .hass=${this.hass}
-          .label=${this.hass.localize('component.lovelace_cards.entity_component._.editor.precision')}
+          .label=${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.precision')}
           .value=${this.precision}
           .required=${false}
           .configValue=${'precision'}
@@ -197,7 +197,7 @@ class GaugeEditor extends LitElement {
 
         <!-- Enable confirmation -->
         <div class="row-full enable-digits">
-          <span>${this.hass.localize('component.lovelace_cards.entity_component._.editor.show_scale_digits')}</span>
+          <span>${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.show_scale_digits')}</span>
 
           <lc-switch
             .checked=${!!this.value!.digits}
@@ -213,7 +213,7 @@ class GaugeEditor extends LitElement {
           outlined
           @click=${this._addLevel}
         >
-          ＋ ${this.hass.localize('component.lovelace_cards.entity_component._.editor.add_scale_color')}
+          ＋ ${this.hass.localize('component.advanced_ui_cards.entity_component._.editor.add_scale_color')}
         </mwc-button>
       </div>
     `;
@@ -240,8 +240,8 @@ class GaugeEditor extends LitElement {
         class="row-full"
         .hass=${this.hass}
         .value=${this.value.attribute}
-        .label=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.input_attribute_label')}
-        .helper=${this.hass?.localize('component.lovelace_cards.entity_component._.editor.input_attribute_hint')}
+        .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.input_attribute_label')}
+        .helper=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.input_attribute_hint')}
         .required=${false}
         .configValue=${'attribute'}
         .selector=${{
@@ -259,7 +259,7 @@ class GaugeEditor extends LitElement {
     return html`
       ${index === 0 ? html`
         <div class="row-full">
-          ${this.hass!.localize('component.lovelace_cards.entity_component._.editor.scale_colors_label')}
+          ${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.scale_colors_label')}
         </div>` : null}
 
       <ha-selector
@@ -287,7 +287,7 @@ class GaugeEditor extends LitElement {
         class="row-cell level-color"
         .index=${index}
         .hass=${this.hass}
-        .label=${this.hass!.localize('component.lovelace_cards.entity_component._.editor.color')}
+        .label=${this.hass!.localize('component.advanced_ui_cards.entity_component._.editor.color')}
         .value=${level.color}
         .required=${true}
         .configValue=${'color'}
