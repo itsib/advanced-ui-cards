@@ -575,7 +575,6 @@ function e(e2, r2) {
     } });
   };
 }
-const styles$k = css``;
 var __defProp$k = Object.defineProperty;
 var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
 var __decorateClass$k = (decorators, target, key, kind) => {
@@ -621,10 +620,6 @@ let IconError = class extends LitElement {
     `;
   }
 };
-IconError.styles = [
-  LitElement.styles,
-  styles$k
-];
 __decorateClass$k([
   n2({ attribute: "size", type: Number })
 ], IconError.prototype, "size", 2);
@@ -634,7 +629,6 @@ __decorateClass$k([
 IconError = __decorateClass$k([
   t$1("lc-icon-error")
 ], IconError);
-const styles$j = css``;
 var __defProp$j = Object.defineProperty;
 var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
 var __decorateClass$j = (decorators, target, key, kind) => {
@@ -673,10 +667,6 @@ let IconSuccess = class extends LitElement {
     `;
   }
 };
-IconSuccess.styles = [
-  LitElement.styles,
-  styles$j
-];
 __decorateClass$j([
   n2({ attribute: "size", type: Number })
 ], IconSuccess.prototype, "size", 2);
@@ -686,7 +676,6 @@ __decorateClass$j([
 IconSuccess = __decorateClass$j([
   t$1("lc-icon-success")
 ], IconSuccess);
-const styles$i = css``;
 var __defProp$i = Object.defineProperty;
 var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
 var __decorateClass$i = (decorators, target, key, kind) => {
@@ -720,10 +709,6 @@ let IconSpinner = class extends LitElement {
     `;
   }
 };
-IconSpinner.styles = [
-  LitElement.styles,
-  styles$i
-];
 __decorateClass$i([
   n2({ attribute: "size", type: Number })
 ], IconSpinner.prototype, "size", 2);

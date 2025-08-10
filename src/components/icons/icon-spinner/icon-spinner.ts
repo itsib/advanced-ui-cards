@@ -1,14 +1,8 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import styles from './icon-spinner.scss'
 
 @customElement('lc-icon-spinner')
 export class IconSpinner extends LitElement {
-  static styles = [
-    LitElement.styles,
-    styles
-  ]
-
   @property({ attribute: 'size', type: Number })
   size: number;
 

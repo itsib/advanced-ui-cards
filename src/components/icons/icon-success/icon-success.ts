@@ -1,14 +1,8 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import styles from './icon-success.scss'
 
 @customElement('lc-icon-success')
 export class IconSuccess extends LitElement {
-  static styles = [
-    LitElement.styles,
-    styles,
-  ];
-
   @property({ attribute: 'size', type: Number })
   size: number;
 
