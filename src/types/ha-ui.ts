@@ -1,6 +1,6 @@
-import { HomeAssistant } from './ha-common';
-import { FrontendLocaleData, TimeFormat } from './ha-locale';
-import { ActionConfig, ConfirmationRestrictionConfig, HassServiceTarget } from './ha-actions';
+import type { HomeAssistant } from './ha-common';
+import type { FrontendLocaleData, TimeFormat } from './ha-locale';
+import type { ActionConfig, ConfirmationRestrictionConfig, HassServiceTarget } from './ha-actions';
 
 export type ThemeMode = 'auto' | 'light' | 'dark';
 
@@ -359,7 +359,7 @@ export interface LovelaceRow extends HTMLElement {
   hass?: HomeAssistant;
   preview?: boolean;
 
-  setConfig(config: LovelaceRowConfig);
+  setConfig(config: LovelaceRowConfig): void;
 }
 
 export interface ConditionalRowConfig extends EntityConfig {

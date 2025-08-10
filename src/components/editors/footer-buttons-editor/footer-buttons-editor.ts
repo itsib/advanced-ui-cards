@@ -1,12 +1,12 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IButtonConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
-import { SubElementEditorConfig } from '../sub-element-editor/sub-element-editor';
+import type { SubElementEditorConfig } from '../sub-element-editor/sub-element-editor';
 import { formatActionName } from '../../../utils/format-action-name';
 import { getServicesSelectOptions } from '../../../utils/object-to-select-option';
 import styles from './footer-buttons-editor.scss';
-import { ISelectOption } from '../../select/select';
+import type { ISelectOption } from '../../select/select';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -83,7 +83,7 @@ class FooterButtonsEditor extends LitElement {
           .index=${index}
           .label=${this.hass?.localize('component.advanced_ui_cards.entity_component._.editor.button')}
           .getValue=${(value: string) => {
-            const [domain, action] = value.split('.');
+            const [domain, action] = value.split('.') as [string, string];
             const service = action && this.hass?.services?.[domain]?.[action] || undefined;
             return service ? formatActionName(domain, service, this.hass!.localize) : value;
           }}
@@ -151,7 +151,7 @@ class FooterButtonsEditor extends LitElement {
 
   private _changeValue(event: CustomEvent) {
     const value = event.detail.value;
-    const index = (event.target as any).index;
+    const index = (event.target as any).index as number;
     const buttons = this.buttons!.concat();
 
     if (value === '' || value === undefined) {
@@ -160,7 +160,7 @@ class FooterButtonsEditor extends LitElement {
       buttons[index] = {
         ...buttons[index],
         action: value!,
-      };
+      } as any;
     }
 
     fireEvent(this, 'buttons-changed', { buttons });
@@ -172,7 +172,7 @@ class FooterButtonsEditor extends LitElement {
 
     const buttons = this.buttons!.concat();
 
-    buttons.splice(newIndex, 0, buttons.splice(oldIndex, 1)[0]);
+    buttons.splice(newIndex, 0, buttons.splice(oldIndex, 1)[0]!);
 
     fireEvent(this, 'buttons-changed', { buttons: buttons });
   }

@@ -1,6 +1,6 @@
-import { html, LitElement, TemplateResult } from 'lit';
-import {
-  type EntityConfig,
+import { html, LitElement, type TemplateResult } from 'lit';
+import type {
+  EntityConfig,
   HomeAssistant,
   IButtonConfigSchema,
   IEntityConfigSchema,
@@ -133,8 +133,8 @@ class UniversalCard extends LitElement implements LovelaceCard {
   }
 
   private _renderGauge(_entity: IGaugeConfigSchema): TemplateResult {
-    const entityObj = this.hass!.entities[_entity.entity];
-    const stateObj = this.hass!.states[_entity.entity];
+    const entityObj = this.hass!.entities[_entity.entity]!;
+    const stateObj = this.hass!.states[_entity.entity]!;
 
     return html`
       <div class="gauge-wrap" @click=${() => fireEvent(this, 'hass-more-info', { entityId: _entity.entity })}>

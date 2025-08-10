@@ -1,14 +1,14 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import { HomeAssistant, IGaugeConfigSchema, IGaugeLevelConfigSchema } from 'types';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
+import type { HomeAssistant, IGaugeConfigSchema, IGaugeLevelConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
 import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import { THEME_COLORS } from '../../../utils/format-colors';
 import { assert } from 'superstruct';
-import styles from './gauge-editor.scss';
-import { ISelectOption } from '../../select/select';
+import { type ISelectOption } from '../../select/select';
 import { GaugeConfigSchema } from '../../../schemas/gauge-config-schema';
 import { precisionToMinStep, round } from '../../../utils/math';
+import styles from './gauge-editor.scss';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -229,7 +229,7 @@ class GaugeEditor extends LitElement {
   private _renderAttributeSelect(): TemplateResult {
     if (!this.value || !this.hass) return html``;
 
-    const stateObj = this.hass.states[this.value.entity];
+    const stateObj = this.hass.states[this.value.entity]!;
     const attributes = Object.keys(stateObj.attributes);
     const hideAttributes = Object.keys(stateObj.attributes).filter(attribute => typeof stateObj.attributes[attribute] !== 'number');
 
@@ -326,7 +326,7 @@ class GaugeEditor extends LitElement {
         this._error = undefined;
 
         fireEvent(this as HTMLElement, 'config-changed', { config });
-      } catch (e) {
+      } catch (e: any) {
         this._error = `${e.message}`.trim();
       }
     } else {
@@ -343,7 +343,7 @@ class GaugeEditor extends LitElement {
 
   private _updateLevel(event: CustomEvent) {
     const index = (event.target as any).index;
-    const configValue = (event.target as any).configValue;
+    const configValue = (event.target as any).configValue as keyof IGaugeLevelConfigSchema;
 
     if (this.value?.levels?.[index]?.[configValue] === event.detail.value) return;
     const config = { ...this.value! };
@@ -353,7 +353,7 @@ class GaugeEditor extends LitElement {
       const levels: IGaugeLevelConfigSchema[] = [];
       for (let i = 0; i < config.levels!.length; i++) {
         if (i !== index) {
-          levels.push({ ...config.levels![i] });
+          levels.push({ ...config.levels![i]! });
         }
       }
       config.levels = levels;
@@ -362,7 +362,7 @@ class GaugeEditor extends LitElement {
       config.levels![index] = {
         ...config.levels![index],
         [configValue]: event.detail.value,
-      };
+      } as IGaugeLevelConfigSchema;
     }
 
     fireEvent(this as HTMLElement, 'config-changed', { config });
@@ -379,13 +379,13 @@ class GaugeEditor extends LitElement {
     if (config.levels.length > 0) {
       const onePercent = (this.max - this.min) / 100;
       const inc = round(onePercent * 10, this.precision);
-      const lastLevel = config.levels[config.levels.length - 1].level;
+      const lastLevel = config.levels[config.levels.length - 1]!.level;
 
       level = Math.min(lastLevel + inc, this.max);
-      color = THEME_COLORS[config.levels.length];
+      color = THEME_COLORS[config.levels.length]!;
     } else {
       level = this.min;
-      color = THEME_COLORS[0];
+      color = THEME_COLORS[0]!;
     }
 
     config.levels.push({ level, color });

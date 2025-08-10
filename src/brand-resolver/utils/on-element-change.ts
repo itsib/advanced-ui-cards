@@ -13,7 +13,7 @@ export function onElementChange(observable: HTMLElement | ShadowRoot, callbacks:
 
   const observer = new MutationObserver((mutations: MutationRecord[]) => {
     for (let i = 0; i < mutations.length; i++) {
-      const { addedNodes, removedNodes, attributeName, type } = mutations[i];
+      const { addedNodes, removedNodes, attributeName, type } = mutations[i]!;
       if (type === 'childList') {
         // Emit remove first
         for (let j = 0; j < removedNodes.length; j++) {

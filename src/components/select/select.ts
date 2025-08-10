@@ -1,10 +1,10 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import './select-dropdown';
 import { getElementRect } from '../../utils/get-element-rect';
 import { SelectDropdown } from './select-dropdown';
 import { fireEvent } from '../../utils/fire-event';
 import styles from './select.scss';
+import './select-dropdown';
 
 const LIST_ITEM_HEIGHT = 72;
 const LIST_MAX_DISPLAY = 5;
@@ -148,10 +148,10 @@ class Select extends LitElement {
   }
 
   private _hideDropdown() {
-    window.removeEventListener('wheel', this._callbacks['wheel']);
+    window.removeEventListener('wheel', this._callbacks['wheel'] as any);
     Reflect.deleteProperty(this._callbacks, 'wheel');
 
-    window.removeEventListener('click', this._callbacks['window-click']);
+    window.removeEventListener('click', this._callbacks['window-click'] as any);
     Reflect.deleteProperty(this._callbacks, 'window-click');
 
     this._dropdown?.remove();

@@ -1,13 +1,13 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { assert } from 'superstruct';
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import { HassService, HomeAssistant, IButtonConfigSchema } from 'types';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
+import type { HassService, HomeAssistant, IButtonConfigSchema } from 'types';
 import { ButtonConfigSchema } from '../../../schemas/button-config-schema';
 import { fireEvent } from '../../../utils/fire-event';
 import { getServicesSelectOptions } from '../../../utils/object-to-select-option';
 import { formatActionName } from '../../../utils/format-action-name';
 import { compactTarget, extensiveTarget } from '../../../utils/normalize-target';
-import { ISelectOption } from '../../select/select';
+import type { ISelectOption } from '../../select/select';
 import styles from './footer-button-editor.scss';
 
 declare global {
@@ -120,7 +120,7 @@ class FooterButtonEditor extends LitElement {
   get service(): HassService | undefined {
     if (!this._actionDomain || !this._actionName || !this.hass || !(this._actionDomain in this.hass.services)) return;
 
-    return this.hass.services[this._actionDomain][this._actionName];
+    return this.hass.services![this._actionDomain!]![this._actionName];
   }
 
   toggleMode() {
@@ -159,8 +159,8 @@ class FooterButtonEditor extends LitElement {
           .configValue=${'action'}
           .getValue=${(value: string) => {
             const [domain, action] = value.split('.');
-            const service = action && this.hass?.services?.[domain]?.[action] || undefined;
-            return service ? formatActionName(domain, service, this.hass!.localize) : value;
+            const service = action && this.hass?.services?.[domain!]?.[action] || undefined;
+            return service ? formatActionName(domain!, service, this.hass!.localize) : value;
           }}
           .helper=${this.service?.description}
           @value-changed=${this._valueChanged}
@@ -272,7 +272,7 @@ class FooterButtonEditor extends LitElement {
 
     return html`${
       fieldsIds.map(fieldId => {
-        const fields = service.fields[fieldId];
+        const fields = service.fields[fieldId]!;
         if (!fields.required) return html``;
 
         return html`
@@ -321,7 +321,7 @@ class FooterButtonEditor extends LitElement {
         this._error = undefined;
 
         fireEvent(this as HTMLElement, 'config-changed', { config });
-      } catch (e) {
+      } catch (e: any) {
         this._error = `${e.message}`.trim();
       }
     } else {
@@ -351,7 +351,7 @@ class FooterButtonEditor extends LitElement {
   }
 
   private _valueChanged(event: CustomEvent) {
-    const configValue = (event.target as any).configValue;
+    const configValue = (event.target as any).configValue!;
     const value = ['target', 'color', 'data'].includes(configValue) ? event.detail.value : (event.target as any).value;
     const config = { ...this.value! };
 
@@ -387,7 +387,7 @@ class FooterButtonEditor extends LitElement {
       config.data = { ...(this.value?.data || {}) };
       config.data[dataField] = value;
     } else {
-      config[configValue] = value;
+      (config as any)[configValue] = value;
     }
 
     fireEvent(this as HTMLElement, 'config-changed', { config });

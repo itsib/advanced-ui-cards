@@ -1,4 +1,4 @@
-import { HassService } from 'types';
+import type { HassService } from 'types';
 
 const CODE_COMPONENTS = {
   homeassistant: 'Home Assistant Core Integration',
@@ -8,7 +8,7 @@ export function formatActionName(domain: string, service: HassService, localize:
   const serviceName = service.name;
   let componentName: string;
   if (domain in CODE_COMPONENTS) {
-    componentName = CODE_COMPONENTS[domain];
+    componentName = CODE_COMPONENTS[domain as keyof typeof CODE_COMPONENTS];
   } else {
     componentName = localize(`component.${domain}.entity_component._.name`);
   }

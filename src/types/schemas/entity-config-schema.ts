@@ -1,7 +1,5 @@
-import { IActionConfigSchema } from './action-config-schema';
-import { IConfirmationConfigSchema } from './confirmation-config-schema';
-import { any, literal, optional, string } from 'superstruct';
-import { EntityConfigSchema } from '../../schemas/entity-config-schema';
+import type { IActionConfigSchema } from './action-config-schema';
+import type { IConfirmationConfigSchema } from './confirmation-config-schema';
 
 type IFormatEnum = 'relative' | 'total' | 'date' | 'time' | 'datetime';
 

@@ -1,5 +1,5 @@
 import type { TemplateResult } from 'lit';
-import {
+import type {
   LovelaceBadgeConfig,
   LovelaceCardConfig,
   LovelaceElementConfig,

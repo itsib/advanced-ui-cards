@@ -1,5 +1,4 @@
-import {
-  EntityConfigLike,
+import type {
   HassEntity,
   HomeAssistant,
   IEntityConfigSchema,
@@ -81,7 +80,7 @@ export function arrayFilter<T>(array: T[], conditions: ((value: T) => boolean)[]
     let meetsConditions = true;
 
     for (const condition of conditions) {
-      if (!condition(array[i])) {
+      if (!condition(array[i]!)) {
         meetsConditions = false;
         break;
       }
@@ -110,8 +109,7 @@ export function findEntities(
   }
 
   if (entityFilter) {
-    conditions.push(eid => hass.states[eid] && entityFilter(hass.states[eid]),
-    );
+    conditions.push(eid => !!hass.states[eid] && entityFilter(hass.states[eid]));
   }
 
   const entityIds = arrayFilter(entities, conditions, maxEntities);
@@ -162,6 +160,6 @@ export function turnOnOffEntity(hass: HomeAssistant, entityId: string, turnOn = 
 }
 
 export function toggleEntity(hass: HomeAssistant, entityId: string): Promise<ServiceCallResponse> {
-  const turnOn = STATES_OFF.includes(hass.states[entityId].state);
+  const turnOn = STATES_OFF.includes(hass.states[entityId]!.state);
   return turnOnOffEntity(hass, entityId, turnOn);
 }

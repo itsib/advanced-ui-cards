@@ -3,7 +3,7 @@ export function round(value: number, decimals = 2): number {
   return Math.round(value * mul) / mul;
 }
 
-export function normalize(value: number, min: number, max: number, decimals = 2): [number, number, number] {
+export function normalize(value: number, min = 0, max = 100, decimals = 2): [number, number, number] {
   min = isNaN(min) ? 0 : min;
   max = isNaN(max) ? 100 : max;
 

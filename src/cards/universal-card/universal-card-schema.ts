@@ -1,6 +1,6 @@
 import { array, assign, boolean, object, optional, string, union } from 'superstruct';
 import { BaseCardConfigSchema } from '../../schemas/base-card-config-schema';
-import { IButtonConfigSchema, IEntityConfigSchema, IGaugeConfigSchema, LovelaceCardConfig } from 'types';
+import type { IButtonConfigSchema, IEntityConfigSchema, IGaugeConfigSchema, LovelaceCardConfig } from 'types';
 import { ButtonConfigSchema } from '../../schemas/button-config-schema';
 import { EntityConfigSchema } from '../../schemas/entity-config-schema';
 import { GaugeConfigSchema } from '../../schemas/gauge-config-schema';

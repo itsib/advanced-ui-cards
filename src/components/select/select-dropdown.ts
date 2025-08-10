@@ -1,8 +1,8 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent } from '../../utils/fire-event';
 import styles from './select-dropdown.scss';
-import { ISelectOption } from './select';
+import type { ISelectOption } from './select';
 import './select-option';
 
 declare global {

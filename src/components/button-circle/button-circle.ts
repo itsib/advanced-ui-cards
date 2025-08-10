@@ -1,4 +1,4 @@
-import { html, TemplateResult } from 'lit';
+import { html, type TemplateResult } from 'lit';
 import type { HomeAssistant, ElementConstructor, LovelaceConstructor } from 'types';
 import { property } from 'lit/decorators.js';
 import { formatColors } from '../../utils/format-colors';

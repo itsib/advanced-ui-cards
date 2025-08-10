@@ -94,18 +94,18 @@ function onElementChange(observable, callbacks) {
         for (let j = 0; j < removedNodes.length; j++) {
           const node = removedNodes.item(j);
           if (node && node.nodeType === Node.ELEMENT_NODE) {
-            onRemove == null ? void 0 : onRemove(observable, node);
+            onRemove?.(observable, node);
           }
         }
         for (let j = 0; j < addedNodes.length; j++) {
           const node = addedNodes.item(j);
           if (node && node.nodeType === Node.ELEMENT_NODE) {
-            onAdd == null ? void 0 : onAdd(observable, node);
+            onAdd?.(observable, node);
           }
         }
       } else if (type === "attributes") {
         if (attributeName) {
-          onAttribute == null ? void 0 : onAttribute(observable, attributeName);
+          onAttribute?.(observable, attributeName);
         }
       }
     }
@@ -130,8 +130,9 @@ const FORMATS = {
   default: "color: #b3b3b3; font-weight: 400;"
 };
 class DomWatcher {
+  _debug;
+  _watchers = /* @__PURE__ */ new WeakMap();
   constructor(debug = false) {
-    this._watchers = /* @__PURE__ */ new WeakMap();
     this._debug = debug;
   }
   log(type, ...objects) {
@@ -207,9 +208,8 @@ class DomWatcher {
    * @private
    */
   _onRemove(observable, removed) {
-    var _a;
     if (this._watchers.has(removed)) {
-      (_a = this._watchers.get(removed)) == null ? void 0 : _a();
+      this._watchers.get(removed)?.();
       this._watchers.delete(removed);
     }
     const observableName = getElementName(observable);
@@ -249,6 +249,10 @@ class DomWatcher {
   }
 }
 class BrandResolver extends DomWatcher {
+  _root;
+  _hass;
+  _images;
+  _domains;
   constructor(config) {
     super(config.hass.config.debug);
     this._root = config.root;
@@ -261,14 +265,13 @@ class BrandResolver extends DomWatcher {
     }
   }
   getImgSrc(domain) {
-    return domain && domain in this._images ? this._images[domain] : null;
+    return domain && this._images && domain in this._images && this._images[domain] || null;
   }
   getDomainByEntityId(entityId) {
-    var _a, _b, _c, _d;
     for (let i = 0; i < this._domains.length; i++) {
       const domain = this._domains[i];
-      const state = (_b = (_a = this._hass) == null ? void 0 : _a.states) == null ? void 0 : _b[entityId];
-      if (state && ((_d = (_c = state.attributes) == null ? void 0 : _c.entity_picture) == null ? void 0 : _d.includes(domain))) {
+      const state = this._hass?.states?.[entityId];
+      if (state && state.attributes?.entity_picture?.includes(domain)) {
         return domain;
       }
       const name = entityId.split(".", 2)[1];
@@ -312,7 +315,7 @@ class BrandResolver extends DomWatcher {
     waitSelector(element, ":shadow", (shadowRoot) => this.subscribe(shadowRoot));
   }
   ["NEW:SHADOW:HA-MORE-INFO-DIALOG"](element) {
-    const entityId = element == null ? void 0 : element["_entityId"];
+    const entityId = element?.["_entityId"];
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
     if (!url) return;
@@ -322,8 +325,7 @@ class BrandResolver extends DomWatcher {
     });
   }
   ["NEW:SHADOW:HA-INTEGRATION-LIST-ITEM"](element) {
-    var _a;
-    if (!((_a = element == null ? void 0 : element.integration) == null ? void 0 : _a.domain)) return;
+    if (!element?.integration?.domain) return;
     const domain = element.integration.domain;
     const src = this.getImgSrc(domain);
     if (!src) return;
@@ -348,7 +350,7 @@ class BrandResolver extends DomWatcher {
     });
   }
   ["NEW:*:HA-CONFIG-INTEGRATION-PAGE"](element) {
-    const domain = element == null ? void 0 : element.domain;
+    const domain = element?.domain;
     const src = this.getImgSrc(domain);
     if (!src || !domain) return;
     waitSelector(element, ":shadow hass-subpage .container .logo-container img", (img) => {
@@ -383,7 +385,7 @@ class BrandResolver extends DomWatcher {
       if (!list) return;
       let isUpdatesList = false;
       for (const item of list.children) {
-        const entityId = item == null ? void 0 : item.entity_id;
+        const entityId = item?.entity_id;
         const domain = this.getDomainByEntityId(entityId);
         const url = this.getImgSrc(domain);
         if (url) {
@@ -396,7 +398,7 @@ class BrandResolver extends DomWatcher {
     });
   }
   ["NEW:*:HA-LIST-ITEM"](element) {
-    const entityId = element == null ? void 0 : element.entity_id;
+    const entityId = element?.entity_id;
     const domain = this.getDomainByEntityId(entityId);
     const url = this.getImgSrc(domain);
     if (!url) return;
@@ -407,9 +409,8 @@ class BrandResolver extends DomWatcher {
   }
   ["NEW:*:HA-CONFIG-REPAIRS"](element) {
     waitSelector(element, ":shadow ha-md-list", (list) => {
-      var _a;
       for (const item of list.children) {
-        const domain = (_a = item == null ? void 0 : item.issue) == null ? void 0 : _a.issue_domain;
+        const domain = item?.issue?.issue_domain;
         const url = this.getImgSrc(domain);
         if (!url) continue;
         this.emitCreate(list, item);
@@ -418,8 +419,7 @@ class BrandResolver extends DomWatcher {
     });
   }
   ["NEW:*:HA-MD-LIST-ITEM"](element) {
-    var _a;
-    const domain = (_a = element.issue) == null ? void 0 : _a.issue_domain;
+    const domain = element.issue?.issue_domain;
     const url = this.getImgSrc(domain);
     if (!url) return;
     for (const child of element.children) {

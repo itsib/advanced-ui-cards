@@ -1,6 +1,6 @@
-import { LitElement, PropertyValues } from 'lit';
+import { LitElement, type PropertyValues } from 'lit';
 import styles from './gauge.scss';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { elasticOut } from '../../utils/timing-functions';
 import { formatColors } from '../../utils/format-colors';
 import { getAngle, normalize, round, toRadians } from '../../utils/math';
@@ -42,13 +42,24 @@ export class Gauge extends LitElement {
    * Minimum value bound
    */
   @property({ type: Number, reflect: true })
-  min: number = 0;
+  set min(value: number | undefined) {
+    this._min = value == null ? this._min : value
+  }
+  get min(): number {
+    return this._min ?? 0
+  }
+
 
   /**
    * Maximum value bound
    */
   @property({ type: Number, reflect: true })
-  max: number = 100;
+  set max(value: number | undefined) {
+    this._max = value == null ? this._max : value
+  }
+  get max(): number {
+    return this._max ?? 100
+  }
 
   /**
    * The step attribute is a number that specifies the
@@ -88,7 +99,7 @@ export class Gauge extends LitElement {
       if (Array.isArray(newVal) && Array.isArray(oldVal)) {
         if (newVal.length !== oldVal.length) return true;
 
-        return newVal.some((item: LevelItem, index) => item.level !== oldVal[index].level || item.color !== oldVal[index].color);
+        return newVal.some((item: LevelItem, index) => item.level !== oldVal[index]?.level || item.color !== oldVal[index].color);
       }
       return true;
     },
@@ -97,6 +108,8 @@ export class Gauge extends LitElement {
 
   private _normalizedLevels?: LevelItem[];
 
+  private _min = 0
+  private _max = 100
   /**
    * SVG root element
    * @private
@@ -185,7 +198,7 @@ export class Gauge extends LitElement {
           .map(item => ({ level: item?.level ?? 0, color: item?.color || 'disabled' }))
           .sort((a, b) => a.level - b.level);
 
-        if (this._normalizedLevels[0].level !== this.min) {
+        if (this._normalizedLevels[0]!.level !== this.min) {
           this._normalizedLevels = [{ level: this.min, color: 'disabled' }, ...this._normalizedLevels];
         }
       }
@@ -362,9 +375,9 @@ export class Gauge extends LitElement {
 
     if (this._normalizedLevels) {
       for (let i = 0; i < this._normalizedLevels.length; i++) {
-        const level = this._normalizedLevels[i].level;
+        const level = this._normalizedLevels[i]!.level;
         const nextLevel = this._normalizedLevels[i + 1]?.level ?? this.max;
-        const color = formatColors(this._normalizedLevels[i].color);
+        const color = formatColors(this._normalizedLevels[i]!.color);
 
         const beginAngleDeg = getAngle(...normalize(level, this.min, this.max));
         const beginAngle = toRadians(beginAngleDeg);

@@ -1,5 +1,5 @@
-import { IConfirmationConfigSchema } from './confirmation-config-schema';
-import { ITargetConfigSchema } from './target-config-schema';
+import type { IConfirmationConfigSchema } from './confirmation-config-schema';
+import type { ITargetConfigSchema } from './target-config-schema';
 
 interface IBaseActionConfigSchema {
   action:  'more-info' | 'url' | 'navigate' | 'none' | 'toggle' | 'perform-action';

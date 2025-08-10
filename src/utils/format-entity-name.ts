@@ -1,4 +1,4 @@
-import { EntityConfigLike, HomeAssistant } from 'types';
+import type { EntityConfigLike, HomeAssistant } from 'types';
 import { computeDomain } from './entities-utils';
 
 export function formatAttributeName(entityId: string, attribute: string, hass: HomeAssistant): string {
@@ -14,7 +14,7 @@ export function formatAttributeName(entityId: string, attribute: string, hass: H
 export function formatEntityName(entityLike: EntityConfigLike, hass: HomeAssistant) {
   const entityId = entityLike.entity;
   if (!entityId) return '';
-  const entity = hass.entities[entityId];
+  const entity = hass.entities[entityId]!;
   const domain = computeDomain(entityId);
 
   let name: string | null = null;

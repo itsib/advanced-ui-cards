@@ -1,5 +1,5 @@
 import { DomWatcher, waitSelector } from './utils';
-import { BrandResolverConfig, ReplacementImages, HomeAssistant } from './types';
+import type { BrandResolverConfig, ReplacementImages, HomeAssistant } from './types';
 
 export class BrandResolver extends DomWatcher {
 
@@ -27,12 +27,12 @@ export class BrandResolver extends DomWatcher {
   }
 
   getImgSrc(domain?: string | null): string | null {
-    return domain && domain in this._images ? this._images[domain] : null;
+    return (domain && this._images && domain in this._images && this._images[domain]) || null;
   }
 
   getDomainByEntityId(entityId: string): string | null {
     for (let i = 0; i < this._domains.length; i++) {
-      const domain = this._domains[i];
+      const domain = this._domains[i] as string;
       const state = this._hass?.states?.[entityId];
       if (state && state.attributes?.entity_picture?.includes(domain)) {
         return domain;
@@ -47,7 +47,7 @@ export class BrandResolver extends DomWatcher {
 
   getDomainBySrc(src: string): string | null {
     for (let i = 0; i < this._domains.length; i++) {
-      const domain = this._domains[i];
+      const domain = this._domains[i] as string;
       if (src.includes(`/${domain}/`)) {
         return domain;
       }

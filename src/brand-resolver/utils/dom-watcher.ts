@@ -1,6 +1,7 @@
-import { ChangeCallbacks, ChangeDisconnect, onElementChange } from './on-element-change';
+import type { ChangeCallbacks, ChangeDisconnect } from './on-element-change';
+import { onElementChange } from './on-element-change';
 import { getElementName } from './get-element-name';
-import { LogType } from '../types';
+import type { LogType } from '../types';
 
 const FORMATS = {
   subscribe: 'color: #ffcc00; font-weight: 700;',
@@ -91,7 +92,7 @@ export abstract class DomWatcher {
       const eventName = `NEW:${targetName}:${elementName}`;
       if (eventName in this) {
         this.log('create', eventName, created);
-        this[eventName](created);
+        (this as any)[eventName](created);
       }
     }
   }
@@ -121,7 +122,7 @@ export abstract class DomWatcher {
       const eventName = `REM:${targetName}:${elementName}`;
       if (eventName in this) {
         this.log('remove', eventName, removed);
-        this[eventName](removed);
+        (this as any)[eventName](removed);
       }
     }
   }
@@ -131,7 +132,7 @@ export abstract class DomWatcher {
 
     if (methodId in this) {
       this.log('attribute', methodId, observable);
-      this[methodId](observable, attributeName);
+      (this as any)[methodId](observable, attributeName);
     }
   }
 

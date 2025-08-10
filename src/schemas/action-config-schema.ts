@@ -1,5 +1,5 @@
 import { boolean, dynamic, enums, literal, object, optional, string, type } from 'superstruct';
-import { BaseActionConfig } from 'types';
+import type { BaseActionConfig } from 'types';
 import { ConfirmationConfigSchema } from './confirmation-config-schema';
 import { TargetConfigSchema } from './target-config-schema';
 

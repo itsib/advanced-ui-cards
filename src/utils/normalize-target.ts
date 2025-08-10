@@ -1,4 +1,4 @@
-import { ITargetConfigSchema } from 'types';
+import type { ITargetConfigSchema } from 'types';
 
 function extensiveField(value?: string | string[]): string[] {
   if (!value) return [];

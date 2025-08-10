@@ -1,5 +1,5 @@
-import { Context } from './ha-common';
-import { HassEntity } from './ha-entity';
+import type { Context } from './ha-common';
+import type { HassEntity } from './ha-entity';
 
 export interface AuthData {
   hassUrl: string;

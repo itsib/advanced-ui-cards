@@ -1,13 +1,13 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import { HomeAssistant, IEntityBaseConfigSchema, IEntityConfigSchema } from 'types';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
+import type { HomeAssistant, IEntityBaseConfigSchema, IEntityConfigSchema } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
 import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import { assert } from 'superstruct';
 import { EntityConfigSchema } from '../../../schemas/entity-config-schema';
 import { computeDomain } from '../../../utils/entities-utils';
 import styles from './entity-editor.scss';
-import { ISelectOption } from '../../select/select';
+import type { ISelectOption } from '../../select/select';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -207,7 +207,7 @@ class EntityEditor extends LitElement {
         this._error = undefined;
 
         fireEvent(this as HTMLElement, 'config-changed', { config });
-      } catch (e) {
+      } catch (e: any) {
         this._error = `${e.message}`.trim();
       }
     } else {

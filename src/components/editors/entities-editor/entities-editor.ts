@@ -1,7 +1,7 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IEntityConfigSchema } from 'types';
-import { ISelectOption } from '../../select/select';
+import type { ISelectOption } from '../../select/select';
 import { fireEvent } from '../../../utils/fire-event';
 import { getEntitiesSelectOptions } from '../../../utils/object-to-select-option';
 import styles from './entities-editor.scss';
@@ -181,9 +181,9 @@ export class EntitiesEditor extends LitElement {
     event.stopPropagation();
     const { oldIndex, newIndex } = event.detail;
 
-    const entities = this.entities!.concat();
+    const entities = this.entities!.concat()!;
 
-    entities.splice(newIndex, 0, entities.splice(oldIndex, 1)[0]);
+    entities.splice(newIndex, 0, entities.splice(oldIndex, 1)![0]!);
 
     fireEvent(this, 'entities-changed', { entities: entities });
   }

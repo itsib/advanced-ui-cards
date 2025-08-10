@@ -1,6 +1,6 @@
 import { forwardHaptic } from './haptic';
 import { fireEvent } from './fire-event';
-import { ActionConfig, ConfirmationRestrictionConfig, HomeAssistant } from 'types';
+import type { ActionConfig, ConfirmationRestrictionConfig, HomeAssistant } from 'types';
 import { domainToName } from './localization';
 import { mainWindow } from './get-main-window';
 import { toggleEntity } from './entities-utils';
@@ -46,17 +46,17 @@ export async function handleAction(node: HTMLElement, hass: HomeAssistant, confi
 
     let serviceName = '';
     if (actionConfig.action === 'call-service' || actionConfig.action === 'perform-action') {
-      const [domain, service] = (actionConfig.perform_action || actionConfig.service)!.split('.', 2);
+      const [domain, service] = (actionConfig.perform_action || actionConfig.service)!.split('.', 2) as [string, string];
 
       const serviceDomains = hass.services;
 
-      if (domain in serviceDomains && service in serviceDomains[domain]) {
+      if (serviceDomains && domain in serviceDomains && service in serviceDomains[domain]!) {
         await hass.loadBackendTranslation('title');
         const localize = await hass.loadBackendTranslation('entity');
 
         serviceName += domainToName(localize, domain);
         serviceName += ': ';
-        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
+        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain]![service]!.name || service;
       }
     }
 
@@ -115,7 +115,7 @@ export async function handleAction(node: HTMLElement, hass: HomeAssistant, confi
         forwardHaptic('failure');
         return;
       }
-      const [domain, service] = (actionConfig.perform_action || actionConfig.service)!.split('.', 2);
+      const [domain, service] = (actionConfig.perform_action || actionConfig.service)!.split('.', 2) as [string, string];
 
       hass.callService(
         domain,

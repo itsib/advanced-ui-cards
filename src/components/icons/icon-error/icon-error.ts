@@ -1,10 +1,13 @@
-import { html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, type TemplateResult } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import styles from './icon-error.scss';
 
 @customElement('lc-icon-error')
 export class IconError extends LitElement {
-  static styles = styles;
+  static styles = [
+    LitElement.styles,
+    styles
+  ];
 
   @property({ attribute: 'size', type: Number })
   size: number;

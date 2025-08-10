@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult, html } from 'lit';
+import { LitElement, type TemplateResult, html } from 'lit';
 import styles from './radio.scss';
 import { property } from 'lit/decorators.js';
 import { fireEvent } from '../../utils/fire-event';

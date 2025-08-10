@@ -1,8 +1,8 @@
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IGaugeConfigSchema } from 'types';
 import { getGaugesSelectOptions } from '../../../utils/object-to-select-option';
-import { ISelectOption } from '../../select/select';
+import type { ISelectOption } from '../../select/select';
 import { fireEvent } from '../../../utils/fire-event';
 import styles from './gauges-editor.scss';
 
@@ -172,9 +172,9 @@ class GaugesEditor extends LitElement {
     event.stopPropagation();
     const { oldIndex, newIndex } = event.detail;
 
-    const gauges = this.gauges!.concat();
+    const gauges = this.gauges!.concat() as IGaugeConfigSchema[];
 
-    gauges.splice(newIndex, 0, gauges.splice(oldIndex, 1)[0]);
+    gauges.splice(newIndex, 0, gauges.splice(oldIndex, 1)[0]!);
 
     fireEvent(this, 'gauges-changed', { gauges: gauges });
   }

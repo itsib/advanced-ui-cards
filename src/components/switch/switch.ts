@@ -1,6 +1,6 @@
-import { html, LitElement, TemplateResult } from 'lit';
-import styles from './switch.scss';
+import { html, LitElement, type TemplateResult } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import styles from './switch.scss';
 
 declare global {
   interface HTMLElementTagNameMap {

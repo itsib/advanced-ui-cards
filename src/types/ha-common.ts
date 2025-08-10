@@ -1,12 +1,12 @@
-import { Auth, Connection, MessageBase } from './ha-connection';
-import { HassEntities, HassEntity, HassEntityAttributeBase, HassEntityBase, HassServices } from './ha-entity';
-import { type LovelaceCard, LovelaceCardConfig } from './ha-ui';
-import { FrontendLocaleData, LocalizeFunc, TranslationCategory, TranslationMetadata } from './ha-locale';
+import type { Auth, Connection, MessageBase } from './ha-connection';
+import type { HassEntities, HassEntity, HassEntityAttributeBase, HassEntityBase, HassServices } from './ha-entity';
+import type { LovelaceCard, LovelaceCardConfig } from './ha-ui';
+import type { FrontendLocaleData, LocalizeFunc, TranslationCategory, TranslationMetadata } from './ha-locale';
 import type { LitElement } from 'lit';
 import type { ActionConfig, HassServiceTarget } from './ha-actions';
-import { CustomCardHelpers } from './ha-helper';
-import { ShowToastParams } from '../utils/show-toast';
-import { IButtonConfigSchema } from './schemas';
+import type { CustomCardHelpers } from './ha-helper';
+import type { ShowToastParams } from '../utils/show-toast';
+import type { IButtonConfigSchema } from './schemas';
 
 declare global {
   /* eslint-disable no-var, no-redeclare */
@@ -27,11 +27,11 @@ declare global {
     ShadyCSS: {
       nativeCss: boolean;
       nativeShadow: boolean;
-      prepareTemplate(templateElement, elementName, elementExtension);
-      styleElement(element);
-      styleSubtree(element, overrideProperties);
-      styleDocument(overrideProperties);
-      getComputedStyleValue(element, propertyName);
+      prepareTemplate(templateElement: string, elementName: string, elementExtension: string): any;
+      styleElement(element: any): any;
+      styleSubtree(element: any, overrideProperties: any): any;
+      styleDocument(overrideProperties: any): any;
+      getComputedStyleValue(element: any, propertyName: string): any;
     };
 
     hassConnection: Promise<{ auth: Auth; conn: Connection }>;

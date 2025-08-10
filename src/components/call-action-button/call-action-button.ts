@@ -1,7 +1,7 @@
-import { html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { HomeAssistant, IButtonConfigSchema } from 'types';
-import { ButtonStatus } from '../button-circle/button-circle';
+import type { ButtonStatus } from '../button-circle/button-circle';
 import { isShowConfirmation } from '../../utils/handle-action';
 import { forwardHaptic } from '../../utils/haptic';
 import { domainToName } from '../../utils/localization';
@@ -47,7 +47,7 @@ class CallActionButton extends LitElement {
       return;
     }
 
-    const [domain, service] = this.config!.action.split('.', 2);
+    const [domain, service] = this.config!.action.split('.', 2) as [string, string];
 
     await this.hass!.callService(domain, service, this.config!.data, this.config!.target);
   }
@@ -69,7 +69,7 @@ class CallActionButton extends LitElement {
       return;
     }
 
-    const [domain, service] = this.config!.action.split('.', 2);
+    const [domain, service] = this.config!.action.split('.', 2) as [string, string];
 
     const begin = Date.now();
 
@@ -106,18 +106,18 @@ class CallActionButton extends LitElement {
     if (typeof this.config!.confirmation !== 'boolean' && this.config!.confirmation.text) {
       text = this.config!.confirmation.text;
     } else {
-      const [domain, service] = this.config!.action!.split('.', 2);
+      const [domain, service] = this.config!.action!.split('.', 2) as [string, string];
       const serviceDomains = this.hass!.services;
 
 
       let serviceName = '';
-      if (domain in serviceDomains && service in serviceDomains[domain]) {
+      if (domain in serviceDomains && service in serviceDomains[domain]!) {
         await this.hass!.loadBackendTranslation('title');
         const localize = await this.hass!.loadBackendTranslation('entity');
 
         serviceName += domainToName(localize, domain);
         serviceName += ': ';
-        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain][service].name || service;
+        serviceName += localize(`component.${domain}.services.${serviceName}.name`) || serviceDomains[domain]![service]!.name || service;
       }
 
       text = this.hass!.localize('ui.panel.lovelace.cards.actions.action_confirmation', {

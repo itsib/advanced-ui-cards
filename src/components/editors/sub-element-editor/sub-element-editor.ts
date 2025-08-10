@@ -1,6 +1,6 @@
-import { html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { HASSDomEvent, HomeAssistant } from 'types';
+import type { HASSDomEvent, HomeAssistant } from 'types';
 import { fireEvent } from '../../../utils/fire-event';
 import styles from './sub-element-editor.scss';
 

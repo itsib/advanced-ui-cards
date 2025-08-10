@@ -1,9 +1,9 @@
-import { EntityConfigLike, HomeAssistant } from 'types';
+import type { EntityConfigLike, HomeAssistant } from 'types';
 
 export function getStateToNumber(entity: EntityConfigLike, hass: HomeAssistant): number {
   if (!entity.entity) return 0;
 
-  const stateObj = hass.states[entity.entity];
+  const stateObj = hass.states[entity.entity]!;
   const stateString = entity.attribute ? (stateObj.attributes || {})[entity.attribute] : stateObj?.state;
 
   return parseFloat(stateString) || 0;

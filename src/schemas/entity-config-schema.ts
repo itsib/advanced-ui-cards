@@ -1,5 +1,5 @@
 import { any, boolean, dynamic, enums, literal, object, optional, string, union } from 'superstruct';
-import { LovelaceRowConfig } from 'types';
+import type { LovelaceRowConfig } from 'types';
 import { ActionConfigSchema } from './action-config-schema';
 import { ConfirmationConfigSchema } from './confirmation-config-schema';
 

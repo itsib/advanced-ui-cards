@@ -1,5 +1,5 @@
 import type { LitElement } from './lit';
-import { ActionConfig } from './ha-ui';
+import type { ActionConfig } from './ha-actions';
 
 export type Selector =
   | ActionSelector

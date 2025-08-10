@@ -1,7 +1,7 @@
 import type { PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { assert } from 'superstruct';
-import {
+import type {
   EditorTarget,
   HASSDomEvent,
   HomeAssistant,
@@ -14,8 +14,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { processEntities, processGauges } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
-import { IServiceCardConfigSchema, ServiceCardConfigSchema } from './universal-card-schema';
-import { SubElementEditorConfig } from '../../components';
+import { type IServiceCardConfigSchema, ServiceCardConfigSchema } from './universal-card-schema';
+import type { SubElementEditorConfig } from '../../components';
 import styles from './universal-card-config.scss';
 
 interface EditDetailElementEvent {

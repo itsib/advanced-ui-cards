@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HassEntity, HomeAssistant } from 'types';
+import type { HassEntity, HomeAssistant } from 'types';
 import { computeDomain } from '../../utils/entities-utils';
 import styles from './action-button-feature.scss';
 

@@ -1,5 +1,5 @@
-import { HomeAssistant } from 'types';
-import { ISelectOption } from '../components';
+import type { HomeAssistant } from 'types';
+import type { ISelectOption } from '../components';
 import { getServiceIcon } from './get-service-icon';
 import { computeDomain } from './entities-utils';
 import { html } from 'lit';
@@ -8,16 +8,16 @@ export function getServicesSelectOptions(hass: HomeAssistant): ISelectOption[] {
   const domains = Object.keys(hass.services);
   const options: ISelectOption[] = [];
   for (let i = 0; i < domains.length; i++) {
-    const domain = domains[i];
-    const services = hass.services[domain];
+    const domain = domains[i]!;
+    const services = hass.services[domain]!;
     const servicesNames = Object.keys(services);
 
     for (let j = 0; j < servicesNames.length; j++) {
-      const serviceName = servicesNames[j];
+      const serviceName = servicesNames[j]!;
       const serviceId = `${domain}.${serviceName}`;
       options.push({
         value: serviceId,
-        label: services[serviceName].name,
+        label: services[serviceName]!.name,
         secondLabel: serviceId,
         icon: getServiceIcon(serviceId),
       });
@@ -55,12 +55,12 @@ export function getGaugesSelectOptions(hass: HomeAssistant): ISelectOption[] {
 
     let allowed = domain === 'counter' || domain === 'sensor' || domain === 'input_number' || domain === 'number';
     if (allowed) {
-      const state = hass.states[entityId].state;
+      const state = hass.states[entityId]!.state;
       allowed = !isNaN(Number(state));
     }
 
     if (!allowed) {
-      const attValues = Object.values(hass.states[entityId].attributes);
+      const attValues = Object.values(hass.states[entityId]!.attributes);
       allowed = attValues.some(value => typeof value === 'number');
     }
 

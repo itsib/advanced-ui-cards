@@ -1,4 +1,4 @@
-import { Context } from './ha-common';
+import type { Context } from './ha-common';
 
 export type Error = 1 | 2 | 3 | 4;
 
