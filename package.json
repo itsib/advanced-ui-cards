@@ -35,7 +35,7 @@
     "@types/node": "^22.8.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-lit": "^2.1.1",
-    "lit": "^3.3.0",
+    "lit": "^3.3.1",
     "sass-embedded": "^1.87.0",
     "tsx": "^4.19.4",
     "typescript": "~5.8.3",
@@ -43,7 +43,7 @@
     "vite-plugin-cp": "^6.0.3"
   },
   "peerDependencies": {
-    "lit": "^3.1.4"
+    "lit": "^3"
   },
   "overrides": {
     "braces": "^3.0.3"

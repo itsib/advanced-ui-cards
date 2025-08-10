@@ -1,5 +1,4 @@
 import { html, LitElement, type TemplateResult } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
 import styles from './switch.scss';
 
 declare global {
@@ -8,15 +7,31 @@ declare global {
   }
 }
 
-@customElement('lc-switch')
 export class Switch extends LitElement {
   static styles = styles;
 
-  @property({ attribute: 'checked', reflect: true, type: Boolean })
-  checked = false;
+  static properties = {
+    checked: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'checked'
+    },
+    disabled: {
+      type: Boolean,
+      reflect: true,
+      attribute: 'disabled',
+    }
+  }
 
-  @property({ attribute: 'disabled', reflect: true, type: Boolean })
-  disabled = false;
+  checked: boolean;
+
+  disabled: boolean;
+
+  constructor() {
+    super();
+    this.checked = false
+    this.disabled = false
+  }
 
   render(): TemplateResult {
     return html`
@@ -37,4 +52,5 @@ export class Switch extends LitElement {
     this.dispatchEvent(new CustomEvent('change', options));
   }
 }
+customElements.define('lc-switch', Switch)
 

@@ -23,7 +23,7 @@
     ],
     "types": [],
     "moduleResolution": "Bundler",
-    "useDefineForClassFields": true,
+    "useDefineForClassFields": false,
     "noImplicitThis": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,

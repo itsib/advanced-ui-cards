@@ -18,6 +18,12 @@ import { type IServiceCardConfigSchema, ServiceCardConfigSchema } from './univer
 import type { SubElementEditorConfig } from '../../components';
 import styles from './universal-card-config.scss';
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lc-universal-card-config': UniversalCardConfig;
+  }
+}
+
 interface EditDetailElementEvent {
   subElementConfig: SubElementEditorConfig;
 }
@@ -54,7 +60,7 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
     utils.importMoreInfoControl;
   }
 
-  protected render(): TemplateResult {
+  render(): TemplateResult {
     if (!this.hass || !this._config) {
       return html``;
     }
@@ -232,8 +238,11 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'lc-universal-card-config': UniversalCardConfig;
-  }
-}
+(window as any).customCards = (window as any).customCards || [];
+(window as any).customCards.push({
+  type: 'lc-universal-card',
+  name: 'Extended Card',
+  description: 'The universal card supports displaying many kinds of UI elements in one place. For example, if you need to display the status in the form of a row and a gauge with action buttons.',
+  preview: true,
+  configurable: true,
+});

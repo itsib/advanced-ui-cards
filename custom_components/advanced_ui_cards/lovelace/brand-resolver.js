@@ -130,9 +130,8 @@ const FORMATS = {
   default: "color: #b3b3b3; font-weight: 400;"
 };
 class DomWatcher {
-  _debug;
-  _watchers = /* @__PURE__ */ new WeakMap();
   constructor(debug = false) {
+    this._watchers = /* @__PURE__ */ new WeakMap();
     this._debug = debug;
   }
   log(type, ...objects) {
@@ -249,10 +248,6 @@ class DomWatcher {
   }
 }
 class BrandResolver extends DomWatcher {
-  _root;
-  _hass;
-  _images;
-  _domains;
   constructor(config) {
     super(config.hass.config.debug);
     this._root = config.root;

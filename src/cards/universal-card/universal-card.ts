@@ -209,11 +209,4 @@ class UniversalCard extends LitElement implements LovelaceCard {
   }
 }
 
-(window as any).customCards = (window as any).customCards || [];
-(window as any).customCards.push({
-  type: 'lc-universal-card',
-  name: 'Extended Card',
-  description: 'The universal card supports displaying many kinds of UI elements in one place. For example, if you need to display the status in the form of a row and a gauge with action buttons.',
-  preview: true,
-  configurable: true,
-});
+
