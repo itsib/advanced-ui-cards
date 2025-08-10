@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import copy from 'vite-plugin-cp';
 import { scssInline } from '../../plugins/scss-inline';
-// import { resolveExternalLit } from '../../plugins/resolve-external-lit';
+import { resolveExternalLit } from '../../plugins/resolve-external-lit';
 import * as process from 'node:process';
 
 const APP_ROOT = dirname(fileURLToPath(import.meta.url));
@@ -50,7 +50,7 @@ export default defineConfig(async () => {
       },
     },
     plugins: [
-      // resolveExternalLit(),
+      resolveExternalLit(),
       scssInline(),
       copy({
         targets: [
