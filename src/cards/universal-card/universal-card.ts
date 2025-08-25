@@ -11,7 +11,7 @@ import type {
 } from 'types';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findEntities, processEntities, processGauges } from '../../utils/entities-utils';
-import type { IServiceCardConfigSchema } from './universal-card-schema';
+import type { IUniversalCardConfigSchema } from './universal-card-schema';
 import { getStateToNumber } from '../../utils/format-number-value';
 import { formatEntityName } from '../../utils/format-entity-name';
 import { mainWindow } from '../../utils/get-main-window';
@@ -58,7 +58,7 @@ class UniversalCard extends LitElement implements LovelaceCard {
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IServiceCardConfigSchema;
+  @state() private _config?: IUniversalCardConfigSchema;
 
   @state() private _createRowElement?: (config: LovelaceRowConfig) => HTMLElement;
 
@@ -68,7 +68,7 @@ class UniversalCard extends LitElement implements LovelaceCard {
 
   private _configButtons?: IButtonConfigSchema[];
 
-  async setConfig(config: IServiceCardConfigSchema) {
+  async setConfig(config: IUniversalCardConfigSchema) {
     this._config = config;
 
     this._configGauges = processGauges(config.gauges);

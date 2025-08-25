@@ -5,7 +5,7 @@ import { ButtonConfigSchema } from '../../schemas/button-config-schema';
 import { EntityConfigSchema } from '../../schemas/entity-config-schema';
 import { GaugeConfigSchema } from '../../schemas/gauge-config-schema';
 
-export interface IServiceCardConfigSchema extends LovelaceCardConfig {
+export interface IUniversalCardConfigSchema extends LovelaceCardConfig {
   type: 'custom:lc-gauge-actions-card';
   title?: string;
   icon?: string;
@@ -15,7 +15,7 @@ export interface IServiceCardConfigSchema extends LovelaceCardConfig {
   buttons?: IButtonConfigSchema[];
 }
 
-export const ServiceCardConfigSchema = assign(
+export const UniversalCardConfigSchema = assign(
   BaseCardConfigSchema,
   object({
     title: optional(union([string(), boolean()])),

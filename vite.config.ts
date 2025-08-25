@@ -1,3 +1,5 @@
+/// <reference types="vite" />
+/// <reference types="vitest" />
 import { defineConfig, type UserConfig } from 'vite';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,58 +10,71 @@ import * as process from 'node:process';
 
 const APP_ROOT = dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig(async () => {
-  const isWatch = process.argv.includes('--watch');
-  return {
-    appType: 'custom',
-    resolve: {
-      alias: {
-        i18n: resolve(APP_ROOT, 'src', 'i18n', 'i18n.ts'),
-        types: resolve(APP_ROOT, 'src', 'types', 'index.ts'),
+const isWatch = process.argv.includes('--watch');
+
+export default defineConfig({
+  appType: 'custom',
+  resolve: {
+    alias: {
+      i18n: resolve(APP_ROOT, 'src', 'i18n', 'i18n.ts'),
+      types: resolve(APP_ROOT, 'src', 'types', 'index.ts'),
+    },
+  },
+  esbuild: {
+    legalComments: 'none',
+  },
+  build: {
+    emptyOutDir: !isWatch,
+    minify: false,
+    lib: {
+      formats: ['es'],
+      entry: {
+        ['advanced-ui-cards']: join(APP_ROOT, 'src', 'index.ts'),
+        ['advanced-ui-cards-app']: join(APP_ROOT, 'src', 'app.ts'),
+        ['brand-resolver']: join(APP_ROOT, 'src', 'brand-resolver', 'index.ts'),
       },
     },
-    esbuild: {
-      legalComments: 'none',
-    },
-    build: {
-      emptyOutDir: !isWatch,
-      minify: false,
-      lib: {
-        formats: ['es'],
-        entry: {
-          ['advanced-ui-cards']: join(APP_ROOT, 'src', 'index.ts'),
-          ['brand-resolver']: join(APP_ROOT, 'src', 'brand-resolver', 'index.ts'),
+    outDir: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
+    rollupOptions: {
+      output: {
+        preserveModules: false,
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        manualChunks(id: string) {
+          const path = relative(APP_ROOT, id);
+          if (/\/brand-resolver\//.test(path)) {
+            return 'brand-resolver';
+          } else if (path === 'src/index.ts') {
+            return 'advanced-ui-cards';
+          } else {
+            return 'advanced-ui-cards-app';
+          }
         },
       },
-      outDir: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
-      rollupOptions: {
-        output: {
-          preserveModules: false,
-          entryFileNames: '[name].js',
-          chunkFileNames: '[name].js',
-          manualChunks(id: string) {
-            const path = relative(APP_ROOT, id);
-            if (/\/brand-resolver\//.test(path)) {
-              return 'brand-resolver';
-            } else {
-              return 'advanced-ui-cards';
-            }
-          },
-        },
-        watch: {},
-      },
+      watch: {},
+      external: [
+        '/static/mdi/iconList.json',
+      ],
     },
-    plugins: [
-      resolveExternalLit(),
-      scssInline(),
-      copy({
-        targets: [
-          {
-            src: join(APP_ROOT, 'src', 'images'),
-            dest: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
-          },
-        ],
-      }),
-    ],
-  } as UserConfig;
+  },
+  plugins: [
+    resolveExternalLit(),
+    scssInline() as any,
+    copy({
+      targets: [
+        {
+          src: join(APP_ROOT, 'src', 'images'),
+          dest: join(APP_ROOT, 'custom_components', 'advanced_ui_cards', 'lovelace'),
+        },
+      ],
+    }),
+  ],
+  test: {
+    css: false,
+    include: ['src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
+    globals: true,
+    environment: 'node',
+    setupFiles: 'src/setup-tests.ts',
+    restoreMocks: true,
+  },
 });

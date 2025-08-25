@@ -27,12 +27,14 @@
     "lint": "eslint -c eslint.config.js",
     "preversion": "npm run build",
     "version": "tsx ../../plugins/patch-manifest.ts advanced-ui-cards && git add .",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@rollup/pluginutils": "^5.1.4",
     "@types/node": "^22.8.1",
+    "d3-color": "^3.1.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-lit": "^2.1.1",
     "lit": "^3.3.1",
@@ -40,7 +42,8 @@
     "tsx": "^4.19.4",
     "typescript": "~5.8.3",
     "vite": "^7.0.6",
-    "vite-plugin-cp": "^6.0.3"
+    "vite-plugin-cp": "^6.0.3",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "lit": "^3"

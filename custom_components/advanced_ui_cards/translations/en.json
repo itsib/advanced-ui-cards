@@ -51,6 +51,8 @@
         "step": "Step",
         "precision": "Display Precision",
         "show_scale_digits": "Show a scale digits",
+        "state_on_icon": "On state icon",
+        "state_off_icon": "Off state icon",
         "add_scale_color": "Add Scale Color",
         "scale_colors_label": "Thresholds for transition the color of the scale",
         "color": "Color",

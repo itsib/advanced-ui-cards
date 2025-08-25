@@ -1,6 +1,7 @@
 import type { HomeAssistant } from './ha-common';
 import type { FrontendLocaleData, TimeFormat } from './ha-locale';
 import type { ActionConfig, ConfirmationRestrictionConfig, HassServiceTarget } from './ha-actions';
+import type { HassEntity } from './ha-entity';
 
 export type ThemeMode = 'auto' | 'light' | 'dark';
 
@@ -140,7 +141,6 @@ export interface LovelaceViewConfig {
   subview?: boolean;
   back_path?: string;
 }
-
 // Automations
 
 export interface ForDict {
@@ -1074,11 +1074,29 @@ export interface LovelaceCard extends HTMLElement {
   setConfig(config: LovelaceCardConfig): void;
 }
 
+export type LovelaceCardFeaturePosition = 'bottom' | 'inline';
+
+export interface LovelaceCardFeature extends HTMLElement {
+  hass?: HomeAssistant;
+  context?: LovelaceCardFeatureContext;
+  setConfig(config: LovelaceCardFeatureConfig): void;
+  color?: string;
+  position?: LovelaceCardFeaturePosition;
+}
+
 export interface LovelaceCardEditor extends HTMLElement {
   hass?: HomeAssistant;
   lovelace?: LovelaceConfig;
 
   setConfig(config: LovelaceCardConfig): void;
+}
+
+export interface LovelaceCardFeatureEditor extends HTMLElement {
+  hass?: HomeAssistant;
+  lovelace?: LovelaceConfig;
+  context?: LovelaceCardFeatureContext;
+  setConfig(config: any): void;
+  focusYamlEditor?: () => void;
 }
 
 export interface LovelaceBadge extends HTMLElement {
@@ -1105,6 +1123,11 @@ export interface EntitiesEditorEvent extends CustomEvent {
     item?: any;
   };
   target: EventTarget | null;
+}
+
+export interface LovelaceCardFeatureContext {
+  entity_id?: string;
+  area_id?: string;
 }
 
 export interface EditorTarget extends EventTarget {

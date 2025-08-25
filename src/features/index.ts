@@ -1,1 +1,2 @@
-import './action-button-feature/action-button-feature';
+import './light-button-feature/light-button-feature';
+import './light-button-feature/light-button-feature-config';

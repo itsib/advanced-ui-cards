@@ -1,4 +1,6 @@
-export * from './icons';
-export * from './components';
-export * from './features';
-export * from './cards';
+(async () => {
+  await customElements.whenDefined('home-assistant-main');
+  await customElements.whenDefined('home-assistant-main');
+
+  await import('./app');
+})();

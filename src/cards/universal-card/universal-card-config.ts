@@ -14,7 +14,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { processEntities, processGauges } from '../../utils/entities-utils';
 import { fireEvent } from '../../utils/fire-event';
 import { configElementStyle } from '../../utils/config-elements-style';
-import { type IServiceCardConfigSchema, ServiceCardConfigSchema } from './universal-card-schema';
+import { type IUniversalCardConfigSchema, UniversalCardConfigSchema } from './universal-card-schema';
 import type { SubElementEditorConfig } from '../../components';
 import styles from './universal-card-config.scss';
 
@@ -34,7 +34,7 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: IServiceCardConfigSchema;
+  @state() private _config?: IUniversalCardConfigSchema;
 
   @state() private _configGauges?: IGaugeConfigSchema[];
 
@@ -44,8 +44,8 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
   @state() private _subElementEditorConfig?: SubElementEditorConfig;
 
-  setConfig(config: IServiceCardConfigSchema): void {
-    assert(config, ServiceCardConfigSchema);
+  setConfig(config: IUniversalCardConfigSchema): void {
+    assert(config, UniversalCardConfigSchema);
     this._config = config;
     this._configGauges = processGauges(config.gauges);
     this._configEntities = processEntities(config.entities);
@@ -148,7 +148,17 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
 
     const target = ev.target! as EditorTarget;
     const configValue = target.configValue || this._subElementEditorConfig?.type;
-    const value = target.checked !== undefined ? target.checked : target.value || (configValue && configValue in ev.detail ? ev.detail[configValue] : ev.detail.value);
+
+    let value: any;
+    if (typeof target.checked === 'boolean') {
+      value = target.checked;
+    } else if (target.value != null) {
+      value = target.value;
+    } else if (configValue && ev.detail && typeof ev.detail === 'object' && configValue in ev.detail) {
+      value = ev.detail[configValue];
+    } else {
+      value = ev.detail.value;
+    }
 
     if (!configValue) {
       throw new Error('No config field provided');
@@ -238,8 +248,8 @@ class UniversalCardConfig extends LitElement implements LovelaceCardEditor {
   }
 }
 
-(window as any).customCards = (window as any).customCards || [];
-(window as any).customCards.push({
+window.customCards = window.customCards || [];
+window.customCards.push({
   type: 'lc-universal-card',
   name: 'Extended Card',
   description: 'The universal card supports displaying many kinds of UI elements in one place. For example, if you need to display the status in the form of a row and a gauge with action buttons.',
