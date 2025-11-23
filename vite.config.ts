@@ -7,6 +7,7 @@ import copy from 'vite-plugin-cp';
 import { scssInline } from '../../plugins/scss-inline';
 import { resolveExternalLit } from '../../plugins/resolve-external-lit';
 import * as process from 'node:process';
+import { iconsGenerator } from './plugins/icons-generator';
 
 const APP_ROOT = dirname(fileURLToPath(import.meta.url));
 
@@ -58,6 +59,10 @@ export default defineConfig({
     },
   },
   plugins: [
+    iconsGenerator({
+      input: join(APP_ROOT, 'src', 'icons', 'sources'),
+      output: join(APP_ROOT, 'src', 'icons', 'index.ts'),
+    }),
     resolveExternalLit(),
     scssInline() as any,
     copy({
