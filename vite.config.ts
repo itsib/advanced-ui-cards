@@ -76,7 +76,7 @@ export default defineConfig({
   ],
   test: {
     css: false,
-    include: ['src/**/*.{spec,test}.{js,jsx,ts,tsx}'],
+    include: ['{src,plugins}/**/*.{spec,test}.{js,jsx,ts,tsx}'],
     globals: true,
     environment: 'node',
     setupFiles: 'src/setup-tests.ts',
